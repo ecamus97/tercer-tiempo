@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tercer Tiempo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E6ECE3; --surface:#F6F8F2; --surface2:#EDF1E9; --ink:#1B2D22; --muted:#56685C; --line:#C6D1C4;
+  --pitch:#2E6A46; --pitch-ink:#F3F6EE; --chalk:#F3F1E8; --tierra:#A87348; --amarillo:#E2B021; --rosa:#CF4E72; --turq:#23918E; --violeta:#6B5CA5;
+  --good:#2E7D4F; --bad:#B23A48; --gold:#B8901A;
+  --display:'Bungee', 'Arial Black', Impact, sans-serif;
+  --body:'Barlow Semi Condensed', 'Arial Narrow', Arial, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#13201A; --surface:#1B2B22; --surface2:#21342A; --ink:#EAF0E6; --muted:#9DB0A2; --line:#30473A;
+  --pitch:#1F4D33; --pitch-ink:#EAF0E6; --chalk:#F3F1E8; --good:#5BBE84; --bad:#E06A78; --gold:#E2B94A; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#13201A; --surface:#1B2B22; --surface2:#21342A; --ink:#EAF0E6; --muted:#9DB0A2; --line:#30473A;
+  --pitch:#1F4D33; --pitch-ink:#EAF0E6; --chalk:#F3F1E8; --good:#5BBE84; --bad:#E06A78; --gold:#E2B94A; color-scheme:dark; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--pitch)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--amarillo);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0}
+h2{font-size:1.6rem;letter-spacing:.01em}
+h3{font-size:1.05rem}
+p{margin:.4em 0}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* ---- barra superior: el portón de la cancha ---- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--pitch);color:var(--pitch-ink);border-bottom:4px solid var(--amarillo)}
+.top-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:8px 14px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-size:1.25rem;letter-spacing:.02em;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand .ball{width:22px;height:22px;border-radius:50%;background:var(--chalk);box-shadow:inset -4px -3px 0 rgba(0,0,0,.18);position:relative}
+.brand .ball::after{content:"";position:absolute;inset:6px;background:var(--pitch);clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)}
+.track{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.track span{font-family:var(--display);font-size:.78rem;min-width:30px;height:30px;padding:0 6px;display:grid;place-items:center;border-radius:6px;background:rgba(255,255,255,.08);color:rgba(243,246,238,.6);flex:none}
+.track span.done{background:rgba(255,255,255,.18);color:var(--pitch-ink)}
+.track span.now{background:var(--chalk);color:var(--pitch)}
+.track span.cl{box-shadow:inset 0 -3px 0 var(--amarillo)}
+.navbtns{display:flex;gap:4px}
+.navbtns button{background:transparent;border:1px solid rgba(255,255,255,.25);color:var(--pitch-ink);border-radius:8px;padding:5px 10px;font-weight:600;font-size:.92rem}
+.navbtns button:hover{background:rgba(255,255,255,.1)}
+
+/* ---- layout ---- */
+.layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;padding:18px 14px 110px}
+main{min-width:0}
+aside.side{position:sticky;top:76px;align-self:start;display:flex;flex-direction:column;gap:14px}
+.layout.solo{grid-template-columns:minmax(0,1fr);max-width:980px}
+.layout.solo aside.side{display:none}
+@media (max-width:980px){ .layout{grid-template-columns:minmax(0,1fr)} aside.side{display:none} }
+@media (max-width:560px){ .brand .bt{display:none} .top-in{gap:8px;padding:7px 10px} .navbtns button{padding:5px 8px} .score .team{font-size:.88rem} .layout{padding-top:12px} h2{font-size:1.35rem} }
+.code{font-family:var(--display);font-size:.7rem;opacity:.75;margin-right:2px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h3{margin-bottom:8px}
+.screen-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.screen-head .who{display:flex;align-items:center;gap:10px}
+.crest{width:38px;height:38px;border-radius:50% 50% 46% 46%;display:grid;place-items:center;font-family:var(--display);font-size:.7rem;color:#fff;flex:none;border:2px solid rgba(0,0,0,.15)}
+.crest.sm{width:24px;height:24px;font-size:.5rem;border-width:1px}
+.kicker{font-weight:600;color:var(--muted);font-size:.95rem}
+
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:1rem;background:var(--pitch);color:var(--pitch-ink);display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.btn.alt{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--amarillo);color:#2A2205}
+.btn.ghost{background:transparent;color:var(--ink);border:1px dashed var(--line)}
+.btn.sm{padding:6px 11px;font-size:.9rem;border-radius:8px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.actionbar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.actionbar .in{max-width:1280px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.problems{color:var(--bad);font-weight:600;font-size:.95rem}
+
+/* ---- cartas ---- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+.card{--pc:var(--pitch);position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:100%}
+.card.g-gk{--pc:var(--amarillo)} .card.g-def{--pc:var(--turq)} .card.g-vol{--pc:var(--pitch)} .card.g-del{--pc:var(--rosa)} .card.g-com{--pc:var(--tierra)}
+.card .band{background:var(--pc);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:5px 9px;font-weight:700;font-size:.82rem}
+.card.g-gk .band{color:#2A2205}
+.card .band .num{font-family:var(--display);font-size:1.05rem}
+.card .body{padding:8px 10px 10px;display:flex;flex-direction:column;gap:3px;flex:1}
+.card .nm{font-weight:700;font-size:1.02rem;line-height:1.15}
+.card .nick{font-style:italic;color:var(--muted);font-size:.9rem;line-height:1.15}
+.card .stat{position:absolute;right:8px;top:34px;font-family:var(--display);font-size:1.5rem;line-height:1;color:var(--pc);text-align:right}
+.card.g-gk .stat{color:var(--gold)}
+.card .stat small{display:block;font-family:var(--body);font-weight:700;font-size:.66rem;color:var(--muted)}
+.card .fx{font-size:.88rem;margin:4px 0 0;padding-right:4px}
+.card .fl{font-size:.82rem;color:var(--muted);font-style:italic;margin:2px 0 0}
+.card .edited{display:inline-block;font-size:.72rem;font-weight:700;color:var(--violeta);border:1px solid currentColor;border-radius:5px;padding:0 5px;margin-top:4px;cursor:help;align-self:flex-start}
+:root[data-theme="dark"] .card .edited{color:#B5A8F0}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card .edited{color:#B5A8F0} }
+.card .foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;padding-top:6px}
+.pips{display:flex;gap:3px}
+.pips i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.pips i.on{background:var(--good)}
+.pips.low i.on{background:var(--amarillo)} .pips.zero i{background:var(--bad);opacity:.5}
+.tag{font-size:.74rem;font-weight:700;border-radius:5px;padding:1px 6px;background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
+.tag.bad{color:var(--bad);border-color:currentColor;background:transparent}
+.tag.good{color:var(--good);border-color:currentColor;background:transparent}
+.card.off{opacity:.55}
+.card.sel-D{outline:3px solid var(--turq);outline-offset:-1px}
+.card.sel-A{outline:3px solid var(--rosa);outline-offset:-1px}
+.card.sel-G{outline:3px solid var(--amarillo);outline-offset:-1px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.seg button{border:0;background:transparent;padding:7px 0;font-size:.8rem;font-weight:700;color:var(--muted);border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--surface)}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.card.big{max-width:340px}
+.plain-card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--k,var(--pitch));border-radius:10px;padding:12px 14px}
+.plain-card .tt{font-family:var(--display);font-size:1rem;line-height:1.1}
+.plain-card .ty{font-size:.78rem;font-weight:700;color:var(--k,var(--pitch));margin-bottom:2px}
+.plain-card.evt{--k:var(--violeta)} .plain-card.exc{--k:var(--bad)} .plain-card.spo{--k:var(--turq)} .plain-card.dra{--k:var(--rosa)} .plain-card.obj{--k:var(--gold)} .plain-card.cla{--k:var(--amarillo)}
+.choice{cursor:pointer;transition:transform .12s}
+.choice:hover{transform:translateY(-2px)}
+.choice.on{box-shadow:0 0 0 3px var(--ink)}
+
+/* ---- pizarra / marcador ---- */
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meter{background:var(--pitch);color:var(--chalk);border-radius:12px;padding:10px 14px;position:relative;overflow:hidden}
+.meter b{font-family:var(--display);font-size:2.1rem;display:block;line-height:1}
+.meter span{font-weight:600;opacity:.85}
+.meter.def{background:#1C5652}
+.vs-note{font-size:.95rem;color:var(--muted);margin-top:8px}
+.board{background:var(--pitch);color:var(--chalk);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.board::before{content:"";position:absolute;inset:10px;border:2px solid rgba(243,241,232,.18);border-radius:8px;pointer-events:none}
+.board::after{content:"";position:absolute;left:50%;top:10px;bottom:10px;border-left:2px solid rgba(243,241,232,.18);pointer-events:none}
+.score{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.score .team{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem;line-height:1.1}
+.score .team.away{justify-content:flex-end;text-align:right}
+.score .nums{font-family:var(--display);font-size:2.3rem;background:var(--chalk);color:var(--pitch);border-radius:10px;padding:2px 14px;min-width:116px;text-align:center;letter-spacing:.04em}
+.score .sub{font-size:.85rem;opacity:.8;font-weight:500}
+.ocs{position:relative;z-index:1;margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.oc{display:grid;grid-template-columns:1fr 34px 1fr;gap:8px;align-items:center;background:rgba(0,0,0,.18);border-radius:8px;padding:6px 8px}
+.oc .lbl{font-family:var(--display);font-size:.8rem;text-align:center;opacity:.8}
+.cmp{display:flex;align-items:center;gap:6px;font-size:.9rem;flex-wrap:wrap}
+.cmp.r{justify-content:flex-end}
+.die{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--chalk);color:var(--pitch);font-weight:700;font-size:.92rem}
+.goal{font-family:var(--display);font-size:.78rem;background:var(--amarillo);color:#2A2205;border-radius:5px;padding:1px 6px}
+.miss{opacity:.6;font-size:.82rem}
+.mods{font-size:.78rem;opacity:.75;width:100%}
+.cmp.r .mods{text-align:right}
+@media (max-width:620px){ .oc{grid-template-columns:1fr} .oc .lbl{text-align:left} .cmp.r{justify-content:flex-start} .cmp.r .mods{text-align:left} .score .nums{font-size:1.8rem;min-width:90px} .score .team{font-size:.86rem;gap:6px} .score .team .crest{width:28px;height:28px;font-size:.55rem} }
+.match-list{display:flex;flex-direction:column;gap:12px}
+.mrow{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.mrow .line{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.mrow .line .h{display:flex;gap:8px;align-items:center;font-weight:600}
+.mrow .line .a{display:flex;gap:8px;align-items:center;justify-content:flex-end;font-weight:600;text-align:right}
+.mrow .res{font-family:var(--display);font-size:1.3rem;min-width:70px;text-align:center}
+.mrow.cl{border-color:var(--amarillo);box-shadow:inset 4px 0 0 var(--amarillo)}
+.post{font-size:.9rem;color:var(--muted);margin:6px 0 0;padding-left:16px}
+details.why{margin-top:8px;font-size:.88rem}
+details.why summary{cursor:pointer;font-weight:700;color:var(--muted)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.why-grid table{width:100%;border-collapse:collapse}
+.why-grid td{padding:2px 4px;border-bottom:1px dotted var(--line);vertical-align:top}
+.why-grid td:last-child{text-align:right;font-weight:700;white-space:nowrap}
+@media (max-width:620px){ .why-grid{grid-template-columns:1fr} }
+
+/* ---- tablas ---- */
+table.tb{width:100%;border-collapse:collapse;font-size:.95rem}
+table.tb th{font-weight:700;color:var(--muted);text-align:right;padding:4px 5px;border-bottom:2px solid var(--line);font-size:.85rem}
+table.tb th:nth-child(2),table.tb td:nth-child(2){text-align:left}
+table.tb td{padding:5px;border-bottom:1px solid var(--line);text-align:right}
+table.tb td.club{display:flex;align-items:center;gap:7px}
+table.tb tr.me td{background:var(--surface2)}
+table.tb .pts{font-family:var(--display);font-size:1rem}
+.scroll-x{overflow-x:auto}
+.statline{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-weight:600;font-size:.92rem}
+.chip b{font-family:var(--display);font-weight:400;font-size:.95rem}
+.riv{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.9rem}
+.riv .dots{display:flex;gap:3px}
+.riv .dots i{width:12px;height:12px;border-radius:3px;background:var(--line)}
+.riv .dots i.on{background:var(--amarillo)}
+
+/* ---- portón (privacidad) ---- */
+.gate{min-height:56vh;display:grid;place-items:center;text-align:center}
+.gate .plate{background:var(--pitch);color:var(--chalk);border-radius:18px;padding:34px 28px;max-width:480px;width:100%;border-bottom:8px solid var(--amarillo)}
+.gate h2{font-size:2.1rem;margin:10px 0}
+.gate .btn{background:var(--chalk);color:var(--pitch);margin-top:16px}
+
+/* ---- setup ---- */
+.hero{background:var(--pitch);color:var(--chalk);border-radius:18px;padding:28px 24px;position:relative;overflow:hidden;margin-bottom:18px}
+.hero h1{font-size:clamp(2.4rem,7vw,4.6rem);line-height:.92;letter-spacing:.01em}
+.hero h1 span{display:block;color:var(--amarillo)}
+.hero p{max-width:56ch;font-size:1.1rem;opacity:.92}
+.hero .lines{position:absolute;right:-60px;top:-40px;width:300px;height:300px;border:3px solid rgba(243,241,232,.16);border-radius:50%}
+.hero .lines::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;background:rgba(243,241,232,.25)}
+.seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.seat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.seat .top{display:flex;gap:8px;align-items:center;font-weight:700;line-height:1.1}
+.seat select,.seat input,.field input,.field select{font:inherit;width:100%;padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:4px;font-weight:600}
+.toggle{display:flex;gap:8px;align-items:flex-start;font-weight:500}
+.toggle input{width:18px;height:18px;margin-top:2px}
+
+/* ---- sheet ---- */
+dialog.sheet{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:16px;width:min(960px,96vw);max-height:88vh;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.sheet::backdrop{background:rgba(10,20,14,.55)}
+.sheet-h{position:sticky;top:0;background:var(--surface);display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);z-index:1}
+.sheet-b{padding:14px 16px 22px;overflow:auto}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px 11px;font-weight:600}
+.tabs button.on{background:var(--ink);color:var(--surface)}
+.log{font-size:.92rem;display:flex;flex-direction:column;gap:2px;max-height:62vh;overflow:auto}
+.log div{padding:3px 0;border-bottom:1px dotted var(--line)}
+.log .big{font-family:var(--display);font-size:.95rem;padding-top:10px}
+.log .good{color:var(--good)} .log .bad{color:var(--bad)} .log .evt{color:var(--violeta)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:720px){ .grid2{grid-template-columns:1fr} }
+.section{margin-top:18px}
+.section > h3{margin-bottom:8px}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);font-size:1.3rem;font-weight:700}
+.stepper b{font-family:var(--display);font-size:1.6rem;min-width:30px;text-align:center}
+.opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.opt{display:flex;gap:8px;align-items:center;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface2);cursor:pointer;font-weight:500}
+.opt.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.dis{opacity:.45;cursor:not-allowed}
+.champ{background:var(--amarillo);color:#2A2205;border-radius:18px;padding:22px;text-align:center;margin-bottom:16px}
+.champ h2{font-size:clamp(1.8rem,5vw,3rem)}
+.lab-out{font-size:.95rem}
+.lab-out td{padding:3px 8px;border-bottom:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:9px 16px;border-radius:10px;font-weight:600;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@keyframes roll{0%{transform:rotate(-30deg) scale(.6);opacity:0}100%{transform:none;opacity:1}}
+.oc.fresh .die{animation:roll .35s ease-out}
+@media (prefers-reduced-motion: reduce){ .oc.fresh .die{animation:none} .choice{transition:none} }
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand"><span class="ball" aria-hidden="true"></span><span class="bt">Tercer Tiempo</span></div>
+  <div class="track" id="track"></div>
+  <div class="navbtns" id="navbtns">
+    <button data-sheet="tabla">Tabla</button>
+    <button data-sheet="clubes">Clubes</button>
+    <button data-sheet="menu" aria-label="Más opciones">☰</button>
+  </div>
+</div></header>
+<div class="layout" id="layout">
+  <main id="app"></main>
+  <aside class="side" id="side"></aside>
+</div>
+<div class="actionbar hide" id="actionbar"><div class="in" id="actionin"></div></div>
+<dialog class="sheet" id="sheet"><div class="sheet-h"><h3 id="sheetTitle"></h3><button class="btn alt sm" id="sheetClose">Cerrar</button></div><div class="sheet-b" id="sheetBody"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<script>
+// ================= DATOS =================
+const FIS_MAX = 3;
+const POS = {
+  GK:{n:'Arquero',line:'D',g:'gk'}, DD:{n:'Defensa Derecho',line:'D',g:'def'}, DI:{n:'Defensa Izquierdo',line:'D',g:'def'},
+  VCO:{n:'Volante de Contención',line:'B',g:'vol'}, VCE:{n:'Volante Central',line:'A',g:'vol'}, VOF:{n:'Volante Ofensivo',line:'A',g:'vol'},
+  DC:{n:'Delantero Centro',line:'A',g:'del'}, EXT:{n:'Extremo',line:'A',g:'del'},
+  ARQ:{n:'Arquero',line:'D',g:'gk'}, DEF:{n:'Defensa',line:'D',g:'def'}, VOL:{n:'Volante',line:'A',g:'vol'}, DEL:{n:'Delantero',line:'A',g:'del'}, COM:{n:'Comodín',line:'B',g:'com'}
+};
+const isGK = c => c.pos==='GK'||c.pos==='ARQ';
+const isVol = c => ['VCO','VCE','VOF','VOL'].includes(c.pos);
+const isDel = c => c.pos==='DC'||c.pos==='DEL';
+
+// [id,pos,num,nombre,apodo,apellido,valor,fx,efecto,sabor,original(si cambió)]
+const BASE_RAW = [
+['b1','GK',1,'Braulio','El Muro','Núñez',5,'imm:compromiso','Inmune a la Excusa «Doble Compromiso».','Nunca se perdió un partido en diez años, ni por lluvia ni por Año Nuevo.','Inmune a la Excusa "otro compromiso" (no existe esa carta).'],
+['b2','GK',1,'Deuncio','Manos de Seda','Colque',5,'homeSelf2','+2 Defensa si el club juega de local.','Ataja penales cantando bajito.'],
+['b3','GK',12,'Wálter','El Colador','Sepúlveda',4,'imm:botines','Inmune a la Excusa «Se le perdieron los botines».','Le dicen así de cariño, no por los goles que le hacen.'],
+['b4','GK',1,'Anselmo','Pulpo','Ferreira',6,'pulpo','+2 Defensa, pero el club paga 1 dinero por Fecha (vanidoso).','Sus guantes cuestan más que la inscripción del equipo.'],
+['b5','GK',25,'Ronald','El que Nunca Sale','Quiroga',5,'ronald','Nunca pierde Físico: no sale del arco ni para descansar.','Sale del arco solo para el asado.','No puede ser sustituido durante el partido (no existen sustituciones).'],
+['b6','GK',1,'Restituto','Manopla','Torrez',4,'lostPrev2','+2 Defensa si el club perdió la Fecha anterior.','Después de una goleada, ataja como si debiera algo.'],
+['b7','DD',2,'Ramiro','El Zurdo de la Cuadra','Ibáñez',4,'homeSelf2','+2 Defensa si el club juega de local.','Marca con la izquierda y abre la cancha con la izquierda, para eso es zurdo.'],
+['b8','DD',2,'Deivid','El Codazo con Cariño','Salazar',5,'sancion','Riesgo de sanción: tras cada partido que juega, con un 1 en 1d6 se pierde la Fecha siguiente.','Te rompe el tobillo y después te invita el choripán.','Riesgo de sanción tras jugadas duras (sin regla definida).'],
+['b9','DD',2,'Norberto','Piernas de Alambre','Siles',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Flaco, pero no hay quien lo pase por velocidad.'],
+['b10','DD',2,'Ezequiel','El Escudo','Maldonado',5,'selfD2A1','+2 Defensa, pero −1 Ataque del club mientras esté alineado.','Marca tan cerca que el rival ya no distingue de quién es la pelota.'],
+['b11','DD',2,'Toribio','El que Nunca Grita Gol','Yampara',4,'imm:roncha','Inmune a la Excusa «Roncha Rara».','Jamás hizo un gol, pero tampoco lo dejaron nunca solo.'],
+['b12','DD',2,'Yonathan','El Lateral Fantasma','Villca',4,'volSelf1','+1 Defensa si algún Volante propio también está alineado.','Sube tanto que a veces el arquero no sabe cuántos defensas tiene.'],
+['b13','DI',4,'Segundo','El que Marca Fuerte','Paredes',4,'selfD2A2','+2 Defensa, pero −2 Ataque del club mientras esté alineado.','Le dicen Segundo porque nació segundo, no porque llega segundo a la pelota.'],
+['b14','DI',3,'Osvaldo','El Candado','Callisaya',5,'imm:brazo','Inmune a la Excusa «Se le Durmió el Brazo».','Cierra el pasillo como quien cierra la puerta de su casa.'],
+['b15','DI',4,'Aparicio','Rodilla de Lata','Cuellar',4,'aparicio','Pierde 1 de Físico extra si jugó también la Fecha anterior.','Tiene más fierros en la rodilla que la reja de la cancha.'],
+['b16','DI',3,'Facundo','El Marcador Educado','Chambi',5,'facundo','Nunca es sancionado y, si está alineado, anula la sanción de un compañero.','Marca fuerte, pero siempre pide disculpas.','Nunca arriesga sanción por juego brusco (no tenía ningún riesgo: efecto vacío).'],
+['b17','DI',4,'Bautista','El que Todo lo Corta','Aráoz',4,'bautista','+1 Defensa si el rival tiene un Delantero fichado del mercado.','Estudia videos del rival antes de cada Clásico.'],
+['b18','DI',3,'Wilfredo','Pata de Palo (pero Efectivo)','Choquehuanca',3,'wilfredo','+2 Defensa, pero −1 Defensa del club en la primera Ocasión de Gol.','Tarda en entrar en calor, pero después no lo pasa nadie.'],
+['b19','VCO',5,'Wilson','El Ordenado','Cabrera',3,'wilson','Si está alineado, los efectos negativos del Evento no afectan las stats de su club.','El único que sabe dónde quedó el botiquín, la pelota extra y las planillas de la liga.'],
+['b20','VCO',5,'Anacleto','El Barredor','Poma',2,'clubDef1','+1 Defensa del club mientras esté alineado.','Corre para atrás más que para adelante, y no le importa.'],
+['b21','VCO',5,'Delfín','El que Nunca Pierde una Pelota','Huanca',3,'imm:turno','Inmune a la Excusa «Turno en el Trabajo».','Su jefe ya sabe que los domingos no responde mensajes.'],
+['b22','VCO',5,'Gumercindo','El Ancla','Villarroel',2,'drawMoral','+1 Moral al club si el partido termina en empate con él en cancha.','Nunca hizo un gol, pero tampoco dejó ganar uno de contra.'],
+['b23','VCO',5,'Herminio','Pulmón','Sarmiento',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Corre los noventa minutos como si el partido durara cinco.'],
+['b24','VCO',5,'Casimiro','El que Frena Todo','Ríos',2,'awayDef1','+1 Defensa del club si juega de visita.','En cancha ajena juega como si defendiera su propia casa.'],
+['b25','VCE',6,'Deivis','El Correcaminos','Mamani',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Corre los noventa minutos como si el bondi estuviera por salir.'],
+['b26','VCE',8,'Napoleón','El que Reparte Juego','Ontiveros',4,'twoDel','+1 Ataque si hay 2 o más Delanteros alineados (el 9 y uno del mercado).','Ve la cancha como si tuviera un dron arriba.'],
+['b27','VCE',8,'Cristian','El Metrónomo','Alvarado',4,'reroll','Una vez por partido, repite el dado de una Ocasión de Gol fallada.','Toca la pelota como si tuviera todo el tiempo del mundo.'],
+['b28','VCE',6,'Reynaldo','El que Siempre Pide la Pelota','Guzmán',3,'homeSelf1','+1 Ataque si el club juega de local.','Grita "dame, dame" incluso estando marcado por tres.'],
+['b29','VCE',6,'Abelardo','El que Nunca se Cansa de Hablar','Yujra',3,'abelardo','+1 Moral al club si pierde con él en cancha (levanta al grupo).','Organiza la cancha a los gritos, aunque nadie le haga caso.','+1 Moral al club cada Fecha que juega (inflaba la Moral sin techo).'],
+['b30','VCE',8,'Ubaldo','El Ingeniero de Mitad de Cancha','Paco',4,'ubaldo','+1 Ataque si el club no gastó Favores en la Fecha anterior.','Antes del partido dibuja la formación en un papel, como si fuera pizarrón de verdad.','+1 Ataque si el club no gastó Favores esa Fecha (los Favores se gastan después del partido).'],
+['b31','VOF',7,'Edison','El de Buen Pie','Quispe',5,'reroll','Una vez por partido, repite el dado de una Ocasión de Gol fallada.','Pega con un empeine que parece de zurdo profesional, aunque juega de memoria.'],
+['b32','VOF',10,'Aurelio','El Enganche','Farfán',4,'clasico2','+2 Ataque en el Clásico.','Se guarda la mejor jugada del año para el partido contra los de siempre.'],
+['b33','VOF',7,'Ceferino','La Gambeta Fina','Rocha',5,'best2','Una vez por partido, en una Ocasión fallada tira otro dado y usa el mejor.','Se pasa a dos rivales y después pierde la pelota contra un poste.'],
+['b34','VOF',7,'Nicanor','El Tacos','Espinoza',3,'losing1','+1 Ataque en las Ocasiones en que el club va perdiendo.','Solo se le ve brillar cuando todo está cuesta arriba.'],
+['b35','VOF',10,'Bernabé','El que Regatea de Más','Coronel',4,'bernabe','−1 en la última Ocasión de Gol, +1 en las demás.','Prefiere gambetear tres veces antes de pasarla, aunque esté solo frente al arco.'],
+['b36','VOF',7,'Genaro','El Vistoso','Ledezma',4,'genaro','+1 Reputación en el Tercer Tiempo si jugó ese día.','Cuenta la misma jugada del 2019 en cada asado.'],
+['b37','DC',9,'Anderson','El Nueve de Emergencia','Rojas',5,'anderson','+2 Ataque si el club no tiene otro Delantero fichado del mercado.','Nadie sabía que jugaba de nueve hasta el día que faltó el titular.'],
+['b38','DC',9,'Aníbal','El Killer del Barrio','Sandoval',6,'bench1','Si está disponible y queda en el banco, el club pierde 1 de Moral.','Si no convierte, se pasa la semana entera explicando por qué.','Si es sustituido antes de terminar el partido, −1 Moral (no existen sustituciones).'],
+['b39','DC',9,'Herculano','El Trueno del Barrio','Peñaloza',6,'odd1','+1 Ataque si la Fecha es impar (superstición del barrio).','Dicen que le pegó tan fuerte a una pelota que se escuchó en el barrio vecino.'],
+['b40','DC',9,'Deonisio','El Killer de Área Chica','Rivera',6,'deonisio','Suma su valor completo solo si es el único Delantero alineado; si no, suma la mitad.','No hace un gol lindo en su vida, pero convierte todos los feos.','Suma su valor completo solo si juega como único Delantero (no decía qué pasa si no).'],
+['b41','DC',9,'Encarnación','La Nueve de Fierro','Duarte',5,'tied2h','+1 Ataque en las Ocasiones 3 y 4 si el partido va empatado.','Aparece justo cuando el equipo más lo necesita, ni un minuto antes.'],
+['b42','DC',9,'Baltazar','El que Nunca Falla el Mano a Mano','Zuazo',6,'baltazar','+1 Ataque, pero pierde 1 de Físico extra cada Fecha jugada.','Contra el arquero, no perdona ni jugando de local con lluvia.'],
+['b43','EXT',11,'Maicol','El que Siempre Llega','Fernández',5,'imm:auto','Inmune a la Excusa «El Auto no Arrancó».','El único del plantel que jamás avisó "ya salgo" y después no apareció.'],
+['b44','EXT',11,'Cornelio','El Cazador de Rebotes','Villanueva',4,'sponsor1','+1 Ataque si el club tiene un Auspiciador activo.','Vive del descarte: lo que el otro no convierte, él lo empuja adentro.'],
+['b45','EXT',11,'Onofre','El Segundo Palo','Chura',5,'homeSelf1','+1 Ataque si el club juega de local.','Siempre aparece en el segundo palo, nadie sabe cómo llega.'],
+['b46','EXT',11,'Anastasio','El que Baja a Buscarla','Nina',4,'rec1','+1 de Físico recuperado en Fechas de descanso.','Juega de nueve y de diez al mismo tiempo, según lo necesite el equipo.'],
+['b47','EXT',11,'Feliciano','El Nueve y Medio','Cárdenas',5,'volSelf1','+1 Ataque si algún Volante propio también está alineado.','Ni delantero puro ni volante, un poco de las dos cosas.'],
+['b48','EXT',11,'Remigio','El que Anota de Cabeza','Torrico',4,'rain1','+1 Ataque si el Evento es «Llueve como Nunca».','En la pelota parada, es un problema para cualquier defensa de barrio.'],
+];
+// [id,pos,num,nombre,apodo,apellido,valor,fx,efecto,sabor,costoDinero,costoFavor,original]
+const LIBRES_RAW = [
+['l1','ARQ',1,'Ulises','El Primo del Arquero','Beltrán',3,'','Se ficha con 1 Favor, sin dinero.','Llegó porque el titular faltó, y se quedó porque nadie más quiso el arco.',0,1],
+['l2','DEF',4,'Don Walter','El Eterno','Gutiérrez',5,'walter','Pierde 1 de Físico extra cada Fecha jugada.','Juega con rodillera desde antes de que nacieran la mitad de sus compañeros.',2,0],
+['l3','VOL',8,'Franklin','El Junior que Corre Todo','Soto',3,'rec2','+2 de Físico recuperado en Fechas de descanso.','Corre once kilómetros por partido, diez sin la pelota.',1,0],
+['l4','COM',7,'Custodio','El Capitán de la Rifa','Vera',3,'custodio','Una vez por Fecha: anula una Excusa del club o, si no la usa, genera +2 dinero en el Tercer Tiempo.','Organiza la rifa, cobra la cancha y todavía tiene tiempo de jugar los noventa minutos.',2,0],
+['l5','VOL',6,'Kevin','El Sobrino del Auspiciador','Choque',3,'kevin','Mientras esté en el plantel, cambiar de Auspiciador no cuesta Reputación.','Juega regular, pero su tío pone las camisetas, así que nadie lo banca dos fechas seguidas.',1,1,'Mientras esté alineado, no pierde Reputación por incumplir a un Auspiciador (no había regla de incumplimiento).'],
+['l6','VOL',10,'"Profe" Aquiles','El Diez de Potrero','Bazán',6,'reroll','Una vez por partido, repite el dado de una Ocasión de Gol fallada.','Toca, pausa, define. En el barrio le dicen "el profe".',4,0],
+['l7','DEL',11,'Rogelio','Pata de Marfil','Anco',5,'best2','Una vez por partido, en una Ocasión fallada tira otro dado y usa el mejor.','Tiro de media distancia letal... a veces le pega al córner sin querer.',2,0],
+['l8','DEL',9,'Leandro','La Nueve Sagrada','Ferreyra',6,'bench2','Si está disponible y queda en el banco, el club pierde 2 de Moral.','Si lo cambian, se va enojado a la casa y no atiende el chat hasta el jueves.',4,0,'Si se lo saca antes de terminar el partido, −2 Moral (no existen sustituciones).'],
+['l9','DEL',9,'Wilmer','Motor Diesel','Paredez',5,'diesel','−1 Ataque en las Ocasiones 1 y 2, +1 en las Ocasiones 3 y 4.','Tarda en arrancar, pero no para.',2,0],
+['l10','DEL',23,'Brandon','Botines de Marca, Cuerpo de Sofá','Herrera',5,'brandon','−2 a su valor por cada Fecha seguida que jugó sin descansar.','Tiene los tapones importados. El estado físico, no tanto.',3,0],
+['l11','COM',99,'','El Zorro','Villagra',8,'zorro','Juega un solo partido (el primero en que se lo alinee) y se retira.','Dijo que se retiraba. No se retiró.',3,1,'Solo 1 partido, elegido al contratarlo (simplificado).'],
+['l12','DEF',4,'Ananías','El Fierrero que Juega los Domingos','Yupanqui',5,'ananias','No juega (suma 0) si el Evento es «Fiscalización Municipal».','Entre semana suelda portones, el domingo suelda la defensa.',1,1],
+['l13','DEL',7,'Marco','El que Llega en Cinco','Villalba',5,'marco','Antes de cada partido tira 1d6: con 1 o 2 solo juega las Ocasiones 3 y 4.','Está a cinco minutos hace cuarenta.',1,0],
+['l14','DEF',3,'Hugo','El Pegador con Corazón','Ramírez',5,'sancion','Riesgo de sanción: tras cada partido que juega, con un 1 en 1d6 se pierde la Fecha siguiente.','Te rompe el tobillo y después te invita el choripán.',2,0],
+['l15','VOL',10,'Elvis','El Enganche de Otro Barrio','Tarqui',5,'clasico2','+2 Ataque en el Clásico.','Conoce tan bien al rival que hasta sabe cómo respira el arquero.',3,0],
+['l16','DEF',3,'Deyvis','El Lateral que Nunca se Cansa','Machaca',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Sube y baja toda la cancha, literal.',1,0,'Costaba 2 dinero + 1 favor por una carta de valor 3: nadie la fichaba.'],
+['l17','ARQ',1,'Ramón','El Arquero Prestado','Ojeda',5,'ramon','Se va del plantel después de 2 Fechas.','Vino prestado por dos fechas, después vuelve a su club.',0,2],
+['l18','COM',8,'Don Cirilo','El Ex Profesional Retirado','Molina',6,'cirilo','Vale 6 en su primer partido y 3 en los siguientes.','Jugó divisiones inferiores hace 15 años. Todavía se acuerda de un gol.',3,0],
+['l19','DEL',11,'Joaquín','La Promesa Adelantada','Ticona',3,'','Sin rasgo especial (por eso cuesta poco).','Le hicieron sacar la cédula para que pudiera jugar.',1,0],
+['l20','VOL',6,'Reinaldo','El Que Juega en Dos Ligas','Apaza',4,'reinaldo','Si le toca la Excusa, se roban 2 y se aplica la peor.','Nadie sabe cómo llega a todos los partidos, pero llega.',1,0,'Valor 3 por 2 dinero y solo efecto negativo: nadie lo fichaba.'],
+['l21','DEL',9,'Bryan','El Recomendado del Auspiciador','Cusicanqui',3,'bryan','Mientras esté en el plantel, firmar un Auspiciador no cuesta dinero.','Viene con el combo: si lo fichás, hay descuento.',2,0,'El próximo Auspiciador cuesta 1 dinero menos (los Auspiciadores no tenían costo).'],
+['l22','DEF',3,'Hipólito','El Comandante','Rivas',5,'clasicoD1','+1 Defensa en el Clásico.','Se pone serio en serio cuando se acerca el Clásico.',3,0],
+['l23','COM',14,'Wenceslao','El que Nunca Discute con el Árbitro','Puma',3,'wences','Si está alineado, su club ignora el Evento «Árbitro Misterioso».','Mientras todos discuten, él ya volvió a marcar la raya.',2,0],
+['l24','DEL',9,'Deividson','El Crack que No Entrena','Salvatierra',6,'deividson','−2 a su valor si jugó la Fecha anterior.','Dice que el talento no se entrena, se hereda.',3,0],
+['l25','VOL',8,'Onésimo','El que Vino de Otra Liga','Bazualdo',5,'onesimo','La Fecha siguiente a ficharlo, el club se salta la Excusa obligatoria.','Llegó con fama de otro barrio, y por ahora la está confirmando.',3,0,'En su primera Fecha jugada se salta la Excusa (la Excusa se resuelve antes de saber si juega).'],
+['l26','COM',17,'Casiano','El que Juega Gratis por Amor al Club','Illescas',3,'','Se ficha con 1 Favor, sin dinero.','Dice que no es por la plata. Nadie le pregunta dos veces.',0,1],
+['l27','DEF',4,'Fortunato','El Rompecodos','Baldivieso',6,'fortunato','+1 Defensa con «Llueve como Nunca»; riesgo de sanción (1 en 1d6 tras jugar).','En el aire, nadie le gana la posición... ni el codo.',3,0],
+['l28','COM',16,'Hermógenes','El que Todo lo Cobra por Favor','Nogales',3,'hermo','Pedir un Favor al barrio le cuesta al club 1 Reputación menos.','Te hace el favor, pero lo anota en un cuaderno.',2,1],
+['l29','VOL',6,'Eleuterio','El que Grita Más que Juega','Villagómez',4,'eleuterio','+1 Moral al club cada Fecha que juega, pero suma −1 a su propio Ataque.','Se le escucha desde la otra cuadra, aunque toque la pelota poco.',2,0],
+['l30','COM',20,'Deolindo','El Refuerzo de Última Hora','Chumacero',5,'deolindo','Cuesta 1 dinero menos si el club está en la mitad de abajo de la tabla.','Llega cuando el club ya está complicado, y a veces lo salva.',3,0,'Solo fichable en las últimas 3 Fechas, pero el mercado cierra en la Fecha 3: nunca se podía fichar.'],
+];
+
+const EXCUSAS = [
+ {id:'e1',n:'Se Casa el Cuñado',s:'Es una boda de verdad, lo jura.',k:'out',t:'Falta esta Fecha.'},
+ {id:'e2',n:'Turno en el Trabajo',s:'Le cambiaron el turno. De nuevo.',k:'half',imm:'turno',t:'Solo juega las Ocasiones 3 y 4.'},
+ {id:'e3',n:'Se le Durmió el Brazo',s:'No explica cómo afecta a las piernas, pero insiste.',k:'minus1',imm:'brazo',t:'Juega con −1 esta Fecha.'},
+ {id:'e4',n:'No lo Dejaron Salir',s:'Anoche llegó tarde. Hoy paga las consecuencias.',k:'pay1',t:'Falta, salvo que pagues 1 dinero.'},
+ {id:'e5',n:'El Auto no Arrancó',s:'Clásico universal del fútbol amateur.',k:'dice',imm:'auto',t:'Tira 1d6: con 1-3 solo juega las Ocasiones 3 y 4.'},
+ {id:'e6',n:'"Entrenando Solo"',s:'Publicó una historia corriendo hace tres semanas.',k:'minus1',t:'Juega con −1 esta Fecha.'},
+ {id:'e7',n:'Junta Familiar Extendida',s:'El asado del domingo familiar se extendió.',k:'noRep',t:'Juega, pero el club genera 1 Reputación menos en el Tercer Tiempo.',o:'No genera Reputación (los jugadores no generan Reputación).'},
+ {id:'e8',n:'Se le Perdieron los Botines',s:'Los prestó y nunca se los devolvieron.',k:'pay1',imm:'botines',t:'Falta, salvo que pagues 1 dinero.'},
+ {id:'e9',n:'Roncha Rara',s:'Dice que es alergia. El grupo no le cree.',k:'moral1',imm:'roncha',t:'Falta, salvo que el club gaste 1 de Moral.',o:'El Capitán puede gastar 1 Moral (no existe el rol de Capitán).'},
+ {id:'e10',n:'Doble Compromiso',s:'Es fiel, pero fiel a quien pague mejor esa Fecha.',k:'outRep',imm:'compromiso',t:'Falta y el club pierde 1 de Reputación por el rumor.'},
+ {id:'e11',n:'Se Quedó Dormido la Siesta',s:'Puso la alarma, pero la apagó sin darse cuenta.',k:'half',t:'Solo juega las Ocasiones 3 y 4.'},
+ {id:'e12',n:'Cambio de Turno de Última Hora',s:'El jefe le avisó recién esta mañana.',k:'pay1',t:'Falta, salvo que pagues 1 dinero.'},
+ {id:'e13',n:'Se Peleó con la Pareja',s:'Dice que puede jugar, pero se nota que no tiene la cabeza puesta.',k:'minus1',t:'Juega con −1 esta Fecha.'},
+ {id:'e14',n:'Prestó los Botines al Primo',s:'El primo jugaba en otra cancha, dijo que se los devolvía a tiempo.',k:'pay1',t:'Falta, salvo que pagues 1 dinero.'},
+ {id:'e15',n:'Se Cortó la Combi',s:'El único transporte que pasaba por su casa canceló la ruta.',k:'dice',t:'Tira 1d6: con 1-3 solo juega las Ocasiones 3 y 4.'},
+ {id:'e16',n:'Cumpleaños Sorpresa',s:'No sabía que era su propio cumpleaños hasta que llegaron todos a la casa.',k:'moral1',t:'Falta, salvo que el club gaste 1 de Moral.',o:'El Capitán puede gastar 1 Moral (no existe el rol de Capitán).'},
+];
+const EXC_SEVERITY = {out:5,outRep:6,pay1:3,moral1:3,half:4,dice:2,minus1:1,noRep:0.5};
+
+const EVENTOS = [
+ {id:'luz',n:'Corte de Luz en la Cancha',s:'El municipio de nuevo debe la boleta.',t:'−2 Ataque a todos los equipos.'},
+ {id:'lluvia',n:'Llueve como Nunca',s:'La cancha de tierra es ahora una pileta.',t:'−2 Ataque a todos; en cada partido, el equipo con más Físico total suma +2 Defensa.'},
+ {id:'arbitro',n:'Árbitro Misterioso',s:'Nadie sabe de quién es primo, pero cobra raro toda la tarde.',t:'En cada equipo, un jugador al azar no participa en una Ocasión al azar.'},
+ {id:'parlante',n:'Se Cortó el Parlante',s:'El tercer tiempo se quedó sin banda sonora.',t:'−1 a la Reputación generada en el Tercer Tiempo.'},
+ {id:'fisca',n:'Fiscalización Municipal',s:'Vinieron a revisar si el club está al día.',t:'En el Tercer Tiempo, cada club paga 3 dinero o pierde 2 de Reputación.'},
+ {id:'red',n:'Se Rompió la Red del Arco',s:'Todo gol de hoy queda discutible.',t:'Cada gol se confirma con 1d6: con un 1 no cuenta.'},
+ {id:'cumple',n:'Cumpleaños del Presidente del Club',s:'Hay torta en el entretiempo, guste o no.',t:'+1 Moral a todos los clubes; −1 Defensa a todos (la torta pesa).',o:'+1 Moral a ambos; ningún Capitán puede anular Excusas (no existe el Capitán y las Excusas se resuelven antes del Evento).'},
+ {id:'reportaje',n:'Reportaje del Canal Local',s:'Vinieron a grabar 30 segundos y usaron la peor jugada.',t:'+3 Reputación al que gana su partido, −1 al que pierde.'},
+ {id:'balon',n:'Falta el Balón Reglamentario',s:'Se juega con una pelota un poco desinflada.',t:'−2 Defensa a todos los equipos (la pelota hace cosas raras).',o:'−2 Ataque a ambos (idéntica a «Corte de Luz»).'},
+ {id:'largo',n:'Fecha Doble',s:'Se recupera la fecha suspendida.',t:'Se juegan 6 Ocasiones en vez de 4; los alineados pierden 1 de Físico extra.',o:'Se juegan 2 partidos seguidos (contra quién, si el fixture es fijo?).'},
+ {id:'cancha',n:'Se Cambia la Cancha de Última Hora',s:'El municipio prestó otra cancha, más lejos y más dura.',t:'El visitante de cada partido juega con −1 Ataque.'},
+ {id:'kermes',n:'Doble Función en el Barrio',s:'Hay kermés al lado de la cancha y todos quieren mirar para los dos lados.',t:'−1 Ataque a todos; +2 Reputación en el Tercer Tiempo.'},
+];
+
+const SPONSORS = [
+ {id:'beto',n:'Carnicería Don Beto',s:'Pone las camisetas si el logo va del tamaño del escudo.',t:'+3 dinero por Fecha; −1 Reputación si el club pierde 2 Fechas seguidas.'},
+ {id:'ferre',n:'Ferretería La Llave Maestra',s:'Descuento en clavos para el arco improvisado.',t:'+1 dinero por Fecha; los Eventos que piden pago cuestan 1 menos.',o:'Solo −1 al costo de Eventos que piden pago (había 1 solo Evento así).'},
+ {id:'almacen',n:'Almacén El Gol',s:'Pone la bebida del tercer tiempo.',t:'+1 Reputación en cada Tercer Tiempo.'},
+ {id:'barberia',n:'Barbería Fade Perfecto',s:'Corte gratis a todo el plantel antes del Clásico.',t:'+2 Moral antes del Clásico.',o:'+1 Moral antes del Clásico.'},
+ {id:'taller',n:'Taller Los Fierros',s:'Te lleva al partido... si el furgón enciende.',t:'Ignora las Excusas de transporte («El Auto no Arrancó» y «Se Cortó la Combi») y +1 dinero por Fecha.',o:'Solo ignora «El Auto no Arrancó» (1 de 16 Excusas: casi nunca hacía nada).'},
+ {id:'foodtruck',n:'Food Truck La Ruta del Sabor',s:'Vende choripanes en la cancha.',t:'+2 dinero por cada Fecha jugada de local.'},
+ {id:'minimarket',n:'Minimarket Doña Elena',s:'Fía la mercadería, después cobra con intereses.',t:'Al firmar: +5 dinero; después −1 dinero en las 3 Fechas siguientes.'},
+ {id:'taxi',n:'Radio Taxi El Rápido',s:'Lleva al árbitro que a ellos les conviene.',t:'Ignora «Árbitro Misterioso»; +1 dinero por Fecha.',o:'Una vez por campeonato anula «Árbitro Misterioso» (1 de 12 Eventos: casi nunca hacía nada).'},
+ {id:'gimnasio',n:'Gimnasio Máquina de Fierros',s:'Descuento en musculación.',t:'+1 de Físico extra a cada jugador que descansa.'},
+ {id:'panaderia',n:'Panadería Amanecer',s:'Pone las facturas de la previa.',t:'+1 Moral antes de cada partido si el club perdió la Fecha anterior.',o:'+1 Moral en cada Previa (la Moral se iba al máximo en 4 Fechas).'},
+ {id:'botilleria',n:'Botillería Los Compadres',s:'Fía la bebida del tercer tiempo, cobra los sábados sin falta.',t:'+2 Reputación en cada Tercer Tiempo; −1 dinero cada 3 Fechas.'},
+ {id:'farmacia',n:'Farmacia San Roque',s:'Descuento en vendas y analgésicos para "el otro domingo".',t:'Cada Fecha, el jugador más cansado recupera +1 de Físico extra.'},
+ {id:'vete',n:'Veterinaria Patitas Felices',s:'El perro de la cancha ya tiene collar nuevo.',t:'+1 Hinchada Fiel cada vez que el club gana de local.',o:'+1 Moral cuando juega de local (inflaba la Moral).'},
+ {id:'cyber',n:'Cyber Los Pibes',s:'Imprime las planillas y sube las fotos del gol a la página del club.',t:'+2 Reputación por cada Fecha ganada de local.',o:'+1 Reputación por Fecha ganada de local.'},
+ {id:'gomeria',n:'Gomería El Rodado',s:'Arregla el pinchazo de cualquiera antes del partido.',t:'Anular una Excusa pagando cuesta 1 dinero menos (gratis).'},
+ {id:'heladeria',n:'Heladería La Cremosita',s:'Paga los helados del Tercer Tiempo si el equipo ganó.',t:'+3 dinero cada vez que el club gana.',o:'+2 dinero si gana de local.'},
+ {id:'parroquia',n:'Parroquia San Cayetano',s:'El cura bendice la pelota antes del Clásico, por si las dudas.',t:'+2 Moral antes del Clásico; +1 Moral si pierde 2 Fechas seguidas.',o:'+2 Moral en la Fecha del Clásico (un solo uso en toda la liga).'},
+ {id:'fm',n:'Radio Comunitaria FM Barrio',s:'Transmite el partido en vivo, aunque se corte la señal justo en los goles.',t:'+1 Reputación cada Fecha, sin condición.'},
+];
+
+const DRAMAS = [
+ {id:'chat',n:'Pelea en el Chat',s:'Empezó por el horario y terminó en quién no pagó la cancha.',t:'−1 Moral, o pagás 1 dinero para calmarla.'},
+ {id:'rumor',n:'Rumor de Pase al Rival',s:'Dicen que la Nueve fue a probarse con el equipo de al lado.',t:'Tu mejor atacante no juega la próxima Fecha, salvo que gastes 1 de Moral en convencerlo.',o:'Si el club no sube su Moral esta Fecha... (no había forma de hacerlo a voluntad).'},
+ {id:'tecnico',n:'El Técnico Amenaza con Renunciar',s:'Otra vez. Van tres veces este mes.',t:'−2 Ataque y −2 Defensa la próxima Fecha, salvo que des 1 Reputación o 1 Favor.',o:'«esta Fecha»: el Drama se resuelve después del partido, así que no hacía nada.'},
+ {id:'barras',n:'Barras Enfrentadas',s:'Empezó como chiste, terminó con la guardia municipal mirando de lejos.',t:'−1 Reputación; +1 Rivalidad con tu rival del Clásico.'},
+ {id:'rifa',n:'Escándalo de la Rifa',s:'Nadie sabe bien dónde quedó la plata.',t:'−3 dinero, o −2 Reputación para "aclarar cuentas".',o:'−3 dinero salvo que se descarte una Excusa (los clubes no guardan Excusas en la mano).'},
+ {id:'filtro',n:'Se Filtró el Objetivo Secreto',s:'Alguien mostró la carta sin querer.',t:'Tu Objetivo Secreto queda visible para toda la mesa.'},
+ {id:'brazalete',n:'Disputa por el Brazalete',s:'Dos jugadores creen que el capitán debería ser el otro.',t:'−2 Moral, o gastás 1 Favor para calmar las aguas.',o:'Se resolvía con una "votación secreta entre los jugadores" (son cartas, no votan).'},
+ {id:'enterado',n:'El Auspiciador se Enteró',s:'El carnicero no perdona infidelidades.',t:'Perdés tu Auspiciador, salvo que pagues 2 dinero.'},
+ {id:'viral',n:'Video Viral del Blooper',s:'El arquero se resbaló y ya tiene vistas de sobra.',t:'+2 Reputación; tu arquero juega con −2 la próxima Fecha.'},
+ {id:'denuncia',n:'Denuncia por Jugador No Habilitado',s:'Dicen que "el primo" juega en otra categoría.',t:'Tira 1d6: con un 1 perdés los 3 puntos de tu último partido ganado.'},
+ {id:'audio',n:'Se Filtró un Audio del Grupo',s:'Alguien mandó captura de pantalla a quien no debía.',t:'−1 Moral; con 4+ en 1d6 hablaba del rival: +1 Rivalidad.'},
+ {id:'camiseta',n:'El Presidente Quiere Vender la Camiseta del Diez',s:'Dice que hay un comprador que paga bien.',t:'Vendés: +3 dinero y −2 Moral. O no vendés y no pasa nada.',o:'+3 dinero salvo que pagues 2 Reputación para evitarlo (aceptar era siempre mejor).'},
+ {id:'cancha',n:'Discusión por la Cancha Prestada',s:'Nadie se pone de acuerdo en qué día entrenar.',t:'Un jugador al azar pierde 1 de Físico.'},
+ {id:'hijo',n:'El Hijo del Dirigente Quiere Jugar',s:'No es muy bueno, pero el padre paga la cancha.',t:'Pagás 2 dinero, o un titular al azar juega con −2 la próxima Fecha.'},
+ {id:'apuestas',n:'Se Comenta que Hay Apuestas en el Barrio',s:'Dicen que hay plata parada en este partido.',t:'La próxima Fecha: +2 Reputación si ganás, −2 si perdés.'},
+ {id:'tactica',n:'El Grupo se Divide por la Táctica',s:'Media cuadra quiere jugar atrás, la otra media quiere ir a buscarlo.',t:'La próxima Fecha alineás 4 o más en Defensa (arquero incluido) o perdés 1 de Moral.',o:'Alinear 1 Comodín en Defensa (la mayoría de los clubes no tiene Comodines).'},
+];
+
+const OBJETIVOS = [
+ {id:'ascenso',n:'El Sueño del Ascenso',s:'No importa cómo, este año subimos de categoría.',t:'Si estás entre los 3 primeros al terminar la Fecha 4: +1 Ataque el resto de la liga.',o:'Beneficio solo para "la siguiente partida" (inútil en una liga suelta).'},
+ {id:'grande',n:'Más Grande que el Resultado',s:'Que hablen bien del club, eso es lo que importa.',t:'La primera vez que llegues a 10 de Reputación: +1 Favor y +1 Hinchada Fiel.',o:'Solo se evaluaba al final, cuando el Favor ya no servía.'},
+ {id:'retiro',n:'El Retiro Dorado',s:'Un veterano quiere despedirse ganando el partido más importante del año.',t:'Si ganás el Clásico con un jugador de Físico al máximo en cancha, se vuelve Leyenda: +2 permanente.'},
+ {id:'feliz',n:'Barrio Feliz, Club Feliz',s:'El verdadero objetivo es un Tercer Tiempo legendario.',t:'Al acumular 8 de Reputación generada en Terceros Tiempos: +2 Hinchada Fiel.',o:'Descuento en el próximo fichaje (el mercado ya cerró cuando se cumplía).'},
+ {id:'deudas',n:'Cero Deudas',s:'El dirigente jura que este año cerramos en azul.',t:'Si terminás la Fecha 4 con 6+ dinero sin haber quedado nunca en negativo: +1 Favor y +1 Moral.',o:'Solo se evaluaba al final de la liga.'},
+ {id:'promesa',n:'La Promesa que se Queda',s:'Que no se vaya al equipo grande, que se quede acá toda la vida.',t:'Si llegás al final de la Fecha 5 sin que ningún jugador de tu Plantilla Base haya faltado por Excusa: +2 Moral.',o:'"Sin perder jugadores de la Plantilla Base": la regla dice que nunca se pierden, se cumplía siempre.'},
+];
+
+const CLASICOS = [
+ {id:'vecino',n:'El Vecino de Toda la Vida',s:'Comparten hasta el paradero de bus, pero nunca un buen resultado.',t:'El ganador suma el doble de Reputación por Rivalidad.'},
+ {id:'herencia',n:'La Herencia del Potrero',s:'Dicen que hace años la cancha era de un solo equipo.',t:'El ganador recibe "Dueño del Potrero": +2 Ataque en su próxima Fecha de local.'},
+ {id:'excomp',n:'El Ex Compañero',s:'Jugó cinco años con nosotros y ahora juega con ellos.',t:'Cada gol de un jugador fichado del mercado vale +2 Reputación para su club.',o:'"Si un Libre anota contra su club anterior" (los Libres no tienen club anterior).'},
+ {id:'copa',n:'La Copa de Lata',s:'Hecha con latas del asado. Pesa como si fuera de oro.',t:'El ganador suma +2 Hinchada Fiel, además de la Copa.'},
+ {id:'reconc',n:'El Partido de la Reconciliación',s:'Cada año dicen que esta vez sin peleas. Cada año hay discusión eterna.',t:'Se juega una Ocasión de Gol extra.'},
+];
+
+const CLUBS = [
+ {n:'Atlético Y Bueno Dale',m:'Nadie discute mucho el nombre tampoco.',c:'#2A9D99',lv:[14,15,16],el:true,sh:'AYB'},
+ {n:'Vecinal 1 de Mayo',m:'Fundado un feriado, por eso nadie se acuerda bien la fecha.',c:'#D9577A',lv:[13,14,15],el:true,sh:'V1M'},
+ {n:'Unidos por el Choripán',m:'El verdadero MVP es el asador.',c:'#B5835A',lv:[13,14,15],el:true,sh:'UCH'},
+ {n:'Inter de WhatsApp',m:'Ganamos todos los debates. Los partidos, a veces.',c:'#25A55F',lv:[14,15,16],el:true,sh:'IWA'},
+ {n:'Huracán de Cuarta',m:'Como el nombre, pero con orgullo.',c:'#D9A21B',lv:[14,15,16],el:true,sh:'HDC'},
+ {n:'Ferroviario Sin Vías',m:'El tren se fue, pero el club se quedó.',c:'#6B5CA5',lv:[15,16,17],el:true,sh:'FSV'},
+ {n:'Atlético Tercer Tiempo',m:'El partido es un trámite. Lo que importa viene después.',c:'#7A8B80',lv:[13,14,15],el:false,sh:'ATT'},
+ {n:'Racing Fondo de Olla',m:'Siempre quedamos para el final... de la tabla.',c:'#4E6E8E',lv:[12,13,14],el:false,sh:'RFO'},
+];
+// fixture 0-indexed [local,visita]
+const FIXTURE = [
+ [[0,7],[1,6],[2,5],[3,4]],
+ [[0,6],[7,5],[1,4],[2,3]],
+ [[0,5],[6,4],[7,3],[1,2]],
+ [[0,3],[4,2],[5,1],[6,7]],
+ [[0,4],[5,3],[6,2],[7,1]],
+ [[0,2],[3,1],[4,7],[5,6]],
+ [[0,1],[2,7],[3,6],[4,5]],
+];
+const CLASICO_PAIRS = [[0,3,'Clásico del Chat','Copa del Chat'],[2,4,'Clásico de las Prioridades','Copa de las Prioridades'],[1,5,'Clásico de los Fundadores Confundidos','Copa de los Fundadores']];
+const CLASICO_FECHA = 4;
+
+function mkCard(r,libre){
+  const c={id:r[0],pos:r[1],num:r[2],first:r[3],nick:r[4],last:r[5],val:r[6],fx:r[7],t:r[8],s:r[9],libre};
+  if(libre){c.cm=r[10];c.cf=r[11];c.o=r[12]}else c.o=r[10];
+  c.name=(c.first?c.first+' ':'')+'"'+c.nick+'" '+c.last;
+  c.short=c.first?c.first.replace(/^"Profe" /,'')+' '+c.last.split(' ')[0]:c.nick;
+  return c;
+}
+const CARDS = {};
+BASE_RAW.forEach(r=>CARDS[r[0]]=mkCard(r,false));
+LIBRES_RAW.forEach(r=>CARDS[r[0]]=mkCard(r,true));
+const BYID = a=>Object.fromEntries(a.map(x=>[x.id,x]));
+const EXC=BYID(EXCUSAS),EVT=BYID(EVENTOS),SPO=BYID(SPONSORS),DRA=BYID(DRAMAS),OBJ=BYID(OBJETIVOS),CLA=BYID(CLASICOS);
+
+// ================= MOTOR =================
+// Constantes de calibración (ajustadas por simulación; ver panel Laboratorio)
+const CFG = {
+  VEC_ATK: 2, VEC_DEF: 2,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
+  DEF_BASE: 2,              // "El arco": toda Defensa humana suma este fijo
+  REST_REC: 2, FIS_PEN1: 0, VEC_RAMP: true,              // Físico que recupera quien descansa
+  INCOME: 2,                // cuota social por Fecha
+  GATE: 1,                  // taquilla de local
+  START_MONEY: 5, START_FAV: 2, START_MORAL: 5,
+};
+
+function rng(S){ S.rng=(S.rng+0x6D2B79F5)|0; let t=S.rng; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }
+const d6 = S => 1+Math.floor(rng(S)*6);
+function shuffle(S,a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(rng(S)*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; }
+const pick = (S,a)=>a[Math.floor(rng(S)*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function log(S,txt,cls){ S.log.push({f:S.fecha,t:txt,c:cls||''}); if(S.log.length>900) S.log.splice(0,S.log.length-900); }
+
+// ---------- creación ----------
+function newGame(opts){
+  const S={v:1,rng:(opts.seed>>>0)||((Math.random()*2**31)|0),seed:0,fecha:0,phase:'pre',queue:[],log:[],results:[],
+    rivalry:[0,0,0],rivTrig:[false,false,false],copas:[null,null,null],event:null,market:[],decks:{},clubs:[],privacy:opts.privacy!==false,
+    pending:null,lastView:null,stats:{goals:0,matches:0}};
+  S.seed=S.rng;
+  S.decks.libres=shuffle(S,LIBRES_RAW.map(r=>r[0]));
+  S.decks.events=shuffle(S,EVENTOS.map(x=>x.id));
+  S.decks.exc=shuffle(S,EXCUSAS.map(x=>x.id));
+  S.decks.spo=shuffle(S,SPONSORS.map(x=>x.id));
+  S.decks.dra=shuffle(S,DRAMAS.map(x=>x.id));
+  S.decks.obj=shuffle(S,OBJETIVOS.map(x=>x.id));
+  S.decks.cla=shuffle(S,CLASICOS.map(x=>x.id));
+  // asignación de clubes (opts.seats: [{ctrl,name}] para los 6 elegibles)
+  let seats=opts.seats.slice();
+  if(opts.randomClubs){ const act=seats.filter(s=>s.ctrl!=='vecino'); const order=shuffle(S,[0,1,2,3,4,5]); seats=Array(6).fill(null).map(()=>({ctrl:'vecino',name:''})); act.forEach((s,i)=>seats[order[i]]=s); }
+  CLUBS.forEach((c,i)=>{
+    const st=i<6?seats[i]:{ctrl:'vecino',name:''};
+    S.clubs.push({i,ctrl:st.ctrl,player:st.name||'',squad:[],money:0,favors:0,moral:CFG.START_MORAL,hinchada:0,rep:0,
+      sponsor:null,obj:null,objDone:false,objPublic:false,
+      st:{pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,adj:0},res:[],
+      cur:{},next:{},flags:{everNeg:false,baseExcused:false,ttRepTotal:0,favSpentPrev:false,favSpentNow:false,atkPerm:0,herencia:false,miniLeft:0,bot3:0},
+      lineup:null,dramas:[],lastWinIdx:null});
+  });
+  // plantilla base por sorteo, puesto por puesto, sin repetir
+  const managed=S.clubs.filter(c=>c.ctrl!=='vecino');
+  ['GK','DD','DI','VCO','VCE','VOF','DC','EXT'].forEach(p=>{
+    const pool=shuffle(S,BASE_RAW.filter(r=>r[1]===p).map(r=>r[0]));
+    managed.forEach((c,k)=>c.squad.push(mkSq(pool[k],0)));
+  });
+  managed.forEach(c=>{c.money=CFG.START_MONEY;c.favors=CFG.START_FAV;});
+  log(S,'Arranca la liga. Semilla '+S.seed+'.','big');
+  startPre(S);
+  return S;
+}
+function mkSq(id,f){return {id,fis:FIS_MAX,consec:0,played:0,susp:0,retired:false,legend:false,joined:f,lastPlayed:-9}}
+const managedClubs = S=>S.clubs.filter(c=>c.ctrl!=='vecino');
+const humanClubs = S=>S.clubs.filter(c=>c.ctrl==='human');
+
+// ---------- cola de tareas ----------
+// tarea: {type, ci, ...}. Las de bots se resuelven solas.
+function pushTask(S,t){S.queue.push(t)}
+function runBots(S){
+  let guard=0;
+  while(S.queue.length && guard++<500){
+    const t=S.queue[0], c=t.ci!=null?S.clubs[t.ci]:null;
+    if(c && c.ctrl==='bot'){ BOT[t.type](S,t); S.queue.shift(); continue; }
+    if(t.type==='auto'){ S.queue.shift(); AUTO[t.fn](S,t); continue; }
+    return; // tarea humana o pantalla compartida
+  }
+}
+function completeTask(S){ S.queue.shift(); runBots(S); }
+
+// ---------- pretemporada ----------
+function startPre(S){
+  S.phase='pre'; S.fecha=0;
+  const m=managedClubs(S);
+  S.market=drawLibres(S,Math.max(4,m.length*2));
+  const order=shuffle(S,m.map(c=>c.i));
+  m.forEach(c=>{ c.obj=S.decks.obj.pop(); c.spoChoices=[S.decks.spo.pop(),S.decks.spo.pop()]; });
+  order.forEach(ci=>pushTask(S,{type:'preseason',ci}));
+  order.forEach(ci=>pushTask(S,{type:'market',ci}));
+  pushTask(S,{type:'auto',fn:'endPre'});
+  runBots(S);
+}
+function drawLibres(S,n){ const out=[]; for(let i=0;i<n && S.decks.libres.length;i++) out.push(S.decks.libres.pop()); return out; }
+function returnMarket(S){ S.decks.libres.push(...S.market); shuffle(S,S.decks.libres); S.market=[]; }
+
+function signSponsor(S,c,id,initial){
+  if(c.sponsor && c.sponsor!==id) S.decks.spo.unshift(c.sponsor);
+  c.sponsor=id;
+  if(id==='minimarket'){ c.money+=5; c.flags.miniLeft=3; }
+  if(id==='botilleria') c.flags.bot3=0;
+  log(S,`${CLUBS[c.i].n} firma con ${SPO[id].n}.`);
+}
+
+// ---------- fichajes ----------
+function libreCost(S,c,id){
+  const k=CARDS[id]; let m=k.cm, f=k.cf;
+  if(k.fx==='deolindo' && S.fecha>0 && tablePos(S,c.i)>=4) m=Math.max(0,m-1);
+  return {m,f};
+}
+function canSign(S,c,id){
+  const {m,f}=libreCost(S,c,id);
+  if(c.money<m||c.favors<f) return 'Te falta '+(c.money<m?'dinero':'Favores');
+  if(c.squad.filter(s=>CARDS[s.id].libre && !s.retired).length>=4) return 'Plantel completo (máx. 4 fichados)';
+  return null;
+}
+function signLibre(S,c,id){
+  const {m,f}=libreCost(S,c,id);
+  c.money-=m; c.favors-=f; if(f>0) c.flags.favSpentNow=true;
+  c.squad.push(mkSq(id,S.fecha));
+  S.market=S.market.filter(x=>x!==id);
+  if(CARDS[id].fx==='onesimo') c.next.skipExcuse=true;
+  log(S,`${CLUBS[c.i].n} ficha a ${CARDS[id].name} (${m} dinero${f?` + ${f} Favor`:''}).`,'good');
+}
+
+const AUTO={};
+AUTO.endPre=(S)=>{
+  returnMarket(S);
+  // amistoso: cada club gestionado contra un rival al azar (Vecino), lineup automática
+  managedClubs(S).forEach(c=>{
+    const opp=pick(S,S.clubs.filter(o=>o.ctrl==='vecino'&&o.i!==c.i)) || S.clubs[7];
+    autoLineup(S,c);
+    const r=playMatch(S,c.i,opp.i,{friendly:true});
+    c.money+=1;
+    const won=r.g[0]>r.g[1];
+    if(won) c.moral=clamp(c.moral+1,0,10);
+    log(S,`Amistoso: ${CLUBS[c.i].n} ${r.g[0]}-${r.g[1]} ${CLUBS[opp.i].n}. +1 dinero${won?', +1 Moral':''}.`);
+    c.lineup=null;
+  });
+  S.lastView={type:'pre'};
+  startFecha(S,1);
+};
+
+// ---------- Fecha ----------
+function startFecha(S,f){
+  S.fecha=f; S.phase='f1'; S.event=null;
+  log(S,`— Fecha ${f}${f===CLASICO_FECHA?' · Fecha de los Clásicos':''} —`,'big');
+  managedClubs(S).forEach(c=>{
+    c.cur=c.next; c.next={}; c.lineup=null; c.excuse=null;
+    c.flags.favSpentPrev=c.flags.favSpentNow; c.flags.favSpentNow=false;
+    c.squad.forEach(s=>{ if(s.susp>0){s.suspNow=true;s.susp--;} else s.suspNow=false; });
+    if(c.sponsor==='panaderia' && c.res.length && c.res[c.res.length-1]==='L'){ c.moral=clamp(c.moral+1,0,10); }
+    if(c.sponsor==='parroquia' && c.res.slice(-2).join('')==='LL'){ c.moral=clamp(c.moral+1,0,10); }
+    if(f===CLASICO_FECHA && ['barberia','parroquia'].includes(c.sponsor)){ c.moral=clamp(c.moral+2,0,10); log(S,`${CLUBS[c.i].n}: +2 Moral por ${SPO[c.sponsor].n}.`); }
+    if(c.cur.out) c.cur.out.forEach(id=>{ const s=c.squad.find(x=>x.id===id); if(s) s.dramaOut=true; });
+  });
+  managedClubs(S).forEach(c=>{ pushTask(S,{type:'lineup',ci:c.i}); pushTask(S,{type:'excuse',ci:c.i}); });
+  pushTask(S,{type:'auto',fn:'playFecha'});
+  runBots(S);
+}
+function available(S,c,s){ return !s.retired && !s.suspNow && !s.dramaOut && !(c.excuse&&c.excuse.out&&c.excuse.sid===s.id); }
+
+AUTO.playFecha=(S)=>{
+  S.event=S.decks.events.pop(); if(!S.decks.events.length) S.decks.events=shuffle(S,EVENTOS.map(x=>x.id).filter(x=>x!==S.event));
+  log(S,`Evento: ${EVT[S.event].n}. ${EVT[S.event].t}`,'evt');
+  if(S.event==='cumple') managedClubs(S).forEach(c=>c.moral=clamp(c.moral+1,0,10));
+  const matches=FIXTURE[S.fecha-1];
+  // primero Vecino vs Vecino, después el resto
+  const order=matches.slice().sort((a,b)=>(isMgd(S,a)?1:0)-(isMgd(S,b)?1:0));
+  const res=[];
+  order.forEach(([h,a])=>res.push(playMatch(S,h,a,{})));
+  S.results[S.fecha]=matches.map(([h,a])=>res.find(r=>r.h===h&&r.a===a));
+  S.phase='matches';
+  S.lastView={type:'fecha',f:S.fecha};
+  pushTask(S,{type:'show',what:'fecha'});
+};
+const isMgd=(S,[h,a])=>S.clubs[h].ctrl!=='vecino'||S.clubs[a].ctrl!=='vecino';
+
+// ---------- cálculo de un lado ----------
+function vecLevel(S,ci){ const f=S.fecha; const lv=CLUBS[ci].lv; if(!CFG.VEC_RAMP) return lv[0]; return f>=6?lv[2]:f>=4?lv[1]:lv[0]; }
+function moralMod(m){ return m<=1?-2:m<=3?-1:m<=6?0:m<=8?1:2; }
+function homeMod(h){ return h>=6?2:h>=3?1:0; }
+
+function sideOf(S,ci,home,oppCi,ctx){
+  const c=S.clubs[ci], ev=ctx.friendly?null:S.event;
+  const side={ci,home,vec:c.ctrl==='vecino',players:[],atk:0,def:0,bA:[],bD:[],rerolls:0,best2:0,wilson:false,fisTot:0,oc:[]};
+  const isClasico=ctx.clasico!=null;
+  const evAllowed = !ctx.friendly;
+  if(side.vec){
+    const lv=vecLevel(S,ci);
+    side.atk=lv+CFG.VEC_ATK; side.def=lv+CFG.VEC_DEF;
+    side.bA.push([`Nivel de Equipo ${lv} + ${CFG.VEC_ATK}`,side.atk]); side.bD.push([`Nivel de Equipo ${lv} + ${CFG.VEC_DEF}`,side.def]);
+    side.fisTot=14;
+  } else {
+    const L=c.lineup;
+    const opp=S.clubs[oppCi];
+    const lined=[...L.D.map(id=>[id,'D']),...L.A.map(id=>[id,'A'])]; if(L.gk) lined.unshift([L.gk,'G']);
+    const cards=lined.map(([id])=>CARDS[id]);
+    const nDel=cards.filter(isDel).length, hasVol=cards.some(isVol);
+    side.wilson = cards.some(k=>k.fx==='wilson');
+    const hasLibreDel = c.squad.some(s=>!s.retired && CARDS[s.id].libre && CARDS[s.id].pos==='DEL');
+    const oppLibreDel = !opp || opp.ctrl==='vecino' ? false : opp.squad.some(s=>!s.retired&&CARDS[s.id].libre&&CARDS[s.id].pos==='DEL');
+    lined.forEach(([id,slot])=>{
+      const s=c.squad.find(x=>x.id===id), k=CARDS[id];
+      const line = slot==='G'?'D':slot;
+      let v=k.val, notes=[];
+      if(k.fx==='cirilo' && s.played>0){ v=3; notes.push('ya jugó su gran partido'); }
+      if(k.fx==='brandon' && s.consec>0){ v-=2*s.consec; notes.push(`−${2*s.consec} por ${s.consec} Fecha(s) seguidas`); }
+      if(k.fx==='deividson' && s.lastPlayed===S.fecha-1){ v-=2; notes.push('−2 jugó la Fecha anterior'); }
+      if(k.fx==='eleuterio'){ v-=1; notes.push('−1 grita más que juega'); }
+      // fuera de puesto
+      const nat=POS[k.pos].line;
+      if(slot==='G' && !isGK(k)){ v=Math.floor(v/2); notes.push('arquero improvisado: mitad'); }
+      else if(slot!=='G' && isGK(k)){ v=Math.floor(v/2); notes.push('arquero de jugador: mitad'); }
+      else if(nat!=='B' && nat!==line){ v=Math.floor(v/2); notes.push('fuera de puesto: mitad'); }
+      // rasgos propios
+      const fx=k.fx;
+      if(fx==='homeSelf2'&&home){v+=2;notes.push('+2 local')}
+      if(fx==='homeSelf1'&&home){v+=1;notes.push('+1 local')}
+      if(fx==='pulpo'){v+=2;notes.push('+2 Pulpo')}
+      if(fx==='lostPrev2'&&c.res.length&&c.res[c.res.length-1]==='L'){v+=2;notes.push('+2 perdió la anterior')}
+      if((fx==='selfD2A1'||fx==='selfD2A2')&&line==='D'){v+=2;notes.push('+2 marca')}
+      if(fx==='wilfredo'){v+=2;notes.push('+2 (−1 club en Ocasión 1)')}
+      if(fx==='volSelf1'&&hasVol){v+=1;notes.push('+1 con Volante')}
+      if(fx==='bautista'&&oppLibreDel){v+=1;notes.push('+1 rival con 9 fichado')}
+      if(fx==='twoDel'&&nDel>=2){v+=1;notes.push('+1 dos Delanteros')}
+      if(fx==='ubaldo'&&!c.flags.favSpentPrev){v+=1;notes.push('+1 sin Favores')}
+      if(fx==='clasico2'&&isClasico){v+=2;notes.push('+2 Clásico')}
+      if(fx==='clasicoD1'&&isClasico){v+=1;notes.push('+1 Clásico')}
+      if(fx==='anderson'&&!hasLibreDel){v+=2;notes.push('+2 único 9')}
+      if(fx==='odd1'&&S.fecha%2===1){v+=1;notes.push('+1 Fecha impar')}
+      if(fx==='deonisio'&&nDel>1){v=Math.floor(v/2);notes.push('mitad: no es el único 9')}
+      if(fx==='baltazar'){v+=1;notes.push('+1')}
+      if(fx==='sponsor1'&&c.sponsor){v+=1;notes.push('+1 con Auspiciador')}
+      if(fx==='rain1'&&ev==='lluvia'){v+=1;notes.push('+1 lluvia')}
+      if(fx==='fortunato'&&ev==='lluvia'){v+=1;notes.push('+1 lluvia')}
+      if(fx==='ananias'&&ev==='fisca'){v=0;notes.push('Fiscalización: no juega')}
+      if(s.legend){v+=2;notes.push('+2 Leyenda')}
+      // físico
+      if(s.fis===1&&CFG.FIS_PEN1){v-=CFG.FIS_PEN1;notes.push('−'+CFG.FIS_PEN1+' Físico')} else if(s.fis<=0){v-=2;notes.push('−2 sin Físico')}
+      // excusa / drama
+      const ex=c.excuse&&c.excuse.sid===id?c.excuse:null;
+      if(ex&&ex.minus){v-=1;notes.push('−1 Excusa')}
+      if(c.cur.minus2===id){v-=2;notes.push('−2 Drama')}
+      if(c.cur.gkMinus2&&slot==='G'){v-=2;notes.push('−2 blooper viral')}
+      v=Math.max(0,v);
+      let avail=[1,1,1,1,1,1,1];
+      if(ex&&ex.half){avail=[0,0,1,1,1,1,1];notes.push('solo 2.º tiempo (Excusa)')}
+      if(fx==='marco'&&!ctx.friendly){ const r=d6(S); if(r<=2){avail=[0,0,1,1,1,1,1];notes.push(`llegó tarde (dado ${r})`)} }
+      if(fx==='reroll') side.rerolls++;
+      if(fx==='best2') side.best2++;
+      side.fisTot+=s.fis;
+      side.players.push({id,line,v,notes,avail,fx,libre:k.libre});
+    });
+    side.atk=0; side.def=0;
+    side.players.forEach(p=>{ if(p.line==='A'){side.atk+=p.v;side.bA.push([CARDS[p.id].short+(p.notes.length?' ('+p.notes.join(', ')+')':''),p.v])} else {side.def+=p.v;side.bD.push([CARDS[p.id].short+(p.notes.length?' ('+p.notes.join(', ')+')':''),p.v])} });
+    const addA=(l,v)=>{if(v){side.atk+=v;side.bA.push([l,v])}}, addD=(l,v)=>{if(v){side.def+=v;side.bD.push([l,v])}};
+    addD('El arco (base)',CFG.DEF_BASE);
+    const mm=moralMod(c.moral); addA(`Moral ${c.moral}`,mm); addD(`Moral ${c.moral}`,mm);
+    if(home) addA(`Hinchada Fiel ${c.hinchada} (local)`,homeMod(c.hinchada));
+    cards.forEach(k=>{
+      if(k.fx==='selfD2A1') addA(k.short+' (marca)',-1);
+      if(k.fx==='selfD2A2') addA(k.short+' (marca)',-2);
+      if(k.fx==='clubDef1') addD(k.short,1);
+      if(k.fx==='awayDef1'&&!home) addD(k.short+' (visita)',1);
+    });
+    if(c.cur.atk) addA('Drama: técnico',c.cur.atk);
+    if(c.cur.def) addD('Drama: técnico',c.cur.def);
+    if(c.flags.atkPerm) addA('Sueño del Ascenso',c.flags.atkPerm);
+    if(c.flags.herencia&&home){ addA('Dueño del Potrero',2); c.flags.herenciaUsed=true; }
+    if(c.cur.tactica && !ctx.friendly){ const nD=lined.filter(([_,sl])=>sl!=='A').length; if(nD<4){ c.moral=clamp(c.moral-1,0,10); c.cur.tacticaFail=true; } }
+  }
+  // evento
+  if(evAllowed && ev){
+    const shield = side.wilson;
+    const neg=(l,fnA,fnD)=>{ if(shield){ side.bA.push([l+' (anulado por Wilson)',0]); return;} if(fnA){side.atk+=fnA;side.bA.push([l,fnA])} if(fnD){side.def+=fnD;side.bD.push([l,fnD])} };
+    if(ev==='luz') neg('Evento: Corte de Luz',-2,0);
+    if(ev==='lluvia') neg('Evento: Lluvia',-2,0);
+    if(ev==='balon') neg('Evento: Balón',0,-2);
+    if(ev==='cumple') neg('Evento: torta',0,-1);
+    if(ev==='kermes') neg('Evento: kermés',-1,0);
+    if(ev==='cancha'&&!home) neg('Evento: cancha lejana (visita)',-1,0);
+  }
+  return side;
+}
+
+// ---------- partido ----------
+function playMatch(S,h,a,ctx){
+  const cl = !ctx.friendly && S.fecha===CLASICO_FECHA ? CLASICO_PAIRS.findIndex(p=>(p[0]===h&&p[1]===a)||(p[0]===a&&p[1]===h)) : -1;
+  if(cl>=0) ctx.clasico=cl;
+  let clCard=null;
+  if(cl>=0){ clCard=S.decks.cla.pop(); if(!S.decks.cla.length) S.decks.cla=shuffle(S,CLASICOS.map(x=>x.id)); }
+  const A=sideOf(S,h,true,a,ctx), B=sideOf(S,a,false,h,ctx);
+  const ev=ctx.friendly?null:S.event;
+  if(ev==='lluvia'){ if(A.fisTot>B.fisTot){A.def+=2;A.bD.push(['Lluvia: más Físico',2])} else if(B.fisTot>A.fisTot){B.def+=2;B.bD.push(['Lluvia: más Físico',2])} }
+  let n=4; if(ev==='largo') n=6; if(clCard==='reconc') n+=1;
+  // árbitro: jugador al azar fuera de una ocasión
+  const arb=[null,null];
+  if(ev==='arbitro') [A,B].forEach((sd,k)=>{ const c=S.clubs[sd.ci]; if(sd.vec||sd.wilson) return; if(sd.players.some(p=>p.fx==='wences')) return; if(c.sponsor==='taxi') return;
+    const p=pick(S,sd.players); arb[k]={id:p.id,o:Math.floor(rng(S)*n)}; });
+  const g=[0,0], oc=[], scorers=[[],[]];
+  const used=[{r:0,b:0},{r:0,b:0}];
+  for(let o=0;o<n;o++){
+    const row={o,lines:[]};
+    const before=g.slice();
+    [[A,B,0],[B,A,1]].forEach(([X,Y,k])=>{
+      let atk=X.atk, def=Y.def, mods=[];
+      const half=o<2;
+      const ocAdj=(sd,line,kk)=>{ let adj=0; sd.players.forEach(p=>{ if(p.line!==line) return;
+        const av=p.avail[Math.min(o,6)]; if(!av){adj-=p.v; mods.push(`${CARDS[p.id].short} no está (−${p.v})`);}
+        else if(arb[kk]&&arb[kk].id===p.id&&arb[kk].o===o){adj-=p.v;mods.push(`Árbitro saca a ${CARDS[p.id].short} (−${p.v})`);}
+        else if(line==='A'){
+          if(p.fx==='bernabe'){const d=o===n-1?-1:1;adj+=d;mods.push(`Bernabé ${d>0?'+':''}${d}`)}
+          if(p.fx==='diesel'){const d=half?-1:1;adj+=d;mods.push(`Diesel ${d>0?'+':''}${d}`)}
+          if(p.fx==='losing1'&&before[kk]<before[1-kk]){adj+=1;mods.push('Nicanor +1 (perdiendo)')}
+          if(p.fx==='tied2h'&&!half&&before[0]===before[1]){adj+=1;mods.push('Encarnación +1 (empate)')}
+        } });
+        if(line==='D' && o===0 && sd.players.some(p=>p.fx==='wilfredo'&&p.line==='D')){adj-=1;mods.push('Wilfredo entrando en calor (−1)')}
+        return adj; };
+      if(!X.vec) atk+=ocAdj(X,'A',k);
+      if(!Y.vec) def+=ocAdj(Y,'D',1-k);
+      let rA=d6(S), rD=d6(S), note='';
+      if(atk+rA<=def+rD){
+        const u=used[k];
+        if(X.rerolls>u.r && !X.vec){ u.r++; const nr=d6(S); note=`repite ${rA}→${nr}`; rA=nr; }
+        else if(X.best2>u.b && !X.vec){ u.b++; const nr=d6(S); note=`segundo dado ${nr}`; rA=Math.max(rA,nr); }
+      }
+      let goal=atk+rA>def+rD, anul=false;
+      if(goal && ev==='red'){ const c=d6(S); if(c===1){goal=false;anul=true;note+=(note?', ':'')+'red rota: gol anulado'} }
+      let scorer=null;
+      if(goal){ g[k]++; scorer=pickScorer(S,X,o); if(scorer) scorers[k].push(scorer); }
+      row.lines.push({k,atk,def,rA,rD,goal,anul,note,mods,scorer});
+    });
+    oc.push(row);
+  }
+  const r={h,a,g,oc,n,ev,clasico:cl,clCard,friendly:!!ctx.friendly,sides:[slim(A),slim(B)],scorers,post:[]};
+  if(!ctx.friendly) applyResult(S,r,A,B);
+  return r;
+}
+function slim(sd){return {ci:sd.ci,vec:sd.vec,atk:sd.atk,def:sd.def,bA:sd.bA,bD:sd.bD,players:sd.players.map(p=>({id:p.id,line:p.line,v:p.v}))}}
+function pickScorer(S,X,o){
+  if(X.vec) return null;
+  const c=X.players.filter(p=>p.line==='A'&&p.v>0&&p.avail[Math.min(o,6)]);
+  const pool=c.length?c:X.players.filter(p=>p.v>0);
+  const tot=pool.reduce((s,p)=>s+p.v,0); let x=rng(S)*tot;
+  for(const p of pool){ x-=p.v; if(x<=0) return p.id; } return pool.length?pool[0].id:null;
+}
+
+function applyResult(S,r,A,B){
+  const [gh,ga]=r.g, H=S.clubs[r.h], V=S.clubs[r.a];
+  S.stats.goals+=gh+ga; S.stats.matches++;
+  const upd=(c,gf,gc)=>{ c.st.pj++; c.st.gf+=gf; c.st.gc+=gc; if(gf>gc){c.st.pg++;c.res.push('W')} else if(gf===gc){c.st.pe++;c.res.push('D')} else {c.st.pp++;c.res.push('L')} };
+  upd(H,gh,ga); upd(V,ga,gh);
+  const post=r.post;
+  [[H,gh,ga,A,true],[V,ga,gh,B,false]].forEach(([c,gf,gc,sd,home])=>{
+    if(c.ctrl==='vecino') return;
+    const nm=CLUBS[c.i].n, w=gf>gc, l=gf<gc;
+    if(w){c.moral=clamp(c.moral+1,0,10); c.lastWinIdx=c.res.length-1;}
+    if(l) c.moral=clamp(c.moral-1,0,10);
+    if(w&&home){ c.hinchada=clamp(c.hinchada+1,0,10); post.push(`${nm}: +1 Hinchada Fiel (ganó de local)`); }
+    if(w&&home&&c.sponsor==='vete'){ c.hinchada=clamp(c.hinchada+1,0,10); post.push(`${nm}: +1 Hinchada (Veterinaria)`); }
+    const ids=sd.players.map(p=>p.id), has=fx=>sd.players.some(p=>p.fx===fx);
+    if(gf===gc&&has('drawMoral')){c.moral=clamp(c.moral+1,0,10);post.push(`${nm}: +1 Moral (Gumercindo, empate)`)}
+    if(l&&has('abelardo')){c.moral=clamp(c.moral+1,0,10);post.push(`${nm}: +1 Moral (Abelardo levanta al grupo)`)}
+    if(has('eleuterio')){c.moral=clamp(c.moral+1,0,10)}
+    if(S.event==='reportaje'){ const d=w?3:l?-1:0; if(d){c.rep=clamp(c.rep+d,0,30);post.push(`${nm}: ${d>0?'+':''}${d} Reputación (reportaje)`)} }
+    if(c.cur.bets){ const d=w?2:l?-2:0; if(d){c.rep=clamp(c.rep+d,0,30);post.push(`${nm}: ${d>0?'+':''}${d} Reputación (apuestas)`)} }
+    if(c.cur.tacticaFail) post.push(`${nm}: −1 Moral (no alineó 4 atrás, el grupo se dividió)`);
+    if(c.flags.herenciaUsed){c.flags.herencia=false;c.flags.herenciaUsed=false}
+    // banco enojado
+    c.squad.forEach(s=>{ const k=CARDS[s.id]; if((k.fx==='bench1'||k.fx==='bench2') && available(S,c,s) && !ids.includes(s.id)){ const d=k.fx==='bench1'?1:2; c.moral=clamp(c.moral-d,0,10); post.push(`${nm}: −${d} Moral (${k.short} se enojó en el banco)`);} });
+    // sanciones
+    let protect=has('facundo');
+    sd.players.forEach(p=>{ const k=CARDS[p.id]; if(k.fx==='sancion'||k.fx==='fortunato'){ const roll=d6(S); if(roll===1){ if(protect){protect=false;post.push(`${nm}: Facundo evita la sanción de ${k.short}`)} else { c.squad.find(s=>s.id===p.id).susp=1; post.push(`${nm}: ${k.short} sancionado, se pierde la próxima Fecha`);} } } });
+    // jugadores que jugaron
+    c.squad.forEach(s=>{ if(ids.includes(s.id)){ s.played++; s.lastPlayedNow=true; if(CARDS[s.id].fx==='zorro'){s.retired=true;post.push(`${nm}: El Zorro jugó su partido y se retiró (esta vez sí).`)} } else s.lastPlayedNow=false; });
+    // excomp
+    if(r.clCard==='excomp'){ const k=r.h===c.i?0:1; const n=r.scorers[k].filter(id=>CARDS[id].libre).length; if(n){c.rep=clamp(c.rep+2*n,0,30);post.push(`${nm}: +${2*n} Reputación (goles de fichados en el Clásico)`)} }
+  });
+  // Clásico
+  if(r.clasico>=0){
+    const p=CLASICO_PAIRS[r.clasico], riv=S.rivalry[r.clasico];
+    if(gh!==ga){
+      const win=gh>ga?H:V;
+      let bonus=Math.min(5,riv); if(r.clCard==='vecino') bonus*=2;
+      if(win.ctrl!=='vecino'){ win.rep=clamp(win.rep+bonus,0,30); }
+      S.copas[r.clasico]=win.i;
+      post.push(`${CLUBS[win.i].n} gana el ${p[2]}: se queda con la ${p[3]}${bonus&&win.ctrl!=='vecino'?` y +${bonus} Reputación por Rivalidad`:''}.`);
+      if(r.clCard==='herencia'&&win.ctrl!=='vecino'){win.flags.herencia=true;post.push(`${CLUBS[win.i].n} es Dueño del Potrero: +2 Ataque en su próxima Fecha de local.`)}
+      if(r.clCard==='copa'&&win.ctrl!=='vecino'){win.hinchada=clamp(win.hinchada+2,0,10);post.push(`${CLUBS[win.i].n}: +2 Hinchada Fiel (Copa de Lata).`)}
+      // retiro dorado
+      if(win.ctrl!=='vecino' && win.obj==='retiro' && !win.objDone){
+        const sd=win.i===r.h?A:B; const cand=sd.players.map(p=>win.squad.find(s=>s.id===p.id)).filter(s=>s&&s.fisPre===FIS_MAX);
+        if(cand.length){ const best=cand.sort((x,y)=>CARDS[y.id].val-CARDS[x.id].val)[0]; best.legend=true; completeObj(S,win,`${CARDS[best.id].short} es Leyenda: +2 permanente`); }
+      }
+    } else post.push(`${p[2]} empatado: la ${p[3]} no cambia de manos.`);
+    S.rivalry[r.clasico]=0; S.rivTrig[r.clasico]=false;
+  }
+  post.forEach(t=>log(S,t));
+}
+
+// ---------- Fase 2 ----------
+function startPhase2(S){
+  S.phase='f2';
+  // Rivalidad: +1 en la previa del Clásico
+  if(S.fecha===CLASICO_FECHA-1){ S.rivalry=S.rivalry.map(x=>Math.min(5,x+1)); log(S,'La previa calienta los Clásicos: +1 a cada marcador de Rivalidad.','evt'); }
+  CLASICO_PAIRS.forEach((p,k)=>{ if(S.fecha<CLASICO_FECHA && S.rivalry[k]>=3 && !S.rivTrig[k]){ S.rivTrig[k]=true; [p[0],p[1]].forEach(ci=>{ if(S.clubs[ci].ctrl!=='vecino') S.clubs[ci].dramas.push(drawDrama(S)); }); log(S,`La Rivalidad del ${p[2]} llegó a 3: Drama extra para ambos.`,'evt'); } });
+  managedClubs(S).forEach(c=>{
+    const lost=c.res[c.res.length-1]==='L';
+    const r=d6(S); if(r<=(lost?3:2)) c.dramas.push(drawDrama(S));
+  });
+  const mgd=managedClubs(S);
+  mgd.forEach(c=>pushTask(S,{type:'tt',ci:c.i}));
+  if(S.fecha<=3){
+    S.market=drawLibres(S,4);
+    const order=mgd.map(c=>c.i).sort((x,y)=>tablePos(S,y)-tablePos(S,x)); // peor ubicado primero
+    order.forEach(ci=>pushTask(S,{type:'market',ci}));
+  }
+  pushTask(S,{type:'auto',fn:'endFecha'});
+  runBots(S);
+}
+function drawDrama(S){ if(!S.decks.dra.length) S.decks.dra=shuffle(S,DRAMAS.map(x=>x.id)); return S.decks.dra.pop(); }
+
+// opciones de cada Drama: [{l,ok(c),go(c)}]; sin opciones = automático
+function dramaOptions(S,c,id){
+  const nm=CLUBS[c.i].n, L=t=>log(S,`${nm}: ${t}`);
+  const mor=d=>c.moral=clamp(c.moral+d,0,10), rep=d=>c.rep=clamp(c.rep+d,0,30);
+  const rivK=CLASICO_PAIRS.findIndex(p=>p[0]===c.i||p[1]===c.i);
+  const bestAtk=()=>{ const a=c.squad.filter(s=>!s.retired&&POS[CARDS[s.id].pos].line!=='D').sort((x,y)=>CARDS[y.id].val-CARDS[x.id].val); return a[0]; };
+  switch(id){
+    case 'chat': return [{l:'Pagar 1 dinero',ok:()=>c.money>=1,go:()=>{c.money--;L('paga 1 dinero y calma el chat')}},{l:'Aceptar −1 Moral',go:()=>{mor(-1);L('−1 Moral por la pelea en el chat')}}];
+    case 'rumor': { const s=bestAtk(); return [{l:`Gastar 1 Moral para convencer a ${CARDS[s.id].short}`,ok:()=>c.moral>=1,go:()=>{mor(-1);L(`convence a ${CARDS[s.id].short} de quedarse (−1 Moral)`)}},{l:`${CARDS[s.id].short} no juega la próxima Fecha`,go:()=>{(c.next.out=c.next.out||[]).push(s.id);L(`${CARDS[s.id].short} se va a probar al rival: no juega la próxima Fecha`)}}]; }
+    case 'tecnico': return [{l:'Dar 1 Reputación',ok:()=>c.rep>=1,go:()=>{rep(-1);L('calma al técnico con 1 Reputación')}},{l:'Dar 1 Favor',ok:()=>c.favors>=1,go:()=>{c.favors--;c.flags.favSpentNow=true;L('calma al técnico con 1 Favor')}},{l:'Aceptar −2 Ataque y −2 Defensa la próxima Fecha',go:()=>{c.next.atk=(c.next.atk||0)-2;c.next.def=(c.next.def||0)-2;L('el técnico juega a desgano: −2/−2 la próxima Fecha')}}];
+    case 'barras': return [{l:'Aceptar',auto:true,go:()=>{rep(-1); if(rivK>=0){S.rivalry[rivK]=Math.min(5,S.rivalry[rivK]+1)} L('−1 Reputación y +1 Rivalidad por las barras')}}];
+    case 'rifa': return [{l:'Pagar 3 dinero',ok:()=>c.money>=3,go:()=>{c.money-=3;L('repone la plata de la rifa (−3 dinero)')}},{l:'Perder 2 Reputación',go:()=>{rep(-2);L('−2 Reputación por el escándalo de la rifa')}}];
+    case 'filtro': return [{l:'Aceptar',auto:true,go:()=>{c.objPublic=true;L(`se filtró su Objetivo Secreto: «${OBJ[c.obj].n}»`)}}];
+    case 'brazalete': return [{l:'Gastar 1 Favor',ok:()=>c.favors>=1,go:()=>{c.favors--;c.flags.favSpentNow=true;L('resuelve la disputa por el brazalete con 1 Favor')}},{l:'Aceptar −2 Moral',go:()=>{mor(-2);L('−2 Moral por la disputa del brazalete')}}];
+    case 'enterado': if(!c.sponsor) return [{l:'Aceptar',auto:true,go:()=>L('el auspiciador se enteró... pero no tenía auspiciador')}];
+      return [{l:'Pagar 2 dinero de compensación',ok:()=>c.money>=2,go:()=>{c.money-=2;L('paga 2 dinero y mantiene a su Auspiciador')}},{l:`Perder a ${SPO[c.sponsor].n}`,go:()=>{L(`pierde a ${SPO[c.sponsor].n}`);S.decks.spo.unshift(c.sponsor);c.sponsor=null}}];
+    case 'viral': return [{l:'Aceptar',auto:true,go:()=>{rep(2);c.next.gkMinus2=true;L('+2 Reputación por el video viral; el arquero jugará con −2')}}];
+    case 'denuncia': return [{l:'Tirar el dado',auto:true,go:()=>{const r=d6(S); if(r===1&&c.lastWinIdx!=null){c.st.adj-=3;c.lastWinIdx=null;L(`denuncia confirmada (dado 1): pierde 3 puntos`)} else L(`denuncia desestimada (dado ${r})`)}}];
+    case 'audio': return [{l:'Aceptar',auto:true,go:()=>{mor(-1);const r=d6(S); if(r>=4&&rivK>=0){S.rivalry[rivK]=Math.min(5,S.rivalry[rivK]+1);L(`−1 Moral; el audio hablaba del rival (dado ${r}): +1 Rivalidad`)} else L(`−1 Moral por el audio filtrado (dado ${r})`)}}];
+    case 'camiseta': return [{l:'Vender: +3 dinero, −2 Moral',go:()=>{c.money+=3;mor(-2);L('vende la camiseta del diez: +3 dinero, −2 Moral')}},{l:'No vender',go:()=>L('no vende la camiseta del diez')}];
+    case 'cancha': return [{l:'Aceptar',auto:true,go:()=>{const a=c.squad.filter(s=>!s.retired);const s=pick(S,a);s.fis=Math.max(0,s.fis-1);L(`${CARDS[s.id].short} pierde 1 de Físico por la discusión`)}}];
+    case 'hijo': return [{l:'Pagar 2 dinero',ok:()=>c.money>=2,go:()=>{c.money-=2;L('paga 2 dinero para que el hijo del dirigente no juegue')}},{l:'Un titular juega con −2 la próxima Fecha',go:()=>{c.next.minus2Random=true;L('el hijo del dirigente se suma: un titular jugará con −2')}}];
+    case 'apuestas': return [{l:'Aceptar',auto:true,go:()=>{c.next.bets=true;L('hay apuestas: la próxima Fecha ±2 Reputación según el resultado')}}];
+    case 'tactica': return [{l:'Aceptar',auto:true,go:()=>{c.next.tactica=true;L('la próxima Fecha debe alinear 4+ atrás o pierde 1 Moral')}}];
+  }
+  return [];
+}
+
+function ttPreview(S,c,invest){
+  let r=invest, parts=[[`Inversión`,invest]];
+  const add=(l,v)=>{if(v){r+=v;parts.push([l,v])}};
+  if(c.sponsor==='almacen') add('Almacén El Gol',1);
+  if(c.sponsor==='botilleria') add('Botillería',2);
+  if(c.lineup && c.lineup.played && c.lineup.played.some(id=>CARDS[id].fx==='genaro')) add('Genaro cuenta la jugada',1);
+  if(S.event==='parlante') add('Se cortó el parlante',-1);
+  if(S.event==='kermes') add('Kermés',2);
+  if(c.cur.ttMinus) add('Junta familiar',-1);
+  r=Math.max(0,r);
+  return {rep:r,parts,hinch:invest>=3?1:0};
+}
+function favorCost(c){ return c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='hermo')?2:3; }
+function sponsorCost(c){ return c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='bryan')?0:1; }
+function sponsorBreakRep(c){ return c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='kevin')?0:1; }
+
+// aplica las decisiones del Tercer Tiempo. d={invest, fisca:'pay'|'rep', drama:[optIdx...], spo:id|null, favor:bool}
+function applyTT(S,c,d){
+  const nm=CLUBS[c.i].n;
+  if(S.event==='fisca'){
+    const cost=c.sponsor==='ferre'?2:3;
+    if(d.fisca==='pay'&&c.money>=cost){c.money-=cost;log(S,`${nm} paga la Fiscalización (−${cost} dinero).`)} else {c.rep=clamp(c.rep-2,0,30);log(S,`${nm} no paga la Fiscalización: −2 Reputación.`)}
+  }
+  const inv=clamp(d.invest||0,0,Math.min(3,Math.max(0,c.money)));
+  const p=ttPreview(S,c,inv);
+  c.money-=inv; c.rep=clamp(c.rep+p.rep,0,30); c.flags.ttRepTotal+=p.rep;
+  if(p.hinch) c.hinchada=clamp(c.hinchada+1,0,10);
+  log(S,`${nm} invierte ${inv} en el Tercer Tiempo: +${p.rep} Reputación${p.hinch?', +1 Hinchada Fiel':''}.`);
+  c.dramas.forEach((id,k)=>{ const ops=dramaOptions(S,c,id); let ch=d.drama&&d.drama[k]!=null?d.drama[k]:ops.length-1; if(ops[ch]&&ops[ch].ok&&!ops[ch].ok()) ch=ops.findIndex(o=>!o.ok||o.ok()); (ops[ch]||ops[ops.length-1]).go(); });
+  c.dramas=[];
+  if(d.spo){ const cost=sponsorCost(c), br=c.sponsor?sponsorBreakRep(c):0; if(c.money>=cost){ c.money-=cost; c.rep=clamp(c.rep-br,0,30); signSponsor(S,c,d.spo); } }
+  if(c.spoOffer){ c.spoOffer.forEach(x=>{ if(x!==d.spo) S.decks.spo.unshift(x) }); c.spoOffer=null; }
+  if(d.favor){ const fc=favorCost(c); if(c.rep>=fc){ c.rep-=fc; c.favors++; log(S,`${nm} pide un Favor al barrio (−${fc} Reputación).`); } }
+}
+
+AUTO.endFecha=(S)=>{
+  returnMarket(S);
+  managedClubs(S).forEach(c=>{
+    const nm=CLUBS[c.i].n;
+    const home=FIXTURE[S.fecha-1].some(m=>m[0]===c.i);
+    const won=c.res[c.res.length-1]==='W';
+    let inc=CFG.INCOME+(home?CFG.GATE:0), parts=[`cuota ${CFG.INCOME}`]; if(home) parts.push(`taquilla ${CFG.GATE}`);
+    const sp=c.sponsor;
+    if(sp==='beto'){inc+=3;parts.push('Don Beto 3')}
+    if(sp==='ferre'||sp==='taller'||sp==='taxi'){inc+=1;parts.push(SPO[sp].n.split(' ')[0]+' 1')}
+    if(sp==='foodtruck'&&home){inc+=2;parts.push('Food Truck 2')}
+    if(sp==='heladeria'&&won){inc+=3;parts.push('Heladería 3')}
+    if(sp==='minimarket'&&c.flags.miniLeft>0){inc-=1;c.flags.miniLeft--;parts.push('Minimarket −1')}
+    if(sp==='botilleria'){c.flags.bot3++; if(c.flags.bot3%3===0){inc-=1;parts.push('Botillería −1')}}
+    if(c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='pulpo')){inc-=1;parts.push('Pulpo −1')}
+    if(c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='custodio') && !c.cur.custodioUsed){inc+=2;parts.push('Custodio 2')}
+    c.money+=inc;
+    if(sp==='fm') c.rep=clamp(c.rep+1,0,30);
+    if(sp==='cyber'&&won&&home) c.rep=clamp(c.rep+2,0,30);
+    if(sp==='beto'&&c.res.slice(-2).join('')==='LL'){ c.rep=clamp(c.rep-1,0,30); log(S,`${nm}: −1 Reputación, Don Beto está molesto.`); }
+    log(S,`${nm} cobra ${inc>=0?'+':''}${inc} dinero (${parts.join(', ')}).`);
+    // físico
+    const played=new Set(c.lineup?c.lineup.played:[]);
+    let tired=null;
+    c.squad.forEach(s=>{ if(s.retired) return; const k=CARDS[s.id];
+      if(played.has(s.id)){
+        let loss=1; if(k.fx==='ronald') loss=0; if(k.fx==='baltazar'||k.fx==='walter') loss++; if(k.fx==='aparicio'&&s.lastPlayed===S.fecha-1) loss++; if(S.event==='largo'&&k.fx!=='ronald') loss++;
+        s.fis=Math.max(0,s.fis-loss); s.consec++; s.lastPlayed=S.fecha;
+      } else {
+        let rec=CFG.REST_REC; if(k.fx==='rec1') rec++; if(k.fx==='rec2') rec+=2; if(sp==='gimnasio') rec++;
+        s.fis=Math.min(FIS_MAX,s.fis+rec); s.consec=0;
+      }
+      if(!tired||s.fis<tired.fis) tired=s;
+      if(k.fx==='ramon' && S.fecha-s.joined>=2 && !s.retired){ s.retired=true; log(S,`${nm}: Ramón Ojeda vuelve a su club.`); }
+      s.dramaOut=false;
+    });
+    if(sp==='farmacia'&&tired&&tired.fis<FIS_MAX){ tired.fis++; }
+    if(c.cur.minus2Random){} // ya usado
+    if(c.money<0){ c.flags.everNeg=true; c.moral=clamp(c.moral-1,0,10); log(S,`${nm} cierra la Fecha en rojo: −1 Moral.`,'bad'); }
+    checkObjectives(S,c);
+  });
+  if(S.fecha>=7){ endLeague(S); return; }
+  startFecha(S,S.fecha+1);
+};
+
+function completeObj(S,c,txt){ c.objDone=true; log(S,`${CLUBS[c.i].n} cumple su Promesa al Barrio «${OBJ[c.obj].n}»: ${txt}.`,'good'); }
+function checkObjectives(S,c){
+  if(c.objDone) return;
+  const o=c.obj, f=S.fecha;
+  if(o==='ascenso'&&f===4){ if(tablePos(S,c.i)<=2){c.flags.atkPerm=1;completeObj(S,c,'+1 Ataque el resto de la liga')} else c.objFailed=true; }
+  if(o==='grande'&&c.rep>=10){ c.favors++; c.hinchada=clamp(c.hinchada+1,0,10); completeObj(S,c,'+1 Favor y +1 Hinchada Fiel'); }
+  if(o==='feliz'&&c.flags.ttRepTotal>=8){ c.hinchada=clamp(c.hinchada+2,0,10); completeObj(S,c,'+2 Hinchada Fiel'); }
+  if(o==='deudas'&&f===4){ if(!c.flags.everNeg&&c.money>=6){c.favors++;c.moral=clamp(c.moral+1,0,10);completeObj(S,c,'+1 Favor y +1 Moral')} else c.objFailed=true; }
+  if(o==='promesa'&&f===5){ if(!c.flags.baseExcused){c.moral=clamp(c.moral+2,0,10);completeObj(S,c,'+2 Moral')} else c.objFailed=true; }
+  if(o==='retiro'&&f>=CLASICO_FECHA) c.objFailed=!c.objDone;
+}
+
+function endLeague(S){
+  S.phase='end'; S.queue=[{type:'show',what:'end'}];
+  const t=table(S);
+  log(S,`Termina la liga. Campeón: ${CLUBS[t[0].i].n}.`,'big');
+}
+
+// ---------- tabla ----------
+function pts(c){ return c.st.pg*3+c.st.pe+c.st.adj; }
+function h2h(S,a,b){ let pa=0,pb=0; S.results.forEach(fr=>fr&&fr.forEach(r=>{ if((r.h===a&&r.a===b)||(r.h===b&&r.a===a)){ const ga=r.h===a?r.g[0]:r.g[1], gb=r.h===a?r.g[1]:r.g[0]; if(ga>gb)pa+=3;else if(gb>ga)pb+=3;else{pa++;pb++} } })); return pa-pb; }
+function table(S){
+  return S.clubs.slice().sort((x,y)=> pts(y)-pts(x) || (y.st.gf-y.st.gc)-(x.st.gf-x.st.gc) || y.st.gf-x.st.gf || h2h(S,y.i,x.i) || y.rep-x.rep || y.hinchada-x.hinchada || x.i-y.i);
+}
+function tablePos(S,ci){ return table(S).findIndex(c=>c.i===ci); }
+
+// ---------- alineación ----------
+function lineValue(S,c,s,line,slot){
+  const k=CARDS[s.id]; let v=k.val;
+  if(k.fx==='cirilo'&&s.played>0) v=3;
+  if(k.fx==='brandon') v-=2*s.consec;
+  if(k.fx==='deividson'&&s.lastPlayed===S.fecha-1) v-=2;
+  if(k.fx==='eleuterio') v-=1;
+  if(['pulpo','wilfredo','baltazar'].includes(k.fx)) v+= k.fx==='baltazar'?1:2;
+  if((k.fx==='selfD2A1'||k.fx==='selfD2A2')&&line==='D') v+=2;
+  if(s.legend) v+=2;
+  const nat=POS[k.pos].line;
+  if(slot==='G') { if(!isGK(k)) v=Math.floor(v/2); }
+  else if(isGK(k)) v=Math.floor(v/2);
+  else if(nat!=='B'&&nat!==line) v=Math.floor(v/2);
+  if(s.fis===1) v-=CFG.FIS_PEN1; else if(s.fis<=0) v-=2;
+  if(c.excuse&&c.excuse.sid===s.id&&c.excuse.minus) v-=1;
+  return Math.max(0,v);
+}
+function lineupStats(S,c,L){
+  let a=0,d=CFG.DEF_BASE;
+  const get=id=>c.squad.find(s=>s.id===id);
+  if(L.gk) d+=lineValue(S,c,get(L.gk),'D','G');
+  L.D.forEach(id=>d+=lineValue(S,c,get(id),'D','D'));
+  L.A.forEach(id=>a+=lineValue(S,c,get(id),'A','A'));
+  const mm=moralMod(c.moral); a+=mm; d+=mm;
+  return {a,d};
+}
+function lineupProblems(S,c,L){
+  const n=(L.gk?1:0)+L.D.length+L.A.length, av=c.squad.filter(s=>available(S,c,s)).length;
+  const probs=[];
+  if(!L.gk) probs.push('Falta el arquero');
+  if(n>7) probs.push('Máximo 7 titulares');
+  if(n<Math.min(7,av)) probs.push(`Elegí ${Math.min(7,av)} titulares (llevás ${n})`);
+  const com=[L.gk,...L.D,...L.A].filter(id=>id&&CARDS[id].pos==='COM').length; if(com>2) probs.push('Máximo 2 Comodines');
+  return probs;
+}
+function autoLineup(S,c){
+  const av=c.squad.filter(s=>available(S,c,s));
+  const val=(s,line,slot)=>lineValue(S,c,s,line,slot) - (s.fis<=1&&!['ronald'].includes(CARDS[s.id].fx)?0.6:0) - (CARDS[s.id].fx==='zorro'&&S.fecha!==CLASICO_FECHA&&S.fecha<6?4:0);
+  const gks=av.slice().sort((x,y)=>val(y,'D','G')-val(x,'D','G'));
+  const gk=gks[0];
+  let best=null;
+  for(let nd=1;nd<=4;nd++){
+    let rest=av.filter(s=>s!==gk);
+    const D=rest.slice().sort((x,y)=>(val(y,'D','D')-val(y,'A','A')*0.15)-(val(x,'D','D')-val(x,'A','A')*0.15)).slice(0,nd);
+    rest=rest.filter(s=>!D.includes(s));
+    const A=rest.sort((x,y)=>val(y,'A','A')-val(x,'A','A')).slice(0,6-nd);
+    let com=[gk,...D,...A].filter(s=>s&&CARDS[s.id].pos==='COM').length; if(com>2) continue;
+    const sa=A.reduce((t,s)=>t+val(s,'A','A'),0), sd=D.reduce((t,s)=>t+val(s,'D','D'),0)+(gk?val(gk,'D','G'):0);
+    let score=sa+sd*1.05;
+    if(c.cur.tactica&&nd+1<4) score-=2;
+    if(!best||score>best.score) best={score,L:{gk:gk?gk.id:null,D:D.map(s=>s.id),A:A.map(s=>s.id)}};
+  }
+  c.lineup=best?best.L:{gk:null,D:[],A:[]};
+  finalizeLineup(S,c);
+}
+function finalizeLineup(S,c){
+  const L=c.lineup;
+  L.played=[L.gk,...L.D,...L.A].filter(Boolean);
+  c.squad.forEach(s=>s.fisPre=s.fis);
+  if(c.cur.minus2Random&&L.played.length){ c.cur.minus2=pick(S,L.played); }
+}
+
+// ---------- excusas ----------
+function rollExcuse(S,c){
+  if(c.cur.skipExcuse){ c.excuse={skip:true}; log(S,`${CLUBS[c.i].n} se salta la Excusa (Onésimo trajo orden).`); return c.excuse; }
+  const L=c.lineup, pool=L.played;
+  if(!pool.length){ c.excuse={skip:true}; return c.excuse; }
+  const sid=pick(S,pool), k=CARDS[sid];
+  const draw=()=>{ if(!S.decks.exc.length) S.decks.exc=shuffle(S,EXCUSAS.map(x=>x.id)); return S.decks.exc.pop(); };
+  let eid=draw(), alt=null;
+  if(k.fx==='reinaldo'){ alt=draw(); if(EXC_SEVERITY[EXC[alt].k]>EXC_SEVERITY[EXC[eid].k]) [eid,alt]=[alt,eid]; }
+  const e=EXC[eid];
+  const ex={sid,eid,alt,state:'pending'};
+  const immune = (k.fx==='imm:'+e.imm) || (c.sponsor==='taller'&&e.k==='dice');
+  if(immune){ ex.state='immune'; }
+  if(e.k==='dice'&&!immune){ ex.die=d6(S); }
+  c.excuse=ex;
+  return ex;
+}
+function excuseOptions(S,c){
+  const ex=c.excuse; if(!ex||ex.skip||ex.state==='immune') return [{id:'ok',l:'Seguir'}];
+  const e=EXC[ex.eid], ops=[];
+  const cust=c.squad.find(s=>!s.retired&&CARDS[s.id].fx==='custodio'&&available(S,c,s));
+  if(e.k==='pay1'){ const cost=c.sponsor==='gomeria'?0:1; ops.push({id:'pay',l:`Pagar ${cost} dinero`,ok:c.money>=cost,cost}); }
+  if(e.k==='moral1') ops.push({id:'moral',l:'Gastar 1 de Moral',ok:c.moral>=1});
+  if(cust && e.k!=='minus1' && e.k!=='noRep' && !(e.k==='dice'&&ex.die>3)) ops.push({id:'custodio',l:'Custodio la anula (no cobra sus +2)',ok:true});
+  if(['out','outRep','pay1','moral1'].includes(e.k)) ops.push({id:'accept',l:'Aceptar: no juega',ok:true});
+  else ops.push({id:'accept',l:'Aceptar el efecto',ok:true});
+  return ops;
+}
+function resolveExcuse(S,c,choice,replacement){
+  const ex=c.excuse, nm=CLUBS[c.i].n;
+  if(!ex||ex.skip){return}
+  const k=CARDS[ex.sid];
+  if(ex.state==='immune'){ log(S,`${nm}: a ${k.short} le toca «${EXC[ex.eid].n}», pero es inmune.`); ex.state='done'; return; }
+  const e=EXC[ex.eid];
+  if(choice==='pay'){ const cost=c.sponsor==='gomeria'?0:1; c.money-=cost; log(S,`${nm} paga ${cost} y ${k.short} juega igual («${e.n}»).`); ex.state='done'; return; }
+  if(choice==='moral'){ c.moral=clamp(c.moral-1,0,10); log(S,`${nm} gasta 1 Moral y ${k.short} juega igual («${e.n}»).`); ex.state='done'; return; }
+  if(choice==='custodio'){ c.cur.custodioUsed=true; log(S,`${nm}: Custodio arregla todo y ${k.short} juega igual («${e.n}»).`); ex.state='done'; return; }
+  // aceptar
+  if(e.k==='out'||e.k==='outRep'||e.k==='pay1'||e.k==='moral1'){
+    ex.out=true; if(e.k==='outRep') c.rep=clamp(c.rep-1,0,30);
+    if(!k.libre) c.flags.baseExcused=true;
+    const L=c.lineup; let slot=null;
+    if(L.gk===ex.sid){L.gk=null;slot='G'} else if(L.D.includes(ex.sid)){L.D=L.D.filter(x=>x!==ex.sid);slot='D'} else {L.A=L.A.filter(x=>x!==ex.sid);slot='A'}
+    let rep=replacement;
+    if(rep===undefined){ // automático: mejor del banco para ese hueco
+      const bench=c.squad.filter(s=>available(S,c,s)&&!L.played.includes(s.id));
+      bench.sort((x,y)=>lineValue(S,c,y,slot==='A'?'A':'D',slot)-lineValue(S,c,x,slot==='A'?'A':'D',slot));
+      rep=bench[0]?bench[0].id:null;
+      if(slot==='G'&&!rep){ const pool=[...L.D,...L.A]; if(pool.length){ rep=pool.sort((x,y)=>lineValue(S,c,c.squad.find(s=>s.id===y),'D','G')-lineValue(S,c,c.squad.find(s=>s.id===x),'D','G'))[0]; L.D=L.D.filter(x=>x!==rep); L.A=L.A.filter(x=>x!==rep);} }
+    }
+    if(rep){ if(slot==='G') L.gk=rep; else if(slot==='D') L.D.push(rep); else L.A.push(rep); }
+    log(S,`${nm}: ${k.short} falta («${e.n}»)${e.k==='outRep'?' y el club pierde 1 Reputación':''}.${rep?` Entra ${CARDS[rep].short}.`:' Juegan con uno menos.'}`,'bad');
+    finalizeLineup(S,c);
+  } else if(e.k==='half'){ ex.half=true; log(S,`${nm}: ${k.short} solo llega para el segundo tiempo («${e.n}»).`); }
+  else if(e.k==='dice'){ if(ex.die<=3){ex.half=true;log(S,`${nm}: ${k.short} llega tarde (dado ${ex.die}, «${e.n}»), solo segundo tiempo.`)} else log(S,`${nm}: ${k.short} llega a tiempo (dado ${ex.die}, «${e.n}»).`); }
+  else if(e.k==='minus1'){ ex.minus=true; log(S,`${nm}: ${k.short} juega con −1 («${e.n}»).`); }
+  else if(e.k==='noRep'){ c.cur.ttMinus=true; log(S,`${nm}: ${k.short} juega, pero el club genera 1 Reputación menos («${e.n}»).`); }
+  ex.state='done';
+}
+
+// ---------- BOTS ----------
+const BOT={};
+BOT.preseason=(S,t)=>{ const c=S.clubs[t.ci]; const ch=c.spoChoices.slice().sort((x,y)=>spoScore(y)-spoScore(x)); signSponsor(S,c,ch[0],true); S.decks.spo.unshift(ch[1]); c.spoChoices=null; };
+const SPO_SCORE={beto:6,heladeria:5,foodtruck:4,minimarket:3,gimnasio:4,ferre:3,taller:3,taxi:3,cyber:3,botilleria:3,fm:3,almacen:2.5,farmacia:3,gomeria:2,vete:2.5,parroquia:2,barberia:1.5,panaderia:2};
+const spoScore=id=>SPO_SCORE[id]||1;
+BOT.market=(S,t)=>{ const c=S.clubs[t.ci];
+  const weakest=Math.min(...c.squad.filter(s=>!s.retired).map(s=>CARDS[s.id].val));
+  const opts=S.market.filter(id=>!canSign(S,c,id)).map(id=>{ const k=CARDS[id],cs=libreCost(S,c,id); let sc=k.val-weakest-cs.m*0.4-cs.f*0.8; if(k.fx==='ramon'||k.fx==='zorro') sc-=1.5; return {id,sc}; }).filter(o=>o.sc>0.3).sort((a,b)=>b.sc-a.sc);
+  if(opts.length && c.money-libreCost(S,c,opts[0].id).m>=1) signLibre(S,c,opts[0].id);
+};
+BOT.lineup=(S,t)=>{ autoLineup(S,S.clubs[t.ci]); };
+BOT.excuse=(S,t)=>{ const c=S.clubs[t.ci]; const ex=rollExcuse(S,c); if(ex.skip) return; const ops=excuseOptions(S,c).filter(o=>o.ok!==false);
+  const k=CARDS[ex.sid]; const valuable=k.val>=4;
+  let ch='accept'; const o=id=>ops.find(x=>x.id===id);
+  if(o('custodio')&&valuable) ch='custodio'; else if(o('pay')&&(valuable||o('pay').cost===0)) ch='pay'; else if(o('moral')&&c.moral>=6&&valuable) ch='moral'; else if(o('ok')) ch='ok';
+  resolveExcuse(S,c,ch);
+};
+BOT.tt=(S,t)=>{ const c=S.clubs[t.ci];
+  const d={invest:clamp(c.money-4,0,S.fecha>=6?3:2),fisca:c.money>=6?'pay':'rep',drama:[],spo:null,favor:false};
+  c.dramas.forEach((id,k)=>{ const ops=dramaOptions(S,c,id); let best=ops.length-1;
+    const pref={chat:0,rumor:c.moral>=5?0:1,tecnico:c.rep>=2?0:(c.favors>1?1:2),rifa:c.money>=6?0:1,brazalete:c.favors>=2?0:1,enterado:c.money>=4?0:1,camiseta:c.moral>=7?0:1,hijo:c.money>=5?0:1};
+    if(pref[id]!=null) best=pref[id]; if(ops[best]&&ops[best].ok&&!ops[best].ok()) best=ops.length-1; d.drama[k]=best; });
+  if(!c.sponsor && S.fecha<=6 && c.money>=2){ const off=[S.decks.spo.pop(),S.decks.spo.pop()].filter(Boolean); c.spoOffer=off; d.spo=off.sort((x,y)=>spoScore(y)-spoScore(x))[0]; }
+  if(c.favors===0 && c.rep>=favorCost(c)+5 && S.fecha<=3) d.favor=true;
+  applyTT(S,c,d);
+};
+
+// ---------- simulación de laboratorio ----------
+function simLeagues(n,seats,seed){
+  const agg={leagues:n,goals:0,matches:0,hvv:{w:0,d:0,l:0},hvh:0,champ:{mgd:0,vec:0},money:0,rep:0,mgdN:0,fisPen:0,fisN:0,byF:Array(8).fill(0).map(()=>({w:0,d:0,l:0})),scoreDist:{},libres:0,draws:0};
+  for(let i=0;i<n;i++){
+    const S=newGame({seats:seats.map(s=>({ctrl:s==='vecino'?'vecino':'bot',name:''})),seed:(seed||12345)+i*7919,privacy:false});
+    let guard=0;
+    while(S.phase!=='end' && guard++<200){
+      const t=S.queue[0];
+      if(t&&t.type==='show'){ S.queue.shift(); if(t.what==='fecha'){ // stats
+          S.results[S.fecha].forEach(r=>{ agg.goals+=r.g[0]+r.g[1]; agg.matches++; const k=r.g[0]+'-'+r.g[1]; agg.scoreDist[k]=(agg.scoreDist[k]||0)+1; if(r.g[0]===r.g[1]) agg.draws++;
+            const hm=S.clubs[r.h].ctrl!=='vecino', am=S.clubs[r.a].ctrl!=='vecino';
+            if(hm!==am){ const mg=hm?r.g[0]:r.g[1], vg=hm?r.g[1]:r.g[0]; const res=mg>vg?'w':mg===vg?'d':'l'; agg.hvv[res]++; agg.byF[S.fecha][res]++; }
+            [[r.h,0],[r.a,1]].forEach(([ci,k])=>{ const c=S.clubs[ci]; if(c.ctrl==='vecino'||!c.lineup) return; c.lineup.played.forEach(id=>{ const s=c.squad.find(x=>x.id===id); agg.fisPen+= s.fisPre===1?CFG.FIS_PEN1:s.fisPre<=0?2:0; }); agg.fisN++; });
+          });
+          startPhase2(S); } continue; }
+      if(t){ const c=t.ci!=null?S.clubs[t.ci]:null; if(c&&c.ctrl==='human'){c.ctrl='bot'} runBots(S); if(S.queue[0]===t){ S.queue.shift(); } }
+      else break;
+    }
+    const tb=table(S); if(tb[0].ctrl==='vecino') agg.champ.vec++; else agg.champ.mgd++;
+    managedClubs(S).forEach(c=>{agg.money+=c.money;agg.rep+=c.rep;agg.mgdN++;agg.libres+=c.squad.filter(s=>CARDS[s.id].libre).length});
+  }
+  return agg;
+}
+
+// ================= REGLAS (texto en la app) =================
+const RULES_HTML = `
+<div class="tabs"><button class="on" data-jump="rg-1">Cómo se juega</button><button data-jump="rg-2">Bugs corregidos</button><button data-jump="rg-3">Calibración</button></div>
+
+<div id="rg-1" class="section">
+<h3>Cómo se juega esta versión</h3>
+<p>Ocho clubes, siete Fechas, una sola rueda. Gana quien termina con más Puntos de Liga (3 por victoria, 1 por empate). Desempate: diferencia de gol, goles a favor, resultado entre ellos, Reputación, Hinchada Fiel.</p>
+<p><b>Pretemporada.</b> Cada club recibe su Plantilla Base por sorteo (8 jugadores, uno por puesto, sin repetir entre clubes), 5 dinero, 2 Favores y Moral 5. Elige 1 de 2 Auspiciadores, ve su Promesa al Barrio secreta, ficha en un mercado inicial y juega un amistoso automático (+1 dinero; +1 Moral si gana).</p>
+<p><b>Fase 1, el Partido.</b> Cada club arma su alineación de 7: un arquero y el resto repartido entre Defensa y Ataque. Fuera de su puesto un jugador suma la mitad; Volantes de Contención y Comodines rinden completo en ambas líneas. Después cae una Excusa sobre un titular al azar: pagás su costo, aceptás el efecto o metés a alguien del banco. Recién entonces se revela el Evento, que afecta a todos los partidos.</p>
+<p><b>Cómo se resuelve.</b> Defensa = arquero + defensas + 2 (el arco). Ataque = los de arriba. Se suman Moral, bono de local por Hinchada Fiel, el Evento y los rasgos. En cada una de las 4 Ocasiones se comparan Ataque + 1d6 contra la Defensa rival + 1d6, en ambos sentidos; si el Ataque supera, es gol. Un Club Vecino usa su Nivel de Equipo + 2 como Ataque y Defensa.</p>
+<p><b>Fase 2, el Tercer Tiempo.</b> Cada club invierte 0 a 3 dinero, que vuelve como Reputación (con 3 suma además +1 Hinchada Fiel), resuelve sus Dramas, puede cambiar de Auspiciador y puede pedir un Favor al barrio por 3 de Reputación. En las Fechas 1 a 3 se abre el Mercado de la Semana: 4 jugadores, elige primero el peor ubicado. Al cierre cada club cobra 2 de cuota social, +1 de taquilla si fue local, más lo de su Auspiciador.</p>
+<p><b>Físico.</b> Cada jugador tiene 0 a 3. Jugar resta 1, descansar recupera 2. Con Físico 0 juega con −2.</p>
+<p><b>Moral</b> (0 a 10, empieza en 5): ganar +1, perder −1. Modifica Ataque y Defensa: 0-1 da −2, 2-3 da −1, 4-6 nada, 7-8 da +1, 9-10 da +2. Cerrar una Fecha con dinero negativo cuesta −1 Moral.</p>
+<p><b>Hinchada Fiel</b> sube +1 al ganar de local y con la inversión máxima. Da +1 Ataque de local desde 3 y +2 desde 6.</p>
+<p><b>Drama.</b> Tras cada partido, cada club tira 1d6: con 1-2 (1-3 si perdió) roba un Drama. Sus efectos de partido se aplican en la Fecha siguiente.</p>
+<p><b>Clásicos.</b> Los tres se juegan en la Fecha 4. En la Fecha 3 cada Rivalidad sube +1; si alguna llega a 3, Drama extra para ambos. En el Clásico se roba una carta de Clásico; el ganador se queda la Copa y suma tanta Reputación como Rivalidad acumulada (tope 5).</p>
+</div>
+
+<div id="rg-2" class="section">
+<h3>Bugs de lógica que encontré y cómo los corregí</h3>
+<p class="muted small">Cada carta modificada muestra la marca «✎ regla ajustada»; al pasar el mouse se ve el texto original.</p>
+<h3 class="section">Estructurales (rompían el juego)</h3>
+<ol>
+<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora el Vecino usa Nivel + 2 y toda Defensa suma +2 fijo (el arco). Resultado simulado: con 3 humanos, el humano gana 51%, empata 30% y pierde 19% contra Vecinos.</li>
+<li><b>El Físico era una espiral sin salida.</b> Con 8 jugadores y 7 titulares, jugar −1 y descansar +1 deja a casi todo el plantel en Físico 0 desde la Fecha 4: −13 en la alineación, para todos por igual. Ahora el Físico va de 0 a 3, descansar recupera 2 y solo se penaliza con Físico 0.</li>
+<li><b>La decisión táctica no existía.</b> La Plantilla Base trae exactamente 3 defensores (arquero y dos laterales) y 5 atacantes, y solo los Comodines cambiaban de línea: "cuántos dejo arriba" no era una decisión. Ahora cualquiera puede jugar en cualquier línea a mitad de valor, y el Volante de Contención rinde completo en ambas.</li>
+<li><b>La Excusa obligatoria tenía una estrategia dominante.</b> El mismo reglamento recomendaba nominar a alguien que no ibas a alinear; con 8 jugadores para 7 puestos siempre hay uno así, y la Excusa nunca hacía nada. Ahora cae sobre un titular al azar, después de armar el equipo.</li>
+<li><b>Los Dramas no tenían efecto.</b> Se resuelven en el Tercer Tiempo, después del partido, pero varios decían «esta Fecha» (técnico −2/−2, hijo del dirigente, táctica). Ahora pegan en la Fecha siguiente.</li>
+<li><b>No había regla para robar Dramas ni cartas de Clásico.</b> Ahora: Drama con 1-2 en 1d6 tras cada partido (1-3 si perdiste) y una carta de Clásico por cada Clásico.</li>
+<li><b>La Moral no tenía techo útil.</b> «Se suma por igual a Ataque y Defensa» con escala 0-10 daba hasta +10, y varias cartas daban +1 Moral cada Fecha. Ahora la Moral da entre −2 y +2 por tramos, y esas cartas se ajustaron.</li>
+<li><b>No había ingresos.</b> 5 dinero iniciales para toda la liga, con Excusas, fichajes e inversión que cuestan dinero: casi todos los clubes quedaban en cero en la Fecha 2. Ahora hay cuota social (+2 por Fecha) y taquilla de local (+1).</li>
+<li><b>Bono de local inútil.</b> «+2 si Reputación + Hinchada ≥ 3» se cumplía para todos desde la Fecha 1. Ahora depende solo de la Hinchada Fiel, que tenía cero formas de subir (ahora sube al ganar de local y con la inversión máxima).</li>
+<li><b>Promesas al Barrio sin efecto.</b> Daban beneficios "para la siguiente partida" o al final, cuando ya no servían, y «La Promesa que se Queda» se cumplía siempre porque la Plantilla Base nunca se pierde. Ahora todas se cumplen durante la liga.</li>
+<li><b>Favores sin fuente.</b> El documento lo detectó y lo dejó abierto. Ahora se puede pedir un Favor al barrio por 3 de Reputación, que además le da sentido a Hermógenes («cuesta 1 Reputación menos»).</li>
+</ol>
+<h3 class="section">Cartas que hacían referencia a cosas que no existen</h3>
+<ol>
+<li>No existen sustituciones, pero Ronald, Aníbal y Leandro dependían de ellas. Aníbal y Leandro ahora se enojan si quedan en el banco estando disponibles; Ronald nunca pierde Físico.</li>
+<li>No existe el rol de Capitán: «Roncha Rara» y «Cumpleaños Sorpresa» ahora los paga el club con Moral, y «Cumpleaños del Presidente» cambió.</li>
+<li>Braulio era inmune a «otro compromiso», que no existe: ahora es «Doble Compromiso».</li>
+<li>«Escándalo de la Rifa» pedía descartar una Excusa, pero los clubes no guardan Excusas.</li>
+<li>«Disputa por el Brazalete» se resolvía con una votación de los jugadores (que son cartas).</li>
+<li>Deolindo solo se podía fichar en las últimas 3 Fechas, pero el mercado cierra en la 3: jamás se podía fichar.</li>
+<li>«Fecha Doble» pedía jugar dos partidos seguidos sin decir contra quién en un fixture fijo: ahora el partido tiene 6 Ocasiones.</li>
+<li>«Falta el Balón» era idéntica a «Corte de Luz»: ahora resta Defensa.</li>
+<li>«El Presidente Quiere Vender la Camiseta» daba +3 dinero o pagabas para evitarlo: aceptar era siempre mejor. Ahora vender cuesta Moral.</li>
+<li>Onésimo se saltaba la Excusa «en su primera Fecha jugada», pero la Excusa se resuelve antes de saber si juega.</li>
+<li>Ubaldo pedía no gastar Favores «esa Fecha», pero los Favores se gastan después del partido.</li>
+<li>Riesgo de sanción sin regla: ahora es 1 en 1d6 tras cada partido, y Facundo (que «nunca arriesga sanción», un efecto vacío) protege a un compañero.</li>
+<li>El Ex Compañero premiaba al Libre que anota «contra su club anterior», que no existe: ahora cada gol de un fichado en el Clásico da +2 Reputación (la app registra quién hace cada gol).</li>
+<li>Kevin y Bryan dependían de "incumplir" y "costo" de Auspiciadores, que no existían: ahora firmar uno nuevo cuesta 1 dinero y romper el actual 1 de Reputación.</li>
+</ol>
+<h3 class="section">Ajustes de balance menores</h3>
+<p>Auspiciadores que casi nunca hacían nada (Ferretería, Taller, Radio Taxi, Barbería, Parroquia, Heladería, Cyber, Veterinaria, Panadería) recibieron un empujón, y dos Libres que nadie fichaba (Deyvis, Reinaldo) bajaron de costo. «Turno en el Trabajo» y las Excusas de dado ahora significan concretamente "solo juega las Ocasiones 3 y 4" (dado: 1-3 falla).</p>
+</div>
+
+<div id="rg-3" class="section">
+<h3>Calibración y qué vigilar</h3>
+<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes gestionados: unos 3,5 goles por partido, 26% de empates, y el campeón es un club gestionado un 60% de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
+<p>Lo que más conviene mirar jugando: si 3,5 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
+</div>`;
+
+// ================= INTERFAZ =================
+const KEY='tercer-tiempo-v1', UKEY='tercer-tiempo-undo-v1', TKEY='tercer-tiempo-theme';
+let G=null, UNDO=[], UI={gate:null,lineup:null,reveal:{},tt:null,exc:null,pickRep:false,sel:null,labRes:null};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sg=n=>n===0?'±0':(n>0?'+':'−')+Math.abs(n);
+
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(G)); localStorage.setItem(UKEY,JSON.stringify(UNDO.slice(-12))); }catch(e){} }
+function load(){ try{ const s=localStorage.getItem(KEY); if(s) G=JSON.parse(s); const u=localStorage.getItem(UKEY); if(u) UNDO=JSON.parse(u)||[]; }catch(e){G=null;UNDO=[]} }
+function snapshot(){ if(G){ UNDO.push(JSON.stringify(G)); if(UNDO.length>12) UNDO.shift(); } }
+function undo(){ if(!UNDO.length){toast('No hay nada para deshacer');return} G=JSON.parse(UNDO.pop()); resetUI(); save(); render(); toast('Se deshizo la última decisión'); }
+function resetUI(){ UI.lineup=null; UI.tt=null; UI.exc=null; UI.pickRep=false; UI.gate=null; UI.sel=null; }
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2200); }
+function applyTheme(){ let t=null; try{t=localStorage.getItem(TKEY)}catch(e){} if(t) document.documentElement.setAttribute('data-theme',t); else document.documentElement.removeAttribute('data-theme'); }
+
+// ---------- piezas visuales ----------
+const crest=(ci,sm)=>`<span class="crest${sm?' sm':''}" style="background:${CLUBS[ci].c}" aria-hidden="true">${CLUBS[ci].sh}</span>`;
+const clubName=ci=>CLUBS[ci].n;
+function ctrlLabel(c){ return c.ctrl==='human'?(c.player||'Humano'):c.ctrl==='bot'?'Bot':'Club Vecino'; }
+
+function cardHTML(k,o={}){
+  const s=o.sq, g=POS[k.pos].g;
+  const statLbl=POS[k.pos].line==='D'?'DEF':POS[k.pos].line==='A'?'ATA':'A/D';
+  let pips='';
+  if(s){ const cls=s.fis===0?'zero':s.fis<FIS_MAX?'low':''; pips=`<span class="pips ${cls}" title="Físico ${s.fis} de ${FIS_MAX}">${Array.from({length:FIS_MAX},(_,i)=>`<i class="${i<s.fis?'on':''}"></i>`).join('')}</span>`; }
+  const tags=[]; if(s){ if(s.retired) tags.push('<span class="tag">Retirado</span>'); if(s.suspNow) tags.push('<span class="tag bad">Sancionado</span>'); if(s.dramaOut) tags.push('<span class="tag bad">No viene</span>'); if(s.legend) tags.push('<span class="tag good">Leyenda</span>'); if(s.susp>0&&!s.suspNow) tags.push('<span class="tag bad">Sanción próxima</span>'); }
+  if(o.extraTag) tags.push(o.extraTag);
+  const cost = k.libre&&o.cost ? `<span class="tag">${o.cost.m} dinero${o.cost.f?` + ${o.cost.f} Favor`:''}</span>` : '';
+  return `<div class="card g-${g} ${o.cls||''}" ${o.attrs||''}>
+   <div class="band"><span class="num">#${k.num}</span><span>${POS[k.pos].n}</span></div>
+   <div class="body">
+    <div class="stat">${o.val!=null?o.val:k.val}<small>${statLbl}</small></div>
+    <div class="nm" style="padding-right:42px">${esc(k.first||'')} ${esc(k.last)}</div>
+    <div class="nick" style="padding-right:42px">"${esc(k.nick)}"</div>
+    <p class="fx">${esc(k.t)}</p>
+    ${o.flavor!==false?`<p class="fl">${esc(k.s)}</p>`:''}
+    ${k.o?`<span class="edited" title="Original: ${esc(k.o)}">✎ regla ajustada</span>`:''}
+    <div class="foot">${pips}<span class="row" style="gap:4px">${cost}${tags.join('')}</span></div>
+   </div>${o.after||''}</div>`;
+}
+function plainCard(type,label,x,extra){ return `<div class="plain-card ${type} ${extra&&extra.cls||''}" ${extra&&extra.attrs||''}><div class="ty">${label}</div><div class="tt">${esc(x.n)}</div><p class="small" style="font-style:italic;color:var(--muted)">${esc(x.s)}</p><p>${esc(x.t)}</p>${x.o?`<span class="edited" title="Original: ${esc(x.o)}" style="font-size:.72rem;font-weight:700;color:var(--violeta);border:1px solid currentColor;border-radius:5px;padding:0 5px">✎ regla ajustada</span>`:''}${extra&&extra.after||''}</div>`; }
+
+function trackHTML(){
+  if(!G) return '';
+  const items=[['Pre',0],...[1,2,3,4,5,6,7].map(f=>[f,f])];
+  return items.map(([l,f])=>{ const now=G.fecha===f&&G.phase!=='end', done=G.fecha>f||G.phase==='end'; return `<span class="${now?'now':done?'done':''} ${f===CLASICO_FECHA?'cl':''}" title="${f===0?'Pretemporada':'Fecha '+f+(f===CLASICO_FECHA?' (Clásicos)':'')}">${l}</span>`; }).join('');
+}
+function phaseLabel(){
+  if(!G) return '';
+  if(G.phase==='pre') return 'Pretemporada';
+  if(G.phase==='end') return 'Fin de la liga';
+  const p=G.phase==='f2'?'El Tercer Tiempo':'El Partido';
+  return `Fecha ${G.fecha} de 7 · ${p}`;
+}
+
+function tableHTML(compact,meCi){
+  const t=table(G);
+  return `<div class="scroll-x"><table class="tb"><thead><tr><th>#</th><th>Club</th>${compact?'':'<th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th>'}<th>DG</th><th>Pts</th>${compact?'':'<th>Rep</th><th>Hinch</th>'}</tr></thead><tbody>
+  ${t.map((c,i)=>`<tr class="${c.i===meCi?'me':''}"><td>${i+1}</td><td class="club">${crest(c.i,true)}<span>${esc(compact?CLUBS[c.i].sh+' · '+shortCtrl(c):clubName(c.i))}</span>${!compact?`<span class="muted small">${esc(ctrlLabel(c))}</span>`:''}</td>${compact?'':`<td>${c.st.pj}</td><td>${c.st.pg}</td><td>${c.st.pe}</td><td>${c.st.pp}</td><td>${c.st.gf}</td><td>${c.st.gc}</td>`}<td>${c.st.gf-c.st.gc>0?'+':''}${c.st.gf-c.st.gc}</td><td class="pts">${pts(c)}${c.st.adj?`<sup class="muted" title="Puntos descontados">${c.st.adj}</sup>`:''}</td>${compact?'':`<td>${c.ctrl==='vecino'?'—':c.rep}</td><td>${c.ctrl==='vecino'?'—':c.hinchada}</td>`}</tr>`).join('')}
+  </tbody></table></div>`;
+}
+const shortCtrl=c=>c.ctrl==='human'?(c.player||'Humano'):c.ctrl==='bot'?'Bot':'Vecino';
+function rivalryHTML(){
+  return CLASICO_PAIRS.map((p,k)=>`<div class="riv">${crest(p[0],true)}${crest(p[1],true)}<span style="flex:1">${p[2].replace('Clásico ','')}</span><span class="dots" title="Rivalidad ${G.rivalry[k]}">${[0,1,2,3,4].map(i=>`<i class="${i<G.rivalry[k]?'on':''}"></i>`).join('')}</span>${G.copas[k]!=null?crest(G.copas[k],true):''}</div>`).join('');
+}
+function sideHTML(){
+  if(!G) return '';
+  const head=G.queue[0], me=head&&head.ci!=null?head.ci:null;
+  return `<div class="panel"><h3>Tabla de barrio</h3>${tableHTML(true,me)}</div>
+  <div class="panel"><h3>Clásicos · Fecha 4</h3>${rivalryHTML()}<p class="small muted">Rivalidad: cada punto da +1 Reputación al ganador del Clásico (tope 5).</p></div>
+  <div class="panel"><h3>Últimas jugadas</h3><div class="log" style="max-height:260px">${G.log.slice(-12).reverse().map(l=>`<div class="${l.c}">${esc(l.t)}</div>`).join('')}</div></div>`;
+}
+
+// ---------- render principal ----------
+function render(){ renderInner(); bindGlobal(); }
+function renderInner(){
+  $('#layout').classList.toggle('solo',!G);
+  $('#track').innerHTML=trackHTML();
+  $('#side').innerHTML=sideHTML();
+  const app=$('#app'); setAction('');
+  if(!G){ app.innerHTML=setupHTML(); bindSetup(); return; }
+  const t=G.queue[0];
+  if(!t){ app.innerHTML='<p>Sin tareas. <button class="btn" data-act="new">Nueva liga</button></p>'; return; }
+  if(t.type==='show'){ if(t.what==='fecha') return screenFecha(app); if(t.what==='end') return screenEnd(app); }
+  const c=G.clubs[t.ci];
+  if(G.privacy && humanClubs(G).length>1 && UI.gate!==t.ci){ return screenGate(app,c,t); }
+  UI.gate=t.ci;
+  ({preseason:screenPreseason,market:screenMarket,lineup:screenLineup,excuse:screenExcuse,tt:screenTT})[t.type](app,c,t);
+}
+function bindGlobal(){ bindSheetButtons(); document.querySelectorAll('[data-act="new"]').forEach(b=>b.onclick=newLeague); document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{const el=document.getElementById(b.dataset.jump); if(el) el.scrollIntoView({behavior:'smooth'})}); }
+function setAction(html){ const ab=$('#actionbar'); if(!html){ab.classList.add('hide');return} ab.classList.remove('hide'); $('#actionin').innerHTML=html; }
+function advance(){ completeTask(G); const n=G.queue[0]; if(!n||n.ci!==UI.gate) UI.gate=null; resetUIKeepGate(); save(); render(); window.scrollTo({top:0}); }
+function resetUIKeepGate(){ const g=UI.gate; resetUI(); UI.gate=g; }
+function head(c,title,sub){ return `<div class="screen-head"><div class="who">${crest(c.i)}<div><div class="kicker">${esc(clubName(c.i))} · ${esc(ctrlLabel(c))}</div><h2>${title}</h2></div></div><div class="kicker">${sub||phaseLabel()}</div></div>`; }
+function resBar(c){ return `<div class="statline"><span class="chip">Dinero <b>${c.money}</b></span><span class="chip">Favores <b>${c.favors}</b></span><span class="chip">Moral <b>${c.moral}</b> <span class="muted small">(${sg(moralMod(c.moral))} A/D)</span></span><span class="chip">Hinchada <b>${c.hinchada}</b></span><span class="chip">Reputación <b>${c.rep}</b></span></div>`; }
+
+// ---------- portón ----------
+function screenGate(app,c,t){
+  const what={preseason:'Pretemporada',market:'Mercado de la Semana',lineup:'Alineación',excuse:'La Excusa',tt:'El Tercer Tiempo'}[t.type];
+  app.innerHTML=`<div class="gate"><div class="plate">${crest(c.i)}<h2>${esc(c.player||'Jugador')}</h2><p>${esc(clubName(c.i))}</p><p class="muted" style="color:rgba(243,241,232,.75)">Te toca: ${what}. Pasá el dispositivo y que nadie mire.</p><button class="btn" id="gateGo">Soy yo, ver mi turno</button></div></div>`;
+  $('#gateGo').onclick=()=>{UI.gate=t.ci;render()};
+}
+
+// ---------- setup ----------
+function setupHTML(){
+  const saved=UI.setup||{seats:CLUBS.slice(0,6).map((c,i)=>({ctrl:i<3?'human':'vecino',name:i<3?'Jugador '+(i+1):''})),privacy:true,random:true,seed:''};
+  UI.setup=saved;
+  return `<section class="hero"><div class="lines"></div><h1>Tercer<span>Tiempo</span></h1><p>El partido se juega en la cancha. El club se gana después. Una liga de 8 clubes de barrio, 7 Fechas y un Clásico que no perdona.</p></section>
+  <div class="panel"><h3>¿Quién dirige cada club?</h3><p class="muted small">Humano: juega en este dispositivo (se pasan el teléfono). Bot: gestiona el club como un humano, sirve para probar. Club Vecino: solo usa su Nivel de Equipo.</p>
+  <div class="seats">${saved.seats.map((s,i)=>`<div class="seat"><div class="top">${crest(i)}${esc(CLUBS[i].n)}</div><select data-seat="${i}"><option value="human" ${s.ctrl==='human'?'selected':''}>Humano</option><option value="bot" ${s.ctrl==='bot'?'selected':''}>Bot</option><option value="vecino" ${s.ctrl==='vecino'?'selected':''}>Club Vecino</option></select><input data-name="${i}" placeholder="Nombre del jugador" value="${esc(s.name)}" ${s.ctrl!=='human'?'class="hide"':''}></div>`).join('')}</div>
+  <div class="section grid2"><div class="opts">
+   <label class="toggle"><input type="checkbox" id="optRandom" ${saved.random?'checked':''}> Sortear los clubes entre los jugadores (como dice el reglamento)</label>
+   <label class="toggle"><input type="checkbox" id="optPrivacy" ${saved.privacy?'checked':''}> Pantalla de privacidad entre turnos (pasar el teléfono)</label></div>
+   <label class="field">Semilla (opcional, para repetir una liga)<input id="optSeed" inputmode="numeric" value="${esc(saved.seed)}" placeholder="Al azar"></label></div>
+  <p class="muted small" id="setupMsg"></p>
+  <div class="row section"><button class="btn" id="startBtn">Armar la liga</button><button class="btn alt" data-sheet="reglas">Leer las reglas</button></div></div>`;
+}
+function bindSetup(){
+  document.querySelectorAll('[data-seat]').forEach(el=>el.onchange=()=>{ const i=+el.dataset.seat; UI.setup.seats[i].ctrl=el.value; if(el.value==='human'&&!UI.setup.seats[i].name) UI.setup.seats[i].name='Jugador '+(UI.setup.seats.filter(s=>s.ctrl==='human').length); render(); });
+  document.querySelectorAll('[data-name]').forEach(el=>el.oninput=()=>UI.setup.seats[+el.dataset.name].name=el.value);
+  $('#optRandom').onchange=e=>UI.setup.random=e.target.checked;
+  $('#optPrivacy').onchange=e=>UI.setup.privacy=e.target.checked;
+  $('#optSeed').oninput=e=>UI.setup.seed=e.target.value;
+  $('#startBtn').onclick=()=>{
+    const st=UI.setup, n=st.seats.filter(s=>s.ctrl!=='vecino').length;
+    if(n<1){ $('#setupMsg').textContent='Elegí al menos un club Humano o Bot.'; return; }
+    G=newGame({seats:st.seats.map(s=>({ctrl:s.ctrl,name:s.name.trim()||''})),randomClubs:st.random,seed:parseInt(st.seed,10)||0,privacy:st.privacy});
+    UNDO=[]; resetUI(); save(); render();
+  };
+}
+function newLeague(){ if(G && G.phase!=='end' && !confirm('¿Abandonar la liga en curso y armar una nueva?')) return; G=null; UNDO=[]; save(); try{localStorage.removeItem(KEY)}catch(e){} closeSheet(); render(); }
+
+// ---------- pretemporada ----------
+function screenPreseason(app,c){
+  UI.sel=UI.sel||null;
+  app.innerHTML=head(c,'Pretemporada')+resBar(c)+`
+  <div class="section"><h3>Tu Promesa al Barrio (secreta)</h3><div style="max-width:520px">${plainCard('obj','Objetivo secreto',OBJ[c.obj])}</div></div>
+  <div class="section"><h3>Elegí tu primer Auspiciador</h3><div class="grid2">${c.spoChoices.map(id=>plainCard('spo','Auspiciador',SPO[id],{cls:'choice'+(UI.sel===id?' on':''),attrs:`data-spo="${id}" tabindex="0" role="button"`})).join('')}</div></div>
+  <div class="section"><h3>Tu Plantilla Base</h3><div class="cards">${c.squad.map(s=>cardHTML(CARDS[s.id],{sq:s,flavor:false})).join('')}</div></div>`;
+  document.querySelectorAll('[data-spo]').forEach(el=>{ const f=()=>{UI.sel=el.dataset.spo;render()}; el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')f()}; });
+  setAction(`<span class="muted">${UI.sel?'Firmás con '+esc(SPO[UI.sel].n):'Elegí un Auspiciador'}</span><button class="btn" id="go" ${UI.sel?'':'disabled'}>Firmar y seguir</button>`);
+  $('#go').onclick=()=>{ snapshot(); signSponsor(G,c,UI.sel,true); G.decks.spo.unshift(c.spoChoices.find(x=>x!==UI.sel)); c.spoChoices=null; advance(); };
+}
+
+// ---------- mercado ----------
+function screenMarket(app,c){
+  const pre=G.phase==='pre';
+  const order=G.queue.filter(t=>t.type==='market').map(t=>t.ci);
+  app.innerHTML=head(c,'Mercado de la Semana',pre?'Pretemporada · orden al azar':`Fecha ${G.fecha} · elige primero el peor ubicado`)+resBar(c)+`
+  <p class="muted">Podés fichar como máximo 1 jugador. ${pre?'':'Desde la Fecha 4 el mercado queda cerrado.'} Fichados: ${c.squad.filter(s=>CARDS[s.id].libre&&!s.retired).length} de 4.</p>
+  ${order.length>1?`<p class="small muted">Después eligen: ${order.slice(1).map(ci=>esc(CLUBS[ci].sh)).join(', ')}</p>`:''}
+  <div class="cards section">${G.market.length?G.market.map(id=>{ const why=canSign(G,c,id), cost=libreCost(G,c,id); return cardHTML(CARDS[id],{cost,cls:(why?'off ':'')+(UI.sel===id?'sel-A':''),after:`<div class="seg" style="grid-template-columns:1fr"><button data-sign="${id}" ${why?'disabled':''} class="${UI.sel===id?'on':''}">${why?esc(why):(UI.sel===id?'Elegido':'Elegir')}</button></div>`}); }).join(''):'<p class="muted">No quedan jugadores en el mercado.</p>'}</div>
+  <div class="section"><h3>Tu plantel</h3><div class="cards">${c.squad.filter(s=>!s.retired).map(s=>cardHTML(CARDS[s.id],{sq:s,flavor:false})).join('')}</div></div>`;
+  document.querySelectorAll('[data-sign]').forEach(b=>b.onclick=()=>{UI.sel=UI.sel===b.dataset.sign?null:b.dataset.sign;render()});
+  setAction(`<button class="btn alt" id="pass">No fichar</button><button class="btn" id="go" ${UI.sel?'':'disabled'}>${UI.sel?'Fichar a '+esc(CARDS[UI.sel].short):'Elegí un jugador'}</button>`);
+  $('#pass').onclick=()=>{ snapshot(); log(G,`${clubName(c.i)} no ficha.`); advance(); };
+  $('#go').onclick=()=>{ snapshot(); signLibre(G,c,UI.sel); advance(); };
+}
+
+// ---------- alineación ----------
+function opponentOf(ci){ const m=FIXTURE[G.fecha-1].find(([h,a])=>h===ci||a===ci); return {opp:m[0]===ci?m[1]:m[0],home:m[0]===ci}; }
+function screenLineup(app,c){
+  if(!UI.lineup){ autoLineup(G,c); UI.lineup={gk:c.lineup.gk,D:c.lineup.D.slice(),A:c.lineup.A.slice()}; c.lineup=null; }
+  const L=UI.lineup, {opp,home}=opponentOf(c.i), O=G.clubs[opp];
+  const cl=G.fecha===CLASICO_FECHA&&CLASICO_PAIRS.some(p=>(p[0]===c.i&&p[1]===opp)||(p[1]===c.i&&p[0]===opp));
+  const stat=lineupStats(G,c,L), probs=lineupProblems(G,c,L);
+  const slotOf=id=>L.gk===id?'G':L.D.includes(id)?'D':L.A.includes(id)?'A':'B';
+  const oppInfo = O.ctrl==='vecino' ? `${esc(clubName(opp))} (Club Vecino): Ataque ${vecLevel(G,opp)+CFG.VEC_ATK} · Defensa ${vecLevel(G,opp)+CFG.VEC_DEF}` : `${esc(clubName(opp))} (${esc(ctrlLabel(O))}) · Moral ${O.moral} · ${O.squad.filter(s=>!s.retired).length} jugadores`;
+  const curNotes=[]; if(c.cur.atk) curNotes.push('El técnico juega a desgano: −2 Ataque y −2 Defensa.'); if(c.cur.tactica) curNotes.push('El grupo pide 4 o más en Defensa (arquero incluido) o −1 Moral.'); if(c.cur.minus2Random) curNotes.push('El hijo del dirigente: un titular al azar jugará con −2.'); if(c.cur.gkMinus2) curNotes.push('El arquero juega con −2 por el video viral.'); if(c.cur.bets) curNotes.push('Hay apuestas: ±2 Reputación según el resultado.');
+  const av=c.squad.filter(s=>!s.retired);
+  app.innerHTML=head(c,'Alineación')+`
+  <div class="meters"><div class="meter"><span>Ataque</span><b>${stat.a}</b></div><div class="meter def"><span>Defensa</span><b>${stat.d}</b></div></div>
+  <p class="vs-note">${cl?'<b>Clásico</b> · ':''}${home?'Local':'Visita'} contra ${oppInfo}. Los totales no incluyen el Evento (se revela después) ni bonos de partido como el de local.</p>
+  ${curNotes.length?`<div class="plain-card dra section"><div class="ty">Para esta Fecha</div>${curNotes.map(n=>`<p>${esc(n)}</p>`).join('')}</div>`:''}
+  <p class="small muted section">Elegí 7: 1 en el Arco y el resto en Defensa o Ataque. Fuera de su puesto, un jugador suma la mitad. Volantes de Contención y Comodines rinden completo en las dos líneas. Una Excusa caerá sobre un titular al azar.</p>
+  <div class="cards">${av.map(s=>{ const k=CARDS[s.id], sl=slotOf(s.id), ok=available(G,c,s);
+    const vD=lineValue(G,c,s,'D','D'), vA=lineValue(G,c,s,'A','A'), vG=lineValue(G,c,s,'D','G');
+    const shown= sl==='G'?vG: sl==='D'?vD: sl==='A'?vA : (POS[k.pos].line==='D'?(isGK(k)?vG:vD):vA);
+    return cardHTML(k,{sq:s,flavor:false,val:shown,cls:(ok?'':'off ')+(sl!=='B'?'sel-'+sl:''),
+      after:`<div class="seg"><button data-sl="B" data-id="${s.id}" class="${sl==='B'?'on':''}" ${ok?'':'disabled'}>Banco</button><button data-sl="G" data-id="${s.id}" class="${sl==='G'?'on':''}" ${ok?'':'disabled'} title="Valor en el arco: ${vG}">Arco ${vG}</button><button data-sl="D" data-id="${s.id}" class="${sl==='D'?'on':''}" ${ok?'':'disabled'}>Def ${vD}</button><button data-sl="A" data-id="${s.id}" class="${sl==='A'?'on':''}" ${ok?'':'disabled'}>Ata ${vA}</button></div>`}); }).join('')}</div>`;
+  document.querySelectorAll('[data-sl]').forEach(b=>b.onclick=()=>{ const id=b.dataset.id, to=b.dataset.sl;
+    if(L.gk===id) L.gk=null; L.D=L.D.filter(x=>x!==id); L.A=L.A.filter(x=>x!==id);
+    if(to==='G'){ if(L.gk) {/* el anterior arquero va al banco */} L.gk=id; } else if(to==='D') L.D.push(id); else if(to==='A') L.A.push(id);
+    render(); });
+  setAction(`<span class="problems">${probs.map(esc).join(' · ')}</span><span class="row"><button class="btn alt" id="sug">Sugerida</button><button class="btn" id="go" ${probs.length?'disabled':''}>Confirmar alineación</button></span>`);
+  $('#sug').onclick=()=>{ autoLineup(G,c); UI.lineup={gk:c.lineup.gk,D:c.lineup.D.slice(),A:c.lineup.A.slice()}; c.lineup=null; render(); };
+  $('#go').onclick=()=>{ snapshot(); c.lineup={gk:L.gk,D:L.D.slice(),A:L.A.slice()}; finalizeLineup(G,c); advance(); };
+}
+
+// ---------- excusa ----------
+function screenExcuse(app,c){
+  if(!c.excuse) { rollExcuse(G,c); save(); }
+  const ex=c.excuse;
+  if(ex.skip){ app.innerHTML=head(c,'La Excusa')+`<p>Esta Fecha no hay Excusa para ${esc(clubName(c.i))}.</p>`; setAction(`<span></span><button class="btn" id="go">Seguir</button>`); $('#go').onclick=()=>{snapshot();resolveExcuse(G,c,'ok');advance()}; return; }
+  const k=CARDS[ex.sid], e=EXC[ex.eid], sq=c.squad.find(s=>s.id===ex.sid);
+  if(UI.pickRep){
+    const L=c.lineup, slot=L.gk===ex.sid?'G':L.D.includes(ex.sid)?'D':'A', line=slot==='A'?'A':'D';
+    const bench=c.squad.filter(s=>available(G,c,s)&&s.id!==ex.sid&&!L.played.includes(s.id));
+    app.innerHTML=head(c,'¿Quién entra?')+`<p>${esc(k.short)} no juega. Elegí quién lo reemplaza ${slot==='G'?'en el arco':slot==='D'?'en Defensa':'en Ataque'}.</p>
+    <div class="cards section">${bench.map(s=>cardHTML(CARDS[s.id],{sq:s,flavor:false,val:lineValue(G,c,s,line,slot),cls:UI.sel===s.id?'sel-'+slot:'',after:`<div class="seg" style="grid-template-columns:1fr"><button data-rep="${s.id}" class="${UI.sel===s.id?'on':''}">${UI.sel===s.id?'Entra':'Elegir'}</button></div>`})).join('')||'<p class="muted">No hay nadie disponible en el banco.</p>'}</div>`;
+    document.querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>{UI.sel=b.dataset.rep;render()});
+    setAction(`<button class="btn alt" id="none">Jugar con uno menos</button><button class="btn" id="go" ${UI.sel?'':'disabled'}>Confirmar cambio</button>`);
+    $('#none').onclick=()=>{snapshot();resolveExcuse(G,c,'accept',null);advance()};
+    $('#go').onclick=()=>{snapshot();resolveExcuse(G,c,'accept',UI.sel);advance()};
+    return;
+  }
+  const ops=excuseOptions(G,c);
+  const immune=ex.state==='immune';
+  app.innerHTML=head(c,'La Excusa')+resBar(c)+`
+  <p class="section">Le toca a un titular al azar: <b>${esc(k.name)}</b>.</p>
+  <div class="grid2 section"><div>${cardHTML(k,{sq,cls:'big',flavor:false})}</div><div>
+   ${plainCard('exc','Excusa',e)}
+   ${ex.alt?`<p class="small muted">Reinaldo juega en dos ligas: se robaron dos («${esc(EXC[ex.alt].n)}» y «${esc(e.n)}») y se aplica la peor.</p>`:''}
+   ${ex.die?`<p>Dado: <span class="die" style="background:var(--pitch);color:var(--chalk)">${ex.die}</span> ${ex.die<=3?'— llega tarde':'— llega a tiempo'}</p>`:''}
+   ${immune?`<p class="tag good" style="font-size:.95rem">${esc(k.short)} es inmune a esta Excusa.</p>`:''}
+  </div></div>`;
+  setAction(`<span></span><span class="row">${ops.map(o=>`<button class="btn ${o.id==='accept'?'alt':''}" data-ex="${o.id}" ${o.ok===false?'disabled':''}>${esc(o.l)}</button>`).join('')}</span>`);
+  document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{ const id=b.dataset.ex;
+    if(id==='accept' && ['out','outRep','pay1','moral1'].includes(e.k)){ UI.pickRep=true; UI.sel=null; render(); return; }
+    snapshot(); resolveExcuse(G,c,id==='ok'?'ok':id); advance(); });
+}
+
+// ---------- jornada (compartida) ----------
+function matchCard(r){
+  const H=G.clubs[r.h],A=G.clubs[r.a], mgd=H.ctrl!=='vecino'||A.ctrl!=='vecino';
+  const key=G.fecha+'-'+r.h, rev=UI.reveal[key];
+  const shown = rev==null ? (mgd?0:r.n) : rev;
+  const g=[0,0]; r.oc.slice(0,shown).forEach(o=>o.lines.forEach(l=>{if(l.goal)g[l.k]++}));
+  const cl=r.clasico>=0?CLASICO_PAIRS[r.clasico]:null;
+  const done=shown>=r.n;
+  const lineHTML=(l,right)=>`<div class="cmp ${right?'r':''}"><span><span class="code">${CLUBS[l.k===0?r.h:r.a].sh}</span>${l.atk}+<span class="die">${l.rA}</span> vs ${l.def}+<span class="die">${l.rD}</span></span>${l.goal?`<span class="goal">GOL${l.scorer?' '+esc(CARDS[l.scorer].short):''}</span>`:`<span class="miss">${l.anul?'anulado':'no'}</span>`}${l.note||l.mods.length?`<span class="mods">${esc([l.note,...l.mods].filter(Boolean).join(' · '))}</span>`:''}</div>`;
+  return `<div class="board" style="margin-bottom:12px">
+   ${cl?`<p style="position:relative;z-index:1;margin:0 0 8px;font-family:var(--display);font-size:.85rem;color:var(--amarillo)">${esc(cl[2])}${r.clCard?' · '+esc(CLA[r.clCard].n):''}</p>`:''}
+   <div class="score"><div class="team">${crest(r.h)}<div>${esc(clubName(r.h))}<div class="sub">Local · A ${r.sides[0].atk} / D ${r.sides[0].def}</div></div></div><div class="nums">${g[0]} : ${g[1]}</div><div class="team away"><div>${esc(clubName(r.a))}<div class="sub">Visita · A ${r.sides[1].atk} / D ${r.sides[1].def}</div></div>${crest(r.a)}</div></div>
+   <div class="ocs">${r.oc.slice(0,shown).map((o,i)=>`<div class="oc ${i===shown-1&&rev!=null?'fresh':''}">${lineHTML(o.lines[0])}<div class="lbl">${i+1}ª</div>${lineHTML(o.lines[1],true)}</div>`).join('')}</div>
+   <div class="row" style="position:relative;z-index:1;margin-top:10px">${!done?`<button class="btn sm" style="background:var(--chalk);color:var(--pitch)" data-step="${key}" data-n="${r.n}">${shown===0?'Patear la 1ª ocasión':`Ocasión ${shown+1}`}</button><button class="btn sm alt" data-all="${key}" data-n="${r.n}">Ver completo</button>`:''}</div>
+   ${clCard(r)}
+  </div>
+  ${done?`${r.post.length?`<ul class="post">${r.post.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
+  <details class="why"><summary>Cómo se calcularon Ataque y Defensa</summary><div class="why-grid">${[0,1].map(k=>`<div><b>${esc(CLUBS[r.sides[k].ci].n)}</b><table><tr><td colspan="2"><b>Ataque ${r.sides[k].atk}</b></td></tr>${r.sides[k].bA.map(([l,v])=>`<tr><td>${esc(l)}</td><td>${sg(v)}</td></tr>`).join('')}<tr><td colspan="2"><b>Defensa ${r.sides[k].def}</b></td></tr>${r.sides[k].bD.map(([l,v])=>`<tr><td>${esc(l)}</td><td>${sg(v)}</td></tr>`).join('')}</table></div>`).join('')}</div></details>`:''}`;
+}
+const clCard=r=>'';
+function screenFecha(app){
+  const res=G.results[G.fecha]||[];
+  const mine=res.filter(r=>G.clubs[r.h].ctrl!=='vecino'||G.clubs[r.a].ctrl!=='vecino');
+  const vv=res.filter(r=>!mine.includes(r));
+  const allDone=mine.every(r=>(UI.reveal[G.fecha+'-'+r.h]||0)>=r.n);
+  app.innerHTML=`<div class="screen-head"><div><div class="kicker">${phaseLabel()}</div><h2>${G.fecha===CLASICO_FECHA?'La Fecha de los Clásicos':'Se juega la Fecha '+G.fecha}</h2></div></div>
+  <div style="max-width:560px">${plainCard('evt','Evento de la Fecha',EVT[G.event])}</div>
+  ${vv.length?`<div class="section"><h3>Clubes Vecinos (ya resueltos)</h3><div class="match-list">${vv.map(r=>`<div class="mrow"><div class="line"><div class="h">${crest(r.h,true)}${esc(clubName(r.h))}</div><div class="res">${r.g[0]} : ${r.g[1]}</div><div class="a">${esc(clubName(r.a))}${crest(r.a,true)}</div></div></div>`).join('')}</div></div>`:''}
+  <div class="section"><h3>Partidos con clubes gestionados</h3>${mine.map(matchCard).join('')}</div>`;
+  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ const k=b.dataset.step; UI.reveal[k]=Math.min(+b.dataset.n,(UI.reveal[k]||0)+1); render(); });
+  document.querySelectorAll('[data-all]').forEach(b=>b.onclick=()=>{ UI.reveal[b.dataset.all]=+b.dataset.n; render(); });
+  setAction(`<button class="btn alt" id="revAll">${allDone?'Partidos vistos':'Ver todos los resultados'}</button><button class="btn" id="go" ${allDone?'':'disabled'}>Ir al Tercer Tiempo</button>`);
+  $('#revAll').onclick=()=>{ mine.forEach(r=>UI.reveal[G.fecha+'-'+r.h]=r.n); render(); };
+  $('#go').onclick=()=>{ snapshot(); G.queue.shift(); UI.reveal={}; startPhase2(G); UI.gate=null; save(); render(); window.scrollTo({top:0}); };
+}
+
+// ---------- Tercer Tiempo ----------
+function screenTT(app,c){
+  if(!UI.tt) UI.tt={invest:Math.min(1,Math.max(0,c.money)),fisca:null,drama:c.dramas.map(()=>null),spo:null,favor:false,offer:false};
+  const d=UI.tt;
+  const last=c.res[c.res.length-1], lr=(G.results[G.fecha]||[]).find(r=>r.h===c.i||r.a===c.i);
+  const resTxt=lr?`${clubName(lr.h)} ${lr.g[0]}-${lr.g[1]} ${clubName(lr.a)}`:'';
+  const p=ttPreview(G,c,d.invest);
+  const fc=c.sponsor==='ferre'?2:3;
+  // costo comprometido para validar
+  let committed=d.invest+(d.fisca==='pay'?fc:0)+(d.spo?sponsorCost(c):0);
+  c.dramas.forEach((id,k)=>{ const ch=d.drama[k]; if(ch==null) return; const lbl=dramaOptions(G,c,id)[ch].l; const m=lbl.match(/Pagar (\d) dinero/); if(m) committed+=+m[1]; });
+  const missing=[]; if(G.event==='fisca'&&!d.fisca) missing.push('Decidí la Fiscalización');
+  c.dramas.forEach((id,k)=>{ const ops=dramaOptions(G,c,id); if(ops.length>1&&d.drama[k]==null) missing.push('Resolvé «'+DRA[id].n+'»'); });
+  if(committed>c.money) missing.push('No te alcanza el dinero para todo eso');
+  const objState=c.objDone?'<span class="tag good">Cumplido</span>':c.objFailed?'<span class="tag bad">Ya no se puede cumplir</span>':'<span class="tag">En juego</span>';
+  if(d.offer&&!c.spoOffer){ c.spoOffer=[G.decks.spo.pop(),G.decks.spo.pop()].filter(Boolean); save(); }
+  app.innerHTML=head(c,'El Tercer Tiempo')+resBar(c)+`
+  <p class="section"><b>${last==='W'?'Ganaron':last==='D'?'Empataron':'Perdieron'}</b>: ${esc(resTxt)}.</p>
+  <div class="section"><h3>Inversión social</h3><p class="muted small">Cada dinero que ponés en el asado vuelve como Reputación. Si ponés 3, además suma +1 Hinchada Fiel (que da bono de local).</p>
+   <div class="row"><div class="stepper"><button id="invM" aria-label="Menos">−</button><b>${d.invest}</b><button id="invP" aria-label="Más">+</button></div><span>→ +${p.rep} Reputación${p.hinch?' y +1 Hinchada Fiel':''}</span><span class="small muted">${p.parts.filter(x=>x[0]!=='Inversión').map(x=>`${esc(x[0])} ${sg(x[1])}`).join(' · ')}</span></div></div>
+  ${G.event==='fisca'?`<div class="section"><h3>Fiscalización Municipal</h3><div class="opts">${[['pay',`Pagar ${fc} dinero`,c.money>=fc],['rep','Perder 2 de Reputación',true]].map(([v,l,ok])=>`<div class="opt ${d.fisca===v?'on':''} ${ok?'':'dis'}" data-fisca="${v}" ${ok?'':'aria-disabled="true"'}>${esc(l)}</div>`).join('')}</div></div>`:''}
+  ${c.dramas.length?`<div class="section"><h3>Drama en el grupo</h3>${c.dramas.map((id,k)=>{ const ops=dramaOptions(G,c,id); return plainCard('dra','Drama',DRA[id],{after:ops.length>1?`<div class="opts">${ops.map((o,j)=>{const ok=!o.ok||o.ok();return `<div class="opt ${d.drama[k]===j?'on':''} ${ok?'':'dis'}" data-dr="${k}" data-j="${j}">${esc(o.l)}</div>`}).join('')}</div>`:'<p class="small muted">Se aplica al confirmar.</p>'}); }).join('')}</div>`:''}
+  <div class="section"><h3>Auspiciador</h3>${c.sponsor?plainCard('spo','Activo',SPO[c.sponsor]):'<p class="muted">Sin auspiciador.</p>'}
+   ${G.fecha<=6?(c.spoOffer?`<p class="small muted section">Firmar uno nuevo cuesta ${sponsorCost(c)} dinero${c.sponsor?` y ${sponsorBreakRep(c)} de Reputación por romper el actual`:''}.</p><div class="grid2">${c.spoOffer.map(id=>plainCard('spo','Oferta',SPO[id],{cls:'choice'+(d.spo===id?' on':''),attrs:`data-spoo="${id}" tabindex="0" role="button"`})).join('')}</div>${d.spo?'<button class="btn ghost sm section" id="spoNo">Quedarme con el actual</button>':''}`:`<button class="btn alt sm section" id="spoLook">Buscar otro auspiciador</button>`):''}</div>
+  <div class="section"><h3>Pedir un Favor al barrio</h3><label class="toggle"><input type="checkbox" id="fav" ${d.favor?'checked':''} ${c.rep>=favorCost(c)?'':'disabled'}> Cambiar ${favorCost(c)} de Reputación por 1 Favor (sirve para fichar y para algunos Dramas)</label></div>
+  <div class="section"><h3>Tu Promesa al Barrio ${objState}</h3><div style="max-width:520px">${plainCard('obj','Objetivo secreto',OBJ[c.obj])}</div></div>`;
+  $('#invM').onclick=()=>{d.invest=Math.max(0,d.invest-1);render()};
+  $('#invP').onclick=()=>{d.invest=Math.min(3,c.money,d.invest+1);render()};
+  document.querySelectorAll('[data-fisca]').forEach(el=>el.onclick=()=>{ if(el.classList.contains('dis'))return; d.fisca=el.dataset.fisca; render(); });
+  document.querySelectorAll('[data-dr]').forEach(el=>el.onclick=()=>{ if(el.classList.contains('dis'))return; d.drama[+el.dataset.dr]=+el.dataset.j; render(); });
+  document.querySelectorAll('[data-spoo]').forEach(el=>{ const f=()=>{ d.spo=el.dataset.spoo; render(); }; el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')f()}; });
+  const sl=$('#spoLook'); if(sl) sl.onclick=()=>{ d.offer=true; render(); };
+  const sn=$('#spoNo'); if(sn) sn.onclick=()=>{ d.spo=null; render(); };
+  $('#fav').onchange=e=>{d.favor=e.target.checked;render()};
+  setAction(`<span class="problems">${missing.map(esc).join(' · ')}</span><button class="btn" id="go" ${missing.length?'disabled':''}>Cerrar el Tercer Tiempo</button>`);
+  $('#go').onclick=()=>{ snapshot(); applyTT(G,c,{invest:d.invest,fisca:d.fisca,drama:d.drama,spo:d.spo,favor:d.favor}); advance(); };
+}
+
+// ---------- fin ----------
+function screenEnd(app){
+  const t=table(G), ch=t[0];
+  app.innerHTML=`<div class="champ"><div class="kicker" style="color:#4A3B05">Campeón del barrio</div>${crest(ch.i)}<h2>${esc(clubName(ch.i))}</h2><p>${esc(ctrlLabel(ch))} · ${pts(ch)} puntos</p></div>
+  <div class="panel">${tableHTML(false)}</div>
+  <div class="section"><h3>Copas de Lata</h3>${rivalryHTML()}</div>
+  <div class="section"><h3>Promesas al Barrio</h3><div class="grid2">${managedClubs(G).map(c=>plainCard('obj',clubName(c.i)+' · '+(c.objDone?'cumplida':'no cumplida'),OBJ[c.obj])).join('')}</div></div>
+  <div class="section panel"><h3>Números de la liga</h3><p>${G.stats.matches} partidos · ${(G.stats.goals/Math.max(1,G.stats.matches)).toFixed(2)} goles por partido · semilla ${G.seed}</p></div>`;
+  setAction(`<button class="btn alt" data-sheet="registro">Ver registro completo</button><button class="btn" data-act="new">Nueva liga</button>`);
+  bindSheetButtons();
+}
+
+// ---------- hojas ----------
+function openSheet(which){
+  const d=$('#sheet'), b=$('#sheetBody'), t=$('#sheetTitle');
+  const map={tabla:['Tabla de posiciones',sheetTabla],fixture:['Fixture',sheetFixture],clubes:['Clubes',sheetClubes],registro:['Registro de la liga',sheetLog],reglas:['Reglas y ajustes',sheetReglas],lab:['Laboratorio de balance',sheetLab],menu:['Opciones',sheetMenu],cartas:['Todas las cartas',sheetCartas]};
+  const [title,fn]=map[which]; t.textContent=title; b.innerHTML=fn(); d.dataset.which=which;
+  if(!d.open) d.showModal(); bindSheet(which);
+}
+function closeSheet(){ const d=$('#sheet'); if(d.open) d.close(); }
+function bindSheetButtons(){ document.querySelectorAll('[data-sheet]').forEach(b=>b.onclick=()=>openSheet(b.dataset.sheet)); }
+function sheetTabla(){ if(!G) return '<p>No hay liga en curso.</p>'; return tableHTML(false)+`<p class="small muted">Desempate: diferencia de gol, goles a favor, resultado entre ellos, Reputación, Hinchada Fiel.</p><div class="section"><h3>Rivalidades</h3>${rivalryHTML()}</div>`; }
+function sheetFixture(){ if(!G) return '<p>No hay liga en curso.</p>';
+  return FIXTURE.map((fx,i)=>`<div class="section"><h3>Fecha ${i+1}${i+1===CLASICO_FECHA?' · Clásicos':''}</h3><div class="match-list">${fx.map(([h,a])=>{ const r=(G.results[i+1]||[]).find(x=>x.h===h&&x.a===a); const cl=i+1===CLASICO_FECHA&&CLASICO_PAIRS.some(p=>(p[0]===h&&p[1]===a)||(p[0]===a&&p[1]===h)); const showRes=r&&(G.fecha>i+1||G.phase!=='matches'||G.queue[0]?.what!=='fecha'); return `<div class="mrow ${cl?'cl':''}"><div class="line"><div class="h">${crest(h,true)}${esc(clubName(h))}</div><div class="res">${showRes?r.g[0]+' : '+r.g[1]:'—'}</div><div class="a">${esc(clubName(a))}${crest(a,true)}</div></div></div>`; }).join('')}</div></div>`).join(''); }
+function sheetClubes(){ if(!G) return '<p>No hay liga en curso.</p>';
+  const vis=c=>G.phase==='end'||c.objPublic||c.objDone;
+  return `<div class="tabs" id="clubTabs">${managedClubs(G).map((c,k)=>`<button data-ct="${c.i}" class="${(UI.clubTab??managedClubs(G)[0].i)===c.i?'on':''}">${esc(CLUBS[c.i].sh)} · ${esc(shortCtrl(c))}</button>`).join('')}</div>`+
+  managedClubs(G).filter(c=>c.i===(UI.clubTab??managedClubs(G)[0].i)).map(c=>`<div class="section"><div class="who row">${crest(c.i)}<div><h3>${esc(clubName(c.i))}</h3><p class="muted small">"${esc(CLUBS[c.i].m)}"</p></div></div>${resBar(c)}
+   <div class="grid2 section"><div>${c.sponsor?plainCard('spo','Auspiciador',SPO[c.sponsor]):'<p class="muted">Sin auspiciador.</p>'}</div><div>${vis(c)?plainCard('obj','Objetivo'+(c.objDone?' (cumplido)':''),OBJ[c.obj]):'<div class="plain-card obj"><div class="ty">Objetivo secreto</div><p class="muted">Boca abajo.</p></div>'}</div></div>
+   <div class="section cards">${c.squad.map(s=>cardHTML(CARDS[s.id],{sq:s,flavor:false})).join('')}</div>
+   <p class="small muted">Resultados: ${c.res.map(r=>({W:'G',D:'E',L:'P'})[r]).join(' ')||'—'}</p></div>`).join(''); }
+function sheetLog(){ if(!G) return '<p>No hay liga en curso.</p>'; return `<div class="log">${G.log.slice().reverse().map(l=>`<div class="${l.c}">${l.f?`<span class="muted small">F${l.f} · </span>`:''}${esc(l.t)}</div>`).join('')}</div>`; }
+function sheetMenu(){
+  return `<div class="opts">
+   <button class="btn alt" data-sheet="fixture">Fixture completo</button>
+   <button class="btn alt" data-sheet="registro">Registro de la liga</button>
+   <button class="btn alt" data-sheet="cartas">Todas las cartas</button>
+   <button class="btn alt" data-sheet="reglas">Reglas y ajustes</button>
+   <button class="btn alt" data-sheet="lab">Laboratorio de balance</button>
+   <button class="btn alt" id="mUndo" ${UNDO.length?'':'disabled'}>Deshacer la última decisión</button>
+   ${G&&G.phase!=='end'?'<button class="btn alt" id="mBots">Que los bots jueguen el resto de la liga</button>':''}
+   <button class="btn alt" id="mPriv">${G&&G.privacy?'Quitar':'Activar'} pantalla de privacidad</button>
+   <button class="btn alt" id="mTheme">Tema: ${document.documentElement.getAttribute('data-theme')||'automático'}</button>
+   <button class="btn alt" id="mExport">Copiar estado (JSON) para reportar un bug</button>
+   <button class="btn warn" id="mNew">Nueva liga</button></div>`;
+}
+function sheetCartas(){
+  const sec=(t,h)=>`<div class="section"><h3>${t}</h3>${h}</div>`;
+  return sec('Plantilla Base (48)',`<div class="cards">${BASE_RAW.map(r=>cardHTML(CARDS[r[0]])).join('')}</div>`)+
+   sec('Jugadores Libres (30)',`<div class="cards">${LIBRES_RAW.map(r=>cardHTML(CARDS[r[0]],{cost:{m:CARDS[r[0]].cm,f:CARDS[r[0]].cf}})).join('')}</div>`)+
+   [['Eventos',EVENTOS,'evt'],['Excusas',EXCUSAS,'exc'],['Auspiciadores',SPONSORS,'spo'],['Dramas',DRAMAS,'dra'],['Promesas al Barrio',OBJETIVOS,'obj'],['Clásicos',CLASICOS,'cla']].map(([t,a,k])=>sec(`${t} (${a.length})`,`<div class="grid2">${a.map(x=>plainCard(k,t.replace(/s$/,''),x)).join('')}</div>`)).join('');
+}
+function sheetReglas(){ return RULES_HTML; }
+function sheetLab(){
+  const r=UI.labRes;
+  return `<p>Corre ligas completas con bots en todos los clubes gestionados y muestra cómo queda el balance. Sirve para probar cambios en los números antes de jugarlos en mesa.</p>
+  <div class="grid2 section"><label class="field">Clubes gestionados (resto Vecinos)<select id="labN">${[1,2,3,4,5,6].map(n=>`<option ${n===3?'selected':''}>${n}</option>`).join('')}</select></label><label class="field">Ligas a simular<select id="labL"><option>50</option><option selected>200</option><option>500</option></select></label>
+  <label class="field">Vecino: Nivel + (Ataque)<input id="labVA" type="number" value="${CFG.VEC_ATK}"></label><label class="field">Vecino: Nivel + (Defensa)<input id="labVD" type="number" value="${CFG.VEC_DEF}"></label>
+  <label class="field">Base de Defensa ("el arco")<input id="labDB" type="number" value="${CFG.DEF_BASE}"></label><label class="field">Físico recuperado al descansar<input id="labRR" type="number" value="${CFG.REST_REC}"></label></div>
+  <p class="small muted">Los valores cambian también para la liga en curso desde la próxima jugada. Se reinician al recargar la página.</p>
+  <button class="btn section" id="labGo">Simular</button>
+  <div id="labOut" class="section lab-out">${r?labHTML(r):''}</div>`;
+}
+function labHTML(a){ const hv=a.hvv,t=hv.w+hv.d+hv.l||1; const top=Object.entries(a.scoreDist).sort((x,y)=>y[1]-x[1]).slice(0,6);
+  return `<table><tr><td>Goles por partido</td><td><b>${(a.goals/a.matches).toFixed(2)}</b></td></tr><tr><td>Empates</td><td><b>${(100*a.draws/a.matches).toFixed(0)}%</b></td></tr>
+  <tr><td>Gestionado vs Vecino (gana / empata / pierde)</td><td><b>${[hv.w,hv.d,hv.l].map(x=>Math.round(100*x/t)+'%').join(' / ')}</b></td></tr>
+  <tr><td>Campeón: club gestionado</td><td><b>${Math.round(100*a.champ.mgd/a.leagues)}%</b></td></tr>
+  <tr><td>Penalización media por Físico en la alineación</td><td><b>${(a.fisPen/a.fisN).toFixed(1)}</b></td></tr>
+  <tr><td>Dinero / Reputación al final (promedio)</td><td><b>${(a.money/a.mgdN).toFixed(1)} / ${(a.rep/a.mgdN).toFixed(1)}</b></td></tr>
+  <tr><td>Fichajes por club</td><td><b>${(a.libres/a.mgdN).toFixed(1)}</b></td></tr>
+  <tr><td>Marcadores más comunes</td><td><b>${top.map(([k,v])=>k+' ('+Math.round(100*v/a.matches)+'%)').join(', ')}</b></td></tr></table>`; }
+function bindSheet(which){
+  bindGlobal();
+  if(which==='clubes') document.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{UI.clubTab=+b.dataset.ct;openSheet('clubes')});
+  if(which==='menu'){
+    const on=(id,f)=>{const el=$('#'+id); if(el) el.onclick=f;};
+    on('mUndo',()=>{closeSheet();undo()});
+    on('mBots',()=>{ if(!confirm('Todos los clubes humanos pasan a Bot y la liga se juega sola hasta el final. ¿Seguir?')) return; snapshot(); humanClubs(G).forEach(c=>c.ctrl='bot'); let g=0; while(G.phase!=='end'&&g++<60){ runBots(G); const t=G.queue[0]; if(t&&t.type==='show'&&t.what==='fecha'){G.queue.shift();startPhase2(G)} else if(!t||t.type==='show') break; } resetUI(); save(); closeSheet(); render(); });
+    on('mPriv',()=>{ if(G){G.privacy=!G.privacy;save();} openSheet('menu'); render(); });
+    on('mTheme',()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nx=cur===null?'dark':cur==='dark'?'light':null; try{ if(nx) localStorage.setItem(TKEY,nx); else localStorage.removeItem(TKEY);}catch(e){} applyTheme(); openSheet('menu'); });
+    on('mExport',async()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(G)); toast('Estado copiado al portapapeles'); }catch(e){ toast('No se pudo copiar'); } });
+    on('mNew',newLeague);
+  }
+  if(which==='lab'){ $('#labGo').onclick=()=>{ const n=+$('#labN').value, L=+$('#labL').value;
+    CFG.VEC_ATK=+$('#labVA').value; CFG.VEC_DEF=+$('#labVD').value; CFG.DEF_BASE=+$('#labDB').value; CFG.REST_REC=+$('#labRR').value;
+    $('#labOut').textContent='Simulando…'; setTimeout(()=>{ const seats=Array.from({length:6},(_,i)=>i<n?'bot':'vecino'); UI.labRes=simLeagues(L,seats,Date.now()%100000); $('#labOut').innerHTML=labHTML(UI.labRes); },30); }; }
+}
+
+$('#sheetClose').onclick=closeSheet;
+$('#sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
+document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.target.matches('input')){ e.preventDefault(); undo(); } });
+bindSheetButtons();
+applyTheme(); load();
+try{ if(G && !G.queue) G=null; }catch(e){G=null}
+render();
+
+</script>
+</body>
+</html>
