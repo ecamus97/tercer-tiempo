@@ -6,7 +6,7 @@
 <title>Tercer Tiempo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#E6ECE3; --surface:#F6F8F2; --surface2:#EDF1E9; --ink:#1B2D22; --muted:#56685C; --line:#C6D1C4;
@@ -398,6 +398,124 @@ h3{font-family:var(--body);font-weight:700;font-size:1.08rem;letter-spacing:0}
 .rollres{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface2);font-weight:700}
 .evnote{font-size:.85rem;opacity:.85;margin-top:4px}
 .left{font-size:.78rem;font-weight:700;opacity:.9}
+
+/* ====== v4: estilo app de fútbol pro ====== */
+:root{
+  --bg:#EEF2EF; --surface:#FFFFFF; --surface2:#F3F6F4; --ink:#0D1912; --muted:#5D6E65; --line:#DCE3DF;
+  --pitch:#0F7A3F; --pitch-ink:#FFFFFF; --acc:#12A150; --acc-ink:#FFFFFF; --gold:#C99700; --bad:#D23B4B; --good:#12A150;
+  --hero1:#0B3A24; --hero2:#06150D; --glow:rgba(43,212,106,.35);
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif; --body:'Barlow',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#070D0A; --surface:#101A15; --surface2:#16231C; --ink:#EAF2EC; --muted:#8B9E93; --line:#1F2F26;
+  --pitch:#0F5F33; --acc:#2BD46A; --acc-ink:#04140A; --gold:#F2C230; --bad:#FF5A6A; --good:#2BD46A; } }
+:root[data-theme="dark"]{
+  --bg:#070D0A; --surface:#101A15; --surface2:#16231C; --ink:#EAF2EC; --muted:#8B9E93; --line:#1F2F26;
+  --pitch:#0F5F33; --acc:#2BD46A; --acc-ink:#04140A; --gold:#F2C230; --bad:#FF5A6A; --good:#2BD46A; }
+body{font-size:16px}
+h1,h2,.brand,.track span,.zone .zh b,.score .nums,.coin b,.tile b,.pc .val,.tok .tv,.res-hero b,.stepper b{font-family:var(--display);font-weight:800;letter-spacing:.01em}
+h2{font-size:1.85rem;text-transform:uppercase;letter-spacing:.02em}
+.kicker{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+header.top{background:linear-gradient(180deg,#0B2A1B,#07140D);border-bottom:1px solid rgba(43,212,106,.35);box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+body::before{background:#0B2A1B}
+.brand{font-size:1.45rem;text-transform:uppercase;letter-spacing:.04em}
+.brand .ball{background:#2BD46A;box-shadow:0 0 12px rgba(43,212,106,.6)}
+.brand .ball::after{background:#07140D}
+.track span{font-size:.95rem;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(234,242,236,.55)}
+.track span.now{background:#2BD46A;color:#04140A;box-shadow:0 0 14px rgba(43,212,106,.5)}
+.track span.done{background:rgba(255,255,255,.12);color:#EAF2EC}
+.track span.cl{box-shadow:inset 0 -3px 0 #F2C230}
+.navbtns button{border-color:rgba(255,255,255,.18);font-weight:700}
+.btn{background:var(--acc);color:var(--acc-ink);border-radius:12px;font-weight:700;letter-spacing:.01em;box-shadow:0 6px 18px -10px var(--glow)}
+.btn.alt{background:var(--surface2);color:var(--ink);box-shadow:none}
+.panel,.blk,.bench,.opp,.coin,.bars,.mini,.seat2,.xc,.pc{border-radius:16px}
+.panel h3,.blk>h3{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.steps span{border-radius:10px;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem}
+.steps span.now{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.steps span.done{color:var(--acc);border-color:var(--acc)}
+.hero{background:radial-gradient(120% 90% at 80% 0%,#1B6B3E 0%,var(--hero1) 45%,var(--hero2) 100%);border:1px solid rgba(43,212,106,.25)}
+.hero h1{font-size:clamp(3rem,10vw,5.6rem);text-transform:uppercase;line-height:.85}
+.hero h1 span{color:#2BD46A}
+.hero .lines{border-color:rgba(43,212,106,.18)}
+.actionbar{background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.ev-hero{background:linear-gradient(120deg,#3B2C86,#1D1648);border:1px solid rgba(160,140,255,.25)}
+.ev-hero h3{font-family:var(--display);font-weight:800;font-size:1.6rem;text-transform:uppercase}
+.crest{box-shadow:0 2px 8px rgba(0,0,0,.25);font-family:var(--display);font-weight:800}
+.pitch{background:repeating-linear-gradient(180deg,#147A44 0 56px,#106B3B 56px 112px)}
+:root[data-theme="dark"] .pitch{background:repeating-linear-gradient(180deg,#0E5B32 0 56px,#0B4F2B 56px 112px)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .pitch{background:repeating-linear-gradient(180deg,#0E5B32 0 56px,#0B4F2B 56px 112px)} }
+.zone .zh span{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem}
+.zone .zh b{font-size:2rem}
+.tok{border-radius:14px}
+.tok .tv{border-radius:14px 14px 0 0;font-size:1.45rem}
+table.tb th{text-transform:uppercase;letter-spacing:.06em;font-size:.7rem}
+table.tb td{padding:7px 5px}
+table.tb .pts{font-family:var(--display);font-weight:800;font-size:1.15rem}
+.posbar{width:4px;height:22px;border-radius:2px;background:transparent;display:inline-block;vertical-align:middle}
+.posbar.top{background:var(--acc)} .posbar.bot{background:var(--bad)}
+.form{display:flex;gap:3px;justify-content:flex-end}
+.form i{width:16px;height:16px;border-radius:50%;font-style:normal;font-size:.62rem;font-weight:800;display:grid;place-items:center;color:#fff}
+.form i.W{background:var(--good)} .form i.D{background:#8B9E93} .form i.L{background:var(--bad)}
+.mv{font-size:.7rem;font-weight:800;margin-left:4px} .mv.up{color:var(--good)} .mv.dn{color:var(--bad)}
+
+/* centro de partido */
+.mc{background:radial-gradient(120% 120% at 50% -10%,#18733F 0%,#0C3A22 45%,#071A10 100%);color:#EAF2EC;border-radius:20px;padding:16px 14px 14px;margin-bottom:14px;border:1px solid rgba(43,212,106,.22);box-shadow:0 16px 40px -24px rgba(0,0,0,.7);position:relative;overflow:hidden}
+.mc::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 0%,rgba(255,255,255,.12),transparent);pointer-events:none}
+.mc .cl{position:relative;text-align:center;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#F2C230;font-size:.9rem;margin-bottom:8px}
+.mc-head{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.mc-team{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-weight:700;font-size:.95rem;line-height:1.1}
+.mc-team .crest{width:52px;height:52px;font-size:.8rem}
+.mc-score{text-align:center}
+.mc-score b{display:block;font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;letter-spacing:.04em}
+.mc-score span{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.12)}
+.mc-score span.live{background:#2BD46A;color:#04140A}
+.mc-stats{position:relative;margin:14px 4px 4px;display:flex;flex-direction:column;gap:8px}
+.st-row{display:grid;grid-template-columns:34px 1fr 34px;gap:8px;align-items:center;font-weight:800;font-family:var(--display);font-size:1.1rem}
+.st-row .lab{grid-column:1/-1;text-align:center;font-family:var(--body);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:-4px}
+.st-row .r{text-align:right}
+.st-bars{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.st-bars i{height:6px;border-radius:3px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.st-bars i b{position:absolute;top:0;bottom:0;border-radius:3px}
+.st-bars i:first-child b{right:0;background:#2BD46A}
+.st-bars i:last-child b{left:0;background:#EAF2EC}
+.mc-tl{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.mc-tl::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.14)}
+.ev-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:6px;min-height:34px}
+.ev-row .min{justify-self:center;font-family:var(--display);font-weight:800;font-size:.85rem;background:#071A10;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px 8px;position:relative;z-index:1}
+.ev-row .l{text-align:right} .ev-row .r{text-align:left}
+.ev-row .g{font-weight:700} .ev-row .g::before{content:"⚽ "}
+.ev-row .r .g::before{content:""} .ev-row .r .g::after{content:" ⚽"}
+.ev-row .n{opacity:.4;font-size:.85rem}
+.ev-row .dc{display:block;font-size:.7rem;opacity:.55;font-weight:500}
+.ev-row.fresh{animation:pop .4s ease-out}
+.mc .btnrow{position:relative;margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mc .btnrow .btn{background:#2BD46A;color:#04140A}
+.mc .btnrow .btn.alt{background:rgba(255,255,255,.1);color:#EAF2EC;border:1px solid rgba(255,255,255,.2)}
+.mc-scorers{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:.82rem;opacity:.85}
+.mc-scorers div:last-child{text-align:right}
+/* resumen */
+.seg3{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:3px;margin-bottom:12px}
+.seg3 button{flex:1;border:0;background:transparent;border-radius:9px;padding:9px;font-weight:800;font-family:var(--display);font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.seg3 button.on{background:var(--acc);color:var(--acc-ink)}
+.rlist{display:flex;flex-direction:column;gap:8px}
+.rcard{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:700}
+.rcard .h{display:flex;align-items:center;gap:8px} .rcard .a{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
+.rcard .sc{font-family:var(--display);font-weight:800;font-size:1.5rem;background:var(--surface2);border-radius:10px;padding:2px 12px}
+.rcard.cl{border-color:var(--gold)}
+.rcard .w{color:var(--ink)} .rcard .lose{color:var(--muted);font-weight:500}
+.scorers .tb td:nth-child(3){text-align:left}
+.goals{font-family:var(--display);font-weight:800;font-size:1.2rem}
+.copa{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dotted var(--line);font-size:.9rem}
+
+.cn{display:flex;flex-direction:column;line-height:1.15;font-weight:600}
+.cn small{font-size:.72rem;color:var(--acc);font-weight:700}
+table.tb td.club{min-width:150px;display:table-cell}
+.clubc{display:flex;align-items:center;gap:8px}
+@media (max-width:620px){ table.tb .w{display:none} table.tb td.club{min-width:0} .form i{width:14px;height:14px;font-size:.55rem} h2{font-size:1.5rem} }
+.seg2 button.on,.tile.on,.seg button.on,.tabs button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.tile.on span{color:var(--acc-ink)}
+.opt.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.pc.on,.xc.on{box-shadow:0 0 0 3px var(--acc)}
 </style>
 </head>
 <body>
@@ -640,6 +758,21 @@ const AD = {
  b46:[4,2], b47:[5,2],                                            // extremos que bajan
  l3:[3,3], l5:[3,2], l6:[6,2], l15:[5,2], l16:[2,3], l20:[4,2], l25:[5,2], l29:[4,2],
 };
+
+// Planteles de los Clubes Vecinos (solo se usan cuando el club no lo dirige un jugador). [pos, número, nombre, apodo, apellido]
+const VEC_ROSTER = [
+ [['ARQ',1,'Teodoro','El Tranquilo','Aguirre'],['DEF',2,'Silvestre','Ni Fu Ni Fa','Benítez'],['DEF',4,'Gregorio','El Que Avisa','Montaño'],['VOL',5,'Pancracio','Dale Nomás','Arce'],['VOL',8,'Lisandro','El Cansino','Vaca'],['DEL',9,'Froilán','Sin Apuro','Mendieta'],['DEL',11,'Elmer','El Ya Fue','Gallardo']],
+ [['ARQ',1,'Primitivo','El Obrero','Lazarte'],['DEF',3,'Eusebio','Turno Noche','Ugarte'],['DEF',6,'Clemente','El Sindical','Mercado'],['VOL',5,'Belisario','Horas Extra','Cueto'],['VOL',10,'Jacinto','El Delegado','Prado'],['DEL',9,'Fermín','Primero de Mayo','Orellana'],['DEL',7,'Rigoberto','El Feriado','Saavedra']],
+ [['ARQ',1,'Ernesto','La Parrilla','Medina'],['DEF',2,'Jerónimo','Chimichurri','Acosta'],['DEF',4,'Leoncio','El Carbón','Barrientos'],['VOL',5,'Anatolio','Punto Justo','Escobar'],['VOL',8,'Saturnino','La Achura','Montes'],['DEL',9,'Nemesio','El Chori','Villegas'],['DEL',11,'Melquíades','Vuelta y Vuelta','Ortiz']],
+ [['ARQ',1,'Gervasio','Doble Check','Peralta'],['DEF',2,'Florencio','En Línea','Correa'],['DEF',3,'Isidoro','Escribiendo...','Aranda'],['VOL',6,'Telésforo','El Audio Largo','Bustos'],['VOL',10,'Maximino','El Admin','Figueroa'],['DEL',9,'Sixto','Visto y No Contesta','Galván'],['DEL',11,'Yeferson','El Sticker','Ponce']],
+ [['ARQ',12,'Eulogio','El Paraguas','Sosa'],['DEF',2,'Ruperto','Viento en Contra','Lucero'],['DEF',6,'Tiburcio','El Tornado','Pinto'],['VOL',5,'Venancio','Ráfaga','Carrizo'],['VOL',8,'Arsenio','El Remolino','Godoy'],['DEL',9,'Severino','Huracán','Bravo'],['DEL',7,'Jhon','El Ventarrón','Miranda']],
+ [['ARQ',1,'Evaristo','El Guardabarrera','Rueda'],['DEF',4,'Nazario','El Durmiente','Tapia'],['DEF',2,'Fidel','Andén Dos','Cortez'],['VOL',5,'Desiderio','El Maquinista','Arancibia'],['VOL',10,'Hilario','Locomotora','Burgos'],['DEL',9,'Amancio','El Expreso','Zárate'],['DEL',11,'Domingo','Último Tren','Valdivia']],
+ [['ARQ',1,'Celestino','El Hielo','Vargas'],['DEF',2,'Porfirio','La Previa','Gómez'],['DEF',3,'Justiniano','El Brindis','Robles'],['VOL',5,'Tranquilino','La Sobremesa','Chávez'],['VOL',8,'Policarpo','El Guitarrero','Navarro'],['DEL',9,'Higinio','Una Más y Nos Vamos','Luna'],['DEL',11,'Yordi','El Karaoke','Soria']],
+ [['ARQ',1,'Crisóstomo','El Fondo','Salinas'],['DEF',2,'Albino','El Colero','Arias'],['DEF',6,'Bonifacio','Descenso Directo','Lobos'],['VOL',5,'Epifanio','El Resignado','Méndez'],['VOL',8,'Marcelino','Promedio','Castro'],['DEL',9,'Pascual','El Milagro','Rosales'],['DEL',11,'Jhordan','La Esperanza','Quiñones']],
+];
+const VEC_PLAYERS = {};
+VEC_ROSTER.forEach((r,ci)=>r.forEach((p,k)=>{ const id='v'+ci+'_'+k; VEC_PLAYERS[id]={id,ci,pos:p[0],num:p[1],first:p[2],nick:p[3],last:p[4],short:p[2]+' '+p[4]}; }));
+function personName(id){ const p=VEC_PLAYERS[id]||CARDS[id]; if(!p) return '?'; return p.first?(p.first.replace(/^"Profe" /,'')+' '+p.last):('"'+p.nick+'" '+p.last); }
 function mkCard(r,libre){
   const c={id:r[0],pos:r[1],num:r[2],first:r[3],nick:r[4],last:r[5],val:r[6],fx:r[7],t:r[8],s:r[9],libre};
   if(libre){c.cm=r[10];c.cf=r[11];c.o=r[12]}else c.o=r[10];
@@ -659,8 +792,8 @@ const EXC=BYID(EXCUSAS),EVT=BYID(EVENTOS),SPO=BYID(SPONSORS),DRA=BYID(DRAMAS),OB
 // ================= MOTOR =================
 // Constantes de calibración (ajustadas por simulación; ver panel Laboratorio)
 const CFG = {
-  VEC_ATK: 2, VEC_DEF: 2,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
-  DEF_BASE: 1,              // "El arco": toda Defensa humana suma este fijo
+  VEC_ATK: 2, VEC_DEF: 1,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
+  DEF_BASE: 0,              // "El arco": toda Defensa humana suma este fijo
   REST_REC: 2, FIS_PEN1: 0, VEC_RAMP: true,              // Físico que recupera quien descansa
   INCOME: 2,                // cuota social por Fecha
   GATE: 1,                  // taquilla de local
@@ -734,7 +867,7 @@ function startPre(S){
   const m=managedClubs(S);
   S.market=[];
   const order=shuffle(S,m.map(c=>c.i));
-  m.forEach(c=>{ c.obj=S.decks.obj.pop(); c.spoChoices=drawSponsors(S,3); c.offer=drawLibres(S,3); });
+  m.forEach(c=>{ c.obj=S.decks.obj.pop(); c.spoChoices=drawSponsors(S,3); c.offer=sampleLibres(S,OFFERS); });
   order.forEach(ci=>pushTask(S,{type:'preseason',ci}));
   order.forEach(ci=>pushTask(S,{type:'market',ci}));
   pushTask(S,{type:'auto',fn:'endPre'});
@@ -743,7 +876,9 @@ function startPre(S){
 function spoLeft(S,c){ return c.sponsor? Math.max(0,c.spoUntil-S.fecha) : 0; }
 function drawSponsors(S,n){ const out=[], skip=[]; while(out.length<n && S.decks.spo.length){ const id=S.decks.spo.pop(); if(SPO[id].dur==='c'&&S.fecha>=CLASICO_FECHA-1) skip.push(id); else out.push(id); } S.decks.spo.unshift(...skip); return out; }
 function drawLibres(S,n){ const out=[]; for(let i=0;i<n && S.decks.libres.length;i++) out.push(S.decks.libres.pop()); return out; }
-function returnMarket(S){ S.decks.libres.push(...S.market.filter(id=>id!=='l30')); S.clubs.forEach(c=>{ if(c.offer){ S.decks.libres.push(...c.offer); c.offer=null; } }); shuffle(S,S.decks.libres); S.market=[]; }
+const OFFERS=5;
+function sampleLibres(S,n){ return shuffle(S,S.decks.libres.slice()).slice(0,n); }
+function returnMarket(S){ S.clubs.forEach(c=>c.offer=null); S.market=[]; }
 function marketList(S,c,t){ return t&&t.late ? S.market : (c.offer||[]); }
 
 function signSponsor(S,c,id,initial){
@@ -769,7 +904,7 @@ function signLibre(S,c,id){
   const {m,f}=libreCost(S,c,id);
   c.money-=m; c.favors-=f; if(f>0) c.flags.favSpentNow=true;
   c.squad.push(mkSq(id,S.fecha));
-  S.market=S.market.filter(x=>x!==id); if(c.offer) c.offer=c.offer.filter(x=>x!==id);
+  S.market=S.market.filter(x=>x!==id); S.decks.libres=S.decks.libres.filter(x=>x!==id); S.clubs.forEach(o=>{ if(o.offer) o.offer=o.offer.filter(x=>x!==id); });
   if(CARDS[id].fx==='onesimo') c.next.skipExcuse=true;
   log(S,`${CLUBS[c.i].n} ficha a ${CARDS[id].name} (${m} dinero${f?` + ${f} Favor`:''}).`,'good');
 }
@@ -991,8 +1126,9 @@ function playMatch(S,h,a,ctx){
   return r;
 }
 function slim(sd){return {ci:sd.ci,vec:sd.vec,atk:sd.atk,def:sd.def,bA:sd.bA,bD:sd.bD,players:sd.players.map(p=>({id:p.id,line:p.line,v:p.v}))}}
+const VEC_W={ARQ:0,DEF:1,VOL:2,DEL:4};
 function pickScorer(S,X,o){
-  if(X.vec) return null;
+  if(X.vec){ const r=VEC_ROSTER[X.ci].map((p,k)=>({id:'v'+X.ci+'_'+k,w:VEC_W[p[0]]})); const tot=r.reduce((s,p)=>s+p.w,0); let x=rng(S)*tot; for(const p of r){ x-=p.w; if(x<=0) return p.id; } return r[r.length-1].id; }
   const c=X.players.filter(p=>p.line==='A'&&p.v>0&&p.avail[Math.min(o,6)]);
   const pool=c.length?c:X.players.filter(p=>p.v>0);
   const tot=pool.reduce((s,p)=>s+p.v,0); let x=rng(S)*tot;
@@ -1067,7 +1203,7 @@ function startPhase2(S){
   mgd.forEach(c=>{ c.spoExpiring = !!c.sponsor && S.fecha>=c.spoUntil && S.fecha<7; if(c.spoExpiring) c.spoOffer=drawSponsors(S,3); });
   mgd.forEach(c=>pushTask(S,{type:'tt',ci:c.i}));
   if(S.fecha<=3){
-    mgd.forEach(c=>{ c.offer=drawLibres(S,3); pushTask(S,{type:'market',ci:c.i}); });
+    mgd.forEach(c=>{ c.offer=sampleLibres(S,OFFERS); pushTask(S,{type:'market',ci:c.i}); });
   } else if(S.fecha<=6 && !S.clubs.some(c=>c.squad.some(s=>s.id==='l30'))){
     S.market=['l30'];
     const order=mgd.map(c=>c.i).sort((x,y)=>tablePos(S,y)-tablePos(S,x));
@@ -1214,6 +1350,12 @@ function endLeague(S){
   log(S,`Termina la liga. Campeón: ${CLUBS[t[0].i].n}.`,'big');
 }
 
+// ---------- goleadores ----------
+function topScorers(S,upTo){
+  const m={}; const last=upTo==null?S.fecha:upTo;
+  S.results.forEach((fr,f)=>{ if(!fr||f>last) return; fr.forEach(r=>[0,1].forEach(k=>(r.scorers[k]||[]).forEach(id=>{ const ci=k===0?r.h:r.a; const x=m[id]||(m[id]={id,ci,g:0,last:0}); x.g++; x.last=f; }))); });
+  return Object.values(m).sort((a,b)=>b.g-a.g||a.last-b.last||personName(a.id).localeCompare(personName(b.id)));
+}
 // ---------- tabla ----------
 function pts(c){ return c.st.pg*3+c.st.pe+c.st.adj; }
 function h2h(S,a,b){ let pa=0,pb=0; S.results.forEach(fr=>fr&&fr.forEach(r=>{ if((r.h===a&&r.a===b)||(r.h===b&&r.a===a)){ const ga=r.h===a?r.g[0]:r.g[1], gb=r.h===a?r.g[1]:r.g[0]; if(ga>gb)pa+=3;else if(gb>ga)pb+=3;else{pa++;pb++} } })); return pa-pb; }
@@ -1267,7 +1409,7 @@ function autoLineup(S,c){
     const A=rest.sort((x,y)=>val(y,'A','A')-val(x,'A','A')).slice(0,6-nd);
     let com=[gk,...D,...A].filter(s=>s&&CARDS[s.id].pos==='COM').length; if(com>2) continue;
     const sa=A.reduce((t,s)=>t+val(s,'A','A'),0), sd=D.reduce((t,s)=>t+val(s,'D','D'),0)+(gk?val(gk,'D','G'):0);
-    let score=sa+sd*1.05;
+    let score=sa+sd-0.3*Math.abs(sa-(sd-6));
     if(c.cur.tactica&&nd+1<4) score-=2;
     if(!best||score>best.score) best={score,L:{gk:gk?gk.id:null,D:D.map(s=>s.id),A:A.map(s=>s.id)}};
   }
@@ -1411,9 +1553,9 @@ const RULES_HTML = `
 <div id="rg-1" class="section">
 <h3>Cómo se juega</h3>
 <p>Ocho clubes, siete Fechas, una sola rueda. Gana quien suma más puntos: 3 por victoria, 1 por empate y +2 por cumplir la Promesa al Barrio. Cada club alterna local y visita.</p>
-<p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador. 5) Mercado (Fechas 1 a 3): 3 ofertas privadas para tu club.</p>
+<p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador. 5) Mercado (Fechas 1 a 3): 5 ofertas privadas para tu club. Al cerrar los partidos aparece el resumen con resultados, tabla y goleadores.</p>
 <p><b>Jugadores.</b> Cada uno tiene su Ataque y su Defensa. Un volante de contención puede ser 2/4 y uno ofensivo 5/2; un delantero que baja a defender aporta 1. El arquero vale su número solo en el arco; cualquier otro en el arco vale 1.</p>
-<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. La Defensa humana suma +1 fijo. Un Club Vecino usa su Nivel + 2 en Ataque y Defensa.</p>
+<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 2 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
 <p><b>Moral</b> (0 a 10, empieza en 5): ganar +1, perder −1. Suma o resta a Ataque y Defensa: 0-1 da −2, 2-3 da −1, 4-6 nada, 7-8 da +1, 9-10 da +2.</p>
 <p><b>Hinchada Fiel</b> (0 a 10): sube al ganar de local y al poner $3 en el asado. De local da +1 Ataque desde 3 y +2 desde 6.</p>
 <p><b>Reputación</b> (0 a 30): no cambia el partido. Desempata la tabla, se cambia por Favores y paga algunos Dramas y Eventos.</p>
@@ -1422,7 +1564,7 @@ const RULES_HTML = `
 <p><b>Auspiciadores.</b> Uno por vez, con contrato de 2 a 4 Fechas (Barbería y Parroquia, hasta el Clásico). Cuando vence elegís otro gratis entre 3. Cambiarlo antes cuesta $1 y 1 de Reputación.</p>
 <p><b>Promesa al Barrio.</b> Si la cumplís recibís su premio en el momento y +2 puntos. Si se vuelve imposible, −1 Moral.</p>
 <p><b>Drama.</b> Tras cada partido, con 1-2 en el dado (1-3 si perdiste) aparece un Drama. Sus efectos de partido se aplican la Fecha siguiente.</p>
-<p><b>Clásicos</b> en la Fecha 4. La Rivalidad sube en la Fecha 3 y con algunos Dramas; el ganador del Clásico suma tanta Reputación como Rivalidad (tope 5) y se queda la Copa.</p>
+<p><b>Clásicos y Rivalidad.</b> La Rivalidad solo sirve para el Clásico de la Fecha 4: sube +1 en la Fecha 3 y con algunos Dramas, y el ganador del Clásico suma +1 Reputación por cada punto (tope 5) y se queda la Copa. Si llega a 3 antes del Clásico, ambos clubes reciben un Drama extra. Después de la Fecha 4 deja de contar, y los Dramas que la suben ya no la tocan.</p>
 </div>
 
 <div id="rg-2" class="section">
@@ -1430,7 +1572,7 @@ const RULES_HTML = `
 <p class="muted small">Cada carta modificada muestra la marca «✎ regla ajustada»; al pasar el mouse se ve el texto original.</p>
 <h3 class="section">Estructurales (rompían el juego)</h3>
 <ol>
-<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, el Vecino usa Nivel + 2 y la Defensa humana suma +1 fijo. Resultado simulado: con 3 humanos, el humano gana 34%, empata 40% y pierde 26% contra Vecinos.</li>
+<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, y el Vecino usa Nivel + 2 en Ataque y + 1 en Defensa. Resultado simulado: con 3 humanos, el humano gana 40%, empata 27% y pierde 33% contra Vecinos.</li>
 <li><b>El Físico era una espiral sin salida.</b> Con 8 jugadores y 7 titulares, jugar −1 y descansar +1 deja a casi todo el plantel en Físico 0 desde la Fecha 4: −13 en la alineación, para todos por igual. Ahora el Físico va de 0 a 3, descansar recupera 2 y solo se penaliza con Físico 0.</li>
 <li><b>La decisión táctica no existía.</b> La Plantilla Base trae exactamente 3 defensores (arquero y dos laterales) y 5 atacantes, y solo los Comodines cambiaban de línea: "cuántos dejo arriba" no era una decisión. Ahora cada jugador tiene un valor de Ataque y otro de Defensa (un volante de contención puede ser 2/4, un ofensivo 5/2, un delantero defiende 1).</li>
 <li><b>La Excusa obligatoria tenía una estrategia dominante.</b> El mismo reglamento recomendaba nominar a alguien que no ibas a alinear; con 8 jugadores para 7 puestos siempre hay uno así, y la Excusa nunca hacía nada. Ahora cae sobre un titular al azar, después de armar el equipo.</li>
@@ -1469,7 +1611,7 @@ const RULES_HTML = `
 
 <div id="rg-3" class="section">
 <h3>Calibración y qué vigilar</h3>
-<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,2 goles por partido, 32% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
+<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,2 goles por partido, 26% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
 <p>Lo que más conviene mirar jugando: si 3,2 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
 </div>`;
 
@@ -1515,15 +1657,24 @@ function tableSource(){
   }
   return G;
 }
-function tableHTML(compact,meCi){
-  const t=table(tableSource());
-  return `<div class="scroll-x"><table class="tb"><thead><tr><th>#</th><th>Club</th>${compact?'':'<th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th>'}<th>DG</th><th>Pts</th>${compact?'':'<th>Rep</th><th>Hinch</th>'}</tr></thead><tbody>
-  ${t.map((c,i)=>`<tr class="${c.i===meCi?'me':''}"><td>${i+1}</td><td class="club">${crest(c.i,true)}<span>${esc(compact?CLUBS[c.i].sh+' · '+shortCtrl(c):clubName(c.i))}</span>${!compact?`<span class="muted small">${esc(ctrlLabel(c))}</span>`:''}</td>${compact?'':`<td>${c.st.pj}</td><td>${c.st.pg}</td><td>${c.st.pe}</td><td>${c.st.pp}</td><td>${c.st.gf}</td><td>${c.st.gc}</td>`}<td>${c.st.gf-c.st.gc>0?'+':''}${c.st.gf-c.st.gc}</td><td class="pts">${pts(c)}</td>${compact?'':`<td>${c.ctrl==='vecino'?'—':c.rep}</td><td>${c.ctrl==='vecino'?'—':c.hinchada}</td>`}</tr>`).join('')}
+function tableHTML(compact,meCi,prevOrder){
+  const src=tableSource(), t=table(src);
+  const form=c=>`<span class="form">${c.res.slice(-5).map(r=>`<i class="${r}">${({W:'G',D:'E',L:'P'})[r]}</i>`).join('')}</span>`;
+  const mv=(c,i)=>{ if(!prevOrder||G.fecha<2) return ''; const p=prevOrder.indexOf(c.i); if(p<0||p===i) return ''; return p>i?`<span class="mv up">▲${p-i}</span>`:`<span class="mv dn">▼${i-p}</span>`; };
+  return `<div class="scroll-x"><table class="tb"><thead><tr><th>#</th><th>Club</th>${compact?'':'<th>PJ</th><th class="w">G</th><th class="w">E</th><th class="w">P</th><th class="w">GF</th><th class="w">GC</th>'}<th>DG</th><th>Pts</th>${compact?'':'<th>Forma</th>'}</tr></thead><tbody>
+  ${t.map((c,i)=>`<tr class="${c.i===meCi?'me':''}"><td><span class="posbar ${i===0?'top':''}"></span> ${i+1}${mv(c,i)}</td><td class="club"><div class="clubc">${crest(c.i,true)}<span class="cn">${esc(compact?CLUBS[c.i].sh:clubName(c.i))}${!compact&&c.ctrl==='human'&&c.player?`<small>${esc(c.player)}</small>`:''}</span></div></td>${compact?'':`<td>${c.st.pj}</td><td class="w">${c.st.pg}</td><td class="w">${c.st.pe}</td><td class="w">${c.st.pp}</td><td class="w">${c.st.gf}</td><td class="w">${c.st.gc}</td>`}<td>${c.st.gf-c.st.gc>0?'+':''}${c.st.gf-c.st.gc}</td><td class="pts">${pts(c)}</td>${compact?'':`<td>${form(c)}</td>`}</tr>`).join('')}
   </tbody></table></div>`;
+}
+function scorersHTML(n,upTo){
+  const s=topScorers(G,upTo).slice(0,n||10);
+  if(!s.length) return '<p class="muted">Todavía no hay goles.</p>';
+  return `<div class="scroll-x scorers"><table class="tb"><thead><tr><th>#</th><th>Jugador</th><th>Club</th><th>Goles</th></tr></thead><tbody>${s.map((x,i)=>`<tr><td>${i+1}</td><td style="text-align:left;font-weight:700">${esc(personName(x.id))}</td><td class="club"><div class="clubc">${crest(x.ci,true)}<span>${esc(CLUBS[x.ci].sh)}</span></div></td><td class="goals">${x.g}</td></tr>`).join('')}</tbody></table></div>`;
 }
 const shortCtrl=c=>c.ctrl==='human'?(c.player||'Humano'):c.ctrl==='bot'?'Bot':'Vecino';
 function rivalryHTML(){
-  return CLASICO_PAIRS.map((p,k)=>`<div class="riv">${crest(p[0],true)}${crest(p[1],true)}<span style="flex:1">${p[2].replace('Clásico ','')}</span><span class="dots" title="Rivalidad ${G.rivalry[k]}">${[0,1,2,3,4].map(i=>`<i class="${i<G.rivalry[k]?'on':''}"></i>`).join('')}</span>${G.copas[k]!=null?crest(G.copas[k],true):''}</div>`).join('');
+  const pre=G.fecha<CLASICO_FECHA||(G.fecha===CLASICO_FECHA&&G.phase==='f1');
+  if(pre) return CLASICO_PAIRS.map((p,k)=>`<div class="riv">${crest(p[0],true)}${crest(p[1],true)}<span style="flex:1">${p[2].replace('Clásico ','')}</span><span class="dots" title="Rivalidad ${G.rivalry[k]}">${[0,1,2,3,4].map(i=>`<i class="${i<G.rivalry[k]?'on':''}"></i>`).join('')}</span></div>`).join('')+`<p class="small muted" style="margin-bottom:0">Rivalidad: el ganador del Clásico suma +1 Reputación por punto. Después de la Fecha 4 deja de contar.</p>`;
+  return CLASICO_PAIRS.map((p,k)=>`<div class="copa">🏆 <span style="flex:1">${esc(p[3])}</span>${G.copas[k]!=null?crest(G.copas[k],true)+'<b>'+esc(CLUBS[G.copas[k]].sh)+'</b>':'<span class="muted">Sin dueño</span>'}</div>`).join('');
 }
 // ---------- render principal ----------
 function render(){ renderInner(); bindGlobal(); }
@@ -1535,7 +1686,7 @@ function renderInner(){
   if(!G){ app.innerHTML=setupHTML(); bindSetup(); return; }
   const t=G.queue[0];
   if(!t){ app.innerHTML='<p>Sin tareas. <button class="btn" data-act="new">Nueva liga</button></p>'; return; }
-  if(t.type==='show'){ if(t.what==='fecha') return screenFecha(app); if(t.what==='end') return screenEnd(app); }
+  if(t.type==='show'){ if(t.what==='fecha') return screenFecha(app); if(t.what==='summary') return screenSummary(app); if(t.what==='end') return screenEnd(app); }
   const c=G.clubs[t.ci];
   if(G.privacy && humanClubs(G).length>1 && UI.gate!==t.ci){ return screenGate(app,c,t); }
   UI.gate=t.ci;
@@ -1559,7 +1710,8 @@ function screenEnd(app){
   const t=table(G), ch=t[0];
   app.innerHTML=`<div class="champ"><div class="kicker" style="color:#4A3B05">Campeón del barrio</div>${crest(ch.i)}<h2>${esc(clubName(ch.i))}</h2><p>${esc(ctrlLabel(ch))} · ${pts(ch)} puntos</p></div>
   <div class="panel">${tableHTML(false)}</div>
-  <div class="section"><h3>Copas de Lata</h3>${rivalryHTML()}</div>
+  <div class="section panel"><h3>Goleadores</h3>${scorersHTML(10)}</div>
+  <div class="section panel"><h3>Copas de Lata</h3>${rivalryHTML()}</div>
   <div class="section"><h3>Promesas al Barrio</h3><div class="grid2">${managedClubs(G).map(c=>plainCard('obj',clubName(c.i)+' · '+(c.objDone?'cumplida':'no cumplida'),OBJ[c.obj])).join('')}</div></div>
   <div class="section panel"><h3>Números de la liga</h3><p>${G.stats.matches} partidos · ${(G.stats.goals/Math.max(1,G.stats.matches)).toFixed(2)} goles por partido · semilla ${G.seed}</p></div>`;
   setAction(`<button class="btn alt" data-sheet="registro">Ver registro completo</button><button class="btn" data-act="new">Nueva liga</button>`);
@@ -1575,12 +1727,16 @@ function openSheet(which){
 }
 function closeSheet(){ const d=$('#sheet'); if(d.open) d.close(); }
 function bindSheetButtons(){ document.querySelectorAll('[data-sheet]').forEach(b=>b.onclick=()=>openSheet(b.dataset.sheet)); }
-function sheetTabla(){ if(!G) return '<p>No hay liga en curso.</p>'; return tableHTML(false)+`<p class="small muted">Desempate: diferencia de gol, goles a favor, resultado entre ellos, Reputación, Hinchada Fiel.</p><div class="section"><h3>Rivalidades</h3>${rivalryHTML()}</div>`; }
+function sheetTabla(){ if(!G) return '<p>No hay liga en curso.</p>'; const tab=UI.tabTab||'t'; return `<div class="seg3"><button data-tt="t" class="${tab==='t'?'on':''}">Posiciones</button><button data-tt="g" class="${tab==='g'?'on':''}">Goleadores</button></div>`+(tab==='t'?tableHTML(false)+`<p class="small muted">Desempate: diferencia de gol, goles a favor, resultado entre ellos, Reputación, Hinchada Fiel.</p><div class="section"><h3>Clásicos</h3>${rivalryHTML()}</div>`:scorersHTML(20,goalsUpTo())); }
+function goalsUpTo(){ const h=G.queue[0]; if(h&&h.type==='show'&&h.what==='fecha') return G.fecha-1; return G.fecha; }
 function sheetFixture(){ if(!G) return '<p>No hay liga en curso.</p>';
   return FIXTURE.map((fx,i)=>`<div class="section"><h3>Fecha ${i+1}${i+1===CLASICO_FECHA?' · Clásicos':''}</h3><div class="match-list">${fx.map(([h,a])=>{ const r=(G.results[i+1]||[]).find(x=>x.h===h&&x.a===a); const cl=i+1===CLASICO_FECHA&&CLASICO_PAIRS.some(p=>(p[0]===h&&p[1]===a)||(p[0]===a&&p[1]===h)); const showRes=r&&(G.fecha>i+1||G.phase!=='matches'||G.queue[0]?.what!=='fecha'); return `<div class="mrow ${cl?'cl':''}"><div class="line"><div class="h">${crest(h,true)}${esc(clubName(h))}</div><div class="res">${showRes?r.g[0]+' : '+r.g[1]:'—'}</div><div class="a">${esc(clubName(a))}${crest(a,true)}</div></div></div>`; }).join('')}</div></div>`).join(''); }
 function sheetClubes(){ if(!G) return '<p>No hay liga en curso.</p>';
   const vis=c=>G.phase==='end'||c.objPublic||c.objDone;
-  return `<div class="tabs" id="clubTabs">${managedClubs(G).map((c,k)=>`<button data-ct="${c.i}" class="${(UI.clubTab??managedClubs(G)[0].i)===c.i?'on':''}">${esc(CLUBS[c.i].sh)} · ${esc(shortCtrl(c))}</button>`).join('')}</div>`+
+  const vecs=G.clubs.filter(c=>c.ctrl==='vecino');
+  if(UI.clubTab!=null && G.clubs[UI.clubTab].ctrl==='vecino'){ const ci=UI.clubTab;
+    return `<div class="tabs">${managedClubs(G).map(c=>`<button data-ct="${c.i}">${esc(CLUBS[c.i].sh)}</button>`).join('')}${vecs.map(c=>`<button data-ct="${c.i}" class="${c.i===ci?'on':''}">${esc(CLUBS[c.i].sh)}</button>`).join('')}</div><div class="section"><div class="who row">${crest(ci)}<div><h3>${esc(clubName(ci))}</h3><p class="muted small">Club Vecino · Nivel ${vecLevel(G,ci)} · Ataque ${vecLevel(G,ci)+CFG.VEC_ATK} · Defensa ${vecLevel(G,ci)+CFG.VEC_DEF}</p></div></div><table class="tb section"><tbody>${VEC_ROSTER[ci].map((p,k)=>`<tr><td>#${p[1]}</td><td style="text-align:left"><b>${esc(p[2]+' '+p[4])}</b> <span class="muted small">"${esc(p[3])}"</span></td><td>${({ARQ:'Arquero',DEF:'Defensa',VOL:'Volante',DEL:'Delantero'})[p[0]]}</td></tr>`).join('')}</tbody></table></div>`; }
+  return `<div class="tabs" id="clubTabs">${vecs.length?'':''}${managedClubs(G).map((c,k)=>`<button data-ct="${c.i}" class="${(UI.clubTab??managedClubs(G)[0].i)===c.i?'on':''}">${esc(CLUBS[c.i].sh)} · ${esc(shortCtrl(c))}</button>`).join('')}${vecs.map(c=>`<button data-ct="${c.i}">${esc(CLUBS[c.i].sh)}</button>`).join('')}</div>`+
   managedClubs(G).filter(c=>c.i===(UI.clubTab??managedClubs(G)[0].i)).map(c=>`<div class="section"><div class="who row">${crest(c.i)}<div><h3>${esc(clubName(c.i))}</h3><p class="muted small">"${esc(CLUBS[c.i].m)}"</p></div></div>${resBar(c)}
    <div class="grid2 section"><div>${c.sponsor?plainCard('spo','Auspiciador',SPO[c.sponsor]):'<p class="muted">Sin auspiciador.</p>'}</div><div>${vis(c)?plainCard('obj','Objetivo'+(c.objDone?' (cumplido)':''),OBJ[c.obj]):'<div class="plain-card obj"><div class="ty">Objetivo secreto</div><p class="muted">Boca abajo.</p></div>'}</div></div>
    <div class="section cards">${c.squad.map(s=>cardHTML(CARDS[s.id],{sq:s,flavor:false})).join('')}</div>
@@ -1627,11 +1783,12 @@ function labHTML(a){ const hv=a.hvv,t=hv.w+hv.d+hv.l||1; const top=Object.entrie
   <tr><td>Marcadores más comunes</td><td><b>${top.map(([k,v])=>k+' ('+Math.round(100*v/a.matches)+'%)').join(', ')}</b></td></tr></table>`; }
 function bindSheet(which){
   bindGlobal();
+  if(which==='tabla') document.querySelectorAll('[data-tt]').forEach(b=>b.onclick=()=>{UI.tabTab=b.dataset.tt;openSheet('tabla')});
   if(which==='clubes') document.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{UI.clubTab=+b.dataset.ct;openSheet('clubes')});
   if(which==='menu'){
     const on=(id,f)=>{const el=$('#'+id); if(el) el.onclick=f;};
     on('mUndo',()=>{closeSheet();undo()});
-    on('mBots',()=>{ if(!confirm('Todos los clubes humanos pasan a Bot y la liga se juega sola hasta el final. ¿Seguir?')) return; snapshot(); humanClubs(G).forEach(c=>c.ctrl='bot'); let g=0; while(G.phase!=='end'&&g++<60){ runBots(G); const t=G.queue[0]; if(t&&t.type==='show'&&t.what==='fecha'){G.queue.shift();startPhase2(G)} else if(!t||t.type==='show') break; } resetUI(); save(); closeSheet(); render(); });
+    on('mBots',()=>{ if(!confirm('Todos los clubes humanos pasan a Bot y la liga se juega sola hasta el final. ¿Seguir?')) return; snapshot(); humanClubs(G).forEach(c=>c.ctrl='bot'); let g=0; while(G.phase!=='end'&&g++<60){ runBots(G); const t=G.queue[0]; if(t&&t.type==='show'&&(t.what==='fecha'||t.what==='summary')){G.queue.shift();startPhase2(G)} else if(!t||t.type==='show') break; } resetUI(); save(); closeSheet(); render(); });
     on('mPriv',()=>{ if(G){G.privacy=!G.privacy;save();} openSheet('menu'); render(); });
     on('mTheme',()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nx=cur===null?'dark':cur==='dark'?'light':null; try{ if(nx) localStorage.setItem(TKEY,nx); else localStorage.removeItem(TKEY);}catch(e){} applyTheme(); openSheet('menu'); });
     on('mExport',async()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(G)); toast('Estado copiado al portapapeles'); }catch(e){ toast('No se pudo copiar'); } });
@@ -1689,7 +1846,7 @@ function sideHTML(){
   document.querySelectorAll('#navbtns [data-sheet="tabla"],#navbtns [data-sheet="clubes"]').forEach(b=>b.classList.toggle('hide',!G));
   if(!G) return '';
   const h=G.queue[0], me=h&&h.ci!=null?h.ci:null;
-  return `<div class="panel"><h3>Tabla</h3>${tableHTML(true,me)}</div><div class="panel"><h3>Clásicos · Fecha 4</h3>${rivalryHTML()}</div>`;
+  return `<div class="panel"><h3>Tabla</h3>${tableHTML(true,me)}</div><div class="panel"><h3>${G.fecha<CLASICO_FECHA||(G.fecha===CLASICO_FECHA&&G.phase==='f1')?'Clásicos · Fecha 4':'Copas de Lata'}</h3>${rivalryHTML()}</div><div class="panel"><h3>Goleadores</h3>${scorersHTML(5,goalsUpTo())}</div>`;
 }
 
 // ---------- setup ----------
@@ -1737,7 +1894,7 @@ function screenMarket(app,c,t){
   const list=marketList(G,c,t);
   const late=G.fecha>=4, n=c.squad.filter(s=>CARDS[s.id].libre&&!s.retired).length;
   app.innerHTML=head(c,late?'Refuerzo de última hora':'Mercado')+resBar(c)+`
-  <p class="muted" style="margin-top:10px">${late?'Si lo fichás, nadie más puede.':`Estas 3 ofertas son solo para tu club · fichá 1 como máximo · llevás ${n} de 4 fichados`}</p>
+  <p class="muted" style="margin-top:10px">${late?'Si lo fichás, nadie más puede.':`Tus ${list.length} ofertas de esta Fecha · fichá 1 como máximo · llevás ${n} de 4 fichados`}</p>
   <div class="cards">${list.length?list.map(id=>{ const why=canSign(G,c,id); return cardHTML(CARDS[id],{cost:libreCost(G,c,id),cls:(why?'off':'pick')+(UI.sel===id?' on':''),attrs:why?'':`data-sign="${id}" tabindex="0" role="button"`,extraTag:why?`<span class="tag bad">${esc(why)}</span>`:''}); }).join(''):'<p class="muted">No quedan jugadores.</p>'}</div>`;
   document.querySelectorAll('[data-sign]').forEach(el=>{ const f=()=>{UI.sel=UI.sel===el.dataset.sign?null:el.dataset.sign;render()}; el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')f()}; });
   setAction(`<button class="btn alt" id="pass">No fichar</button><button class="btn" id="go" ${UI.sel?'':'disabled'}>${UI.sel?'Fichar a '+esc(CARDS[UI.sel].short):'Tocá un jugador'}</button>`);
@@ -1815,7 +1972,7 @@ function screenExcuse(app,c){
   if(ex.reform){
     if(!UI.lineup) UI.lineup={gk:c.lineup.gk,D:c.lineup.D.slice(),A:c.lineup.A.slice(),wilsonHold:c.lineup.wilsonHold};
     pitchEditor(app,c,{L:UI.lineup,title:'Rearmá el equipo',step:'excuse',doneLabel:'Confirmar',
-      top:`<div class="banner bad"><span style="font-size:1.6rem">🚫</span><div><b>${esc(k.short)} no viene</b>«${esc(e.n)}». Meté a alguien del banco o reacomodá la cancha.</div></div>`,
+      top:`<div class="banner bad"><span style="font-size:1.6rem">🚫</span><div><b>${esc(k.short)} no viene</b>«${esc(e.n)}». ${ex.autoIn?`Entró ${esc(CARDS[ex.autoIn].short)} en su lugar; podés cambiarlo o reacomodar la cancha.`:'No hay nadie en el banco: juegan con uno menos.'}</div></div>`,
       onDone:(L)=>{ snapshot(); c.lineup={gk:L.gk,D:L.D.slice(),A:L.A.slice(),wilsonHold:!!L.wilsonHold}; finalizeLineup(G,c); ex.reform=false; log(G,`${clubName(c.i)} rearma el equipo.`); advance(); }});
     return;
   }
@@ -1838,23 +1995,30 @@ function screenExcuse(app,c){
    ${ex.alt?`<p class="small muted">Reinaldo: se robaron dos y se aplica la peor.</p>`:''}</div></div>`;
   setAction(`<span></span><span class="row">${ops.map(o=>`<button class="btn ${o.id==='accept'?'alt':''}" data-ex="${o.id}" ${o.ok===false?'disabled':''}>${esc(o.l)}</button>`).join('')}</span>`);
   document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{ const id=b.dataset.ex;
-    if(id==='accept' && ['out','outRep','pay1','moral1'].includes(e.k)){ snapshot(); resolveExcuse(G,c,'accept',null); UI.lineup=null; UI.sel=null; save(); render(); return; }
+    if(id==='accept' && ['out','outRep','pay1','moral1'].includes(e.k)){ snapshot(); const slot=excuseSlot(c); resolveExcuse(G,c,'accept',null);
+      const L=c.lineup; UI.lineup={gk:L.gk,D:L.D.slice(),A:L.A.slice(),wilsonHold:L.wilsonHold}; const best=benchFor(G,c,slot)[0];
+      if(best){ if(slot==='G') UI.lineup.gk=best.id; else UI.lineup[slot].push(best.id); ex.autoIn=best.id; }
+      UI.sel=null; save(); render(); return; }
     if(id==='accept' && excuseIsHalf(c)){ UI.pickRep=true; UI.sel=null; render(); return; }
     snapshot(); resolveExcuse(G,c,id==='ok'?'ok':id); advance(); });
 }
 
 // ---------- jornada ----------
+function minuteOf(i,n){ return Math.round((i+0.5)*90/n)+"'"; }
 function matchCard(r){
   const key=G.fecha+'-'+r.h, rev=UI.reveal[key]||0, shown=Math.min(rev,r.n), done=shown>=r.n;
   const g=[0,0]; r.oc.slice(0,shown).forEach(o=>o.lines.forEach(l=>{if(l.goal)g[l.k]++}));
   const cl=r.clasico>=0?CLASICO_PAIRS[r.clasico]:null;
-  const side=(l,right)=>`<div class="s ${right?'r':''}"><span class="ev ${l.goal?'g':'n'}">${l.goal?'⚽ '+(l.scorer?esc(CARDS[l.scorer].short):'Gol'):(l.anul?'Gol anulado':'Atajada')}</span><span class="dc">${l.atk}+${l.rA} vs ${l.def}+${l.rD}${l.note?' · '+esc(l.note):''}</span></div>`;
-  return `<div class="board" style="margin-bottom:14px">
-   ${cl?`<p style="position:relative;z-index:1;margin:0 0 10px;text-align:center;font-family:var(--display);color:var(--amarillo)">${esc(cl[2])}</p>`:''}
-   <div class="score"><div class="team">${crest(r.h)}<div>${esc(clubName(r.h))}<div class="sub">A ${r.sides[0].atk} · D ${r.sides[0].def}</div></div></div><div class="nums">${g[0]}:${g[1]}</div><div class="team away"><div>${esc(clubName(r.a))}<div class="sub">A ${r.sides[1].atk} · D ${r.sides[1].def}</div></div>${crest(r.a)}</div></div>
-   <div class="dots">${Array.from({length:r.n},(_,i)=>`<i class="${i<shown?'on':''}"></i>`).join('')}</div>
-   <div class="tl">${r.oc.slice(0,shown).map((o,i)=>`<div class="tlr ${i===shown-1&&rev?'fresh':''}">${side(o.lines[0])}<div class="mid">${i+1}ª</div>${side(o.lines[1],true)}</div>`).join('')}</div>
-   ${!done?`<div class="btnrow"><button class="btn" data-step="${key}" data-n="${r.n}">${shown===0?'⚽ Jugar el partido':'Siguiente ocasión'}</button>${shown>0?`<button class="btn alt" data-all="${key}" data-n="${r.n}">Ver final</button>`:''}</div>`:''}
+  const A=r.sides[0], B=r.sides[1];
+  const bar=(lab,x,y)=>{ const m=Math.max(x,y,1); return `<div class="st-row"><span class="lab">${lab}</span><span>${x}</span><div class="st-bars"><i><b style="width:${x/m*100}%"></b></i><i><b style="width:${y/m*100}%"></b></i></div><span class="r">${y}</span></div>`; };
+  const ev=(l,side)=>l.goal?`<span class="g">${esc(l.scorer?personName(l.scorer):'Gol')}</span><span class="dc">${l.atk}+${l.rA} vs ${l.def}+${l.rD}</span>`:`<span class="n">${l.anul?'Gol anulado':'Atajada'}</span><span class="dc">${l.atk}+${l.rA} vs ${l.def}+${l.rD}${l.note?' · '+esc(l.note):''}</span>`;
+  const status = done?'<span>Final</span>':shown===0?'<span>Por jugar</span>':`<span class="live">${minuteOf(shown-1,r.n)}</span>`;
+  return `<div class="mc">
+   ${cl?`<div class="cl">${esc(cl[2])}</div>`:''}
+   <div class="mc-head"><div class="mc-team">${crest(r.h)}<span>${esc(clubName(r.h))}</span></div><div class="mc-score"><b>${g[0]} - ${g[1]}</b>${status}</div><div class="mc-team">${crest(r.a)}<span>${esc(clubName(r.a))}</span></div></div>
+   <div class="mc-stats">${bar('Ataque',A.atk,B.atk)}${bar('Defensa',A.def,B.def)}</div>
+   ${shown?`<div class="mc-tl">${r.oc.slice(0,shown).map((o,i)=>`<div class="ev-row ${i===shown-1&&rev?'fresh':''}"><div class="l">${ev(o.lines[0])}</div><span class="min">${minuteOf(i,r.n)}</span><div class="r">${ev(o.lines[1])}</div></div>`).join('')}</div>`:''}
+   ${!done?`<div class="btnrow"><button class="btn" data-step="${key}" data-n="${r.n}">${shown===0?'▶ Jugar el partido':'Siguiente ocasión'}</button>${shown>0?`<button class="btn alt" data-all="${key}" data-n="${r.n}">Ir al final</button>`:''}</div>`:''}
   </div>
   ${done?`${r.clCard?plainCard('cla','Carta de Clásico',CLA[r.clCard]):''}${r.post.length?`<ul class="post">${r.post.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
   <details class="why"><summary>Ver cómo se calculó</summary><div class="why-grid">${[0,1].map(k=>`<div><b>${esc(CLUBS[r.sides[k].ci].n)}</b><table><tr><td colspan="2"><b>Ataque ${r.sides[k].atk}</b></td></tr>${r.sides[k].bA.map(([l,v])=>`<tr><td>${esc(l)}</td><td>${sg(v)}</td></tr>`).join('')}<tr><td colspan="2"><b>Defensa ${r.sides[k].def}</b></td></tr>${r.sides[k].bD.map(([l,v])=>`<tr><td>${esc(l)}</td><td>${sg(v)}</td></tr>`).join('')}</table></div>`).join('')}</div></details>`:''}`;
@@ -1868,12 +2032,25 @@ function screenFecha(app){
   app.innerHTML=`<div class="screen-head"><div><div class="kicker">${phaseLabel()}</div><h2>${G.fecha===CLASICO_FECHA?'Fecha de Clásicos':'Fecha '+G.fecha}</h2></div></div>${stepsHTML('fecha')}
   <div class="ev-hero"><span class="ico">${EV_ICO[G.event]||'📣'}</span><div><small>Evento de la Fecha</small><h3>${esc(ev.n)}</h3><p>${esc(ev.t)}</p><div class="evnote">${['luz','lluvia','balon','cumple','kermes','cancha'].includes(G.event)?'Ya está sumado en el Ataque y la Defensa de cada partido.':['parlante','fisca'].includes(G.event)?'No cambia el partido: se aplica en el Tercer Tiempo.':'Se aplica durante el partido.'}</div></div></div>
   ${mine.map(matchCard).join('')}
-  ${vv.length?`<div class="blk"><h3>Entre Vecinos</h3><div class="small-results">${vv.map(r=>`<div class="mini"><span>${esc(CLUBS[r.h].n)}</span><span class="r">${r.g[0]}:${r.g[1]}</span><span class="b">${esc(CLUBS[r.a].n)}</span></div>`).join('')}</div></div>`:''}`;
+  ${vv.length?`<div class="blk"><h3>Entre Vecinos · ya jugado</h3><div class="rlist">${vv.map(resultCard).join('')}</div></div>`:''}`;
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ const k=b.dataset.step; UI.reveal[k]=Math.min(+b.dataset.n,(UI.reveal[k]||0)+1); render(); });
   document.querySelectorAll('[data-all]').forEach(b=>b.onclick=()=>{ UI.reveal[b.dataset.all]=+b.dataset.n; render(); });
   setAction(`${allDone?'<span></span>':'<button class="btn alt" id="revAll">Ver todos los resultados</button>'}<button class="btn" id="go" ${allDone?'':'disabled'}>Ir al Tercer Tiempo</button>`);
   const ra=$('#revAll'); if(ra) ra.onclick=()=>{ mine.forEach(r=>UI.reveal[G.fecha+'-'+r.h]=r.n); render(); };
-  $('#go').onclick=()=>{ snapshot(); G.queue.shift(); UI.reveal={}; startPhase2(G); UI.gate=null; save(); render(); window.scrollTo({top:0}); };
+  $('#go').onclick=()=>{ snapshot(); G.queue[0]={type:'show',what:'summary'}; UI.reveal={}; UI.sumTab='r'; save(); render(); window.scrollTo({top:0}); };
+}
+function resultCard(r){ const w=r.g[0]>r.g[1]?0:r.g[1]>r.g[0]?1:-1; const cl=r.clasico>=0; return `<div class="rcard ${cl?'cl':''}"><div class="h ${w===1?'lose':'w'}">${crest(r.h,true)}<span>${esc(clubName(r.h))}</span></div><span class="sc">${r.g[0]} - ${r.g[1]}</span><div class="a ${w===0?'lose':'w'}"><span>${esc(clubName(r.a))}</span>${crest(r.a,true)}</div></div>`; }
+function screenSummary(app){
+  const res=G.results[G.fecha]||[], tab=UI.sumTab||'r';
+  const prevOrder=G.preTable?table({...G,clubs:G.clubs.map((c,i)=>({...c,st:G.preTable[i].st})),results:G.results.slice(0,G.fecha)}).map(c=>c.i):null;
+  const sc=res.flatMap(r=>[0,1].flatMap(k=>(r.scorers[k]||[]).map(id=>({id,ci:k===0?r.h:r.a}))));
+  app.innerHTML=`<div class="screen-head"><div><div class="kicker">Fecha ${G.fecha} de 7 · Final</div><h2>Resumen de la Fecha</h2></div></div>
+  <div class="seg3"><button data-st="r" class="${tab==='r'?'on':''}">Resultados</button><button data-st="t" class="${tab==='t'?'on':''}">Tabla</button><button data-st="g" class="${tab==='g'?'on':''}">Goleadores</button></div>
+  ${tab==='r'?`<div class="rlist">${res.map(resultCard).join('')}</div>${sc.length?`<div class="blk"><h3>Goles de la Fecha</h3>${sc.map(x=>`<div class="copa">⚽ <b>${esc(personName(x.id))}</b><span class="muted" style="margin-left:auto">${esc(CLUBS[x.ci].sh)}</span>${crest(x.ci,true)}</div>`).join('')}</div>`:''}`
+   :tab==='t'?`<div class="panel">${tableHTML(false,null,prevOrder)}</div>`:`<div class="panel">${scorersHTML(15)}</div>`}`;
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{UI.sumTab=b.dataset.st;render()});
+  setAction(`<span></span><button class="btn" id="go">Ir al Tercer Tiempo</button>`);
+  $('#go').onclick=()=>{ snapshot(); G.queue.shift(); startPhase2(G); UI.gate=null; save(); render(); window.scrollTo({top:0}); };
 }
 
 // ---------- Tercer Tiempo ----------
