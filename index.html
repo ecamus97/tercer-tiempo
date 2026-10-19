@@ -684,18 +684,18 @@ const EXCUSAS = [
 const EXC_SEVERITY = {out:5,outRep:6,pay1:3,moral1:3,half:4,dice:2,minus1:1,noRep:0.5};
 
 const EVENTOS = [
- {id:'luz',n:'Corte de Luz en la Cancha',s:'El municipio de nuevo debe la boleta.',t:'−2 Ataque a todos los equipos.'},
- {id:'lluvia',n:'Llueve como Nunca',s:'La cancha de tierra es ahora una pileta.',t:'−2 Ataque a todos. En cada partido, el equipo con más Físico promedio suma +2 Defensa (los Vecinos cuentan como 2).'},
+ {id:'luz',n:'Corte de Luz en la Cancha',s:'El municipio de nuevo debe la boleta.',t:'El local juega con −2 Defensa: con la cancha a oscuras no ve los centros.',o:'−2 Ataque a ambos equipos (no cambiaba nada: afectaba igual a los dos).'},
+ {id:'lluvia',n:'Llueve como Nunca',s:'La cancha de tierra es ahora una pileta.',t:'El equipo con más Físico promedio suma +2 Defensa y el de menos, −2 Ataque. Los Vecinos cuentan como 2.',o:'−2 Ataque a ambos (neutro) y +2 Defensa al de más Físico.'},
  {id:'arbitro',n:'Árbitro Misterioso',s:'Nadie sabe de quién es primo, pero cobra raro toda la tarde.',t:'En cada equipo, un jugador al azar no participa en una Ocasión al azar.'},
  {id:'parlante',n:'Se Cortó el Parlante',s:'El tercer tiempo se quedó sin banda sonora.',t:'−1 a la Reputación generada en el Tercer Tiempo.'},
  {id:'fisca',n:'Fiscalización Municipal',s:'Vinieron a revisar si el club está al día.',t:'En el Tercer Tiempo, cada club paga 3 dinero o pierde 2 de Reputación.'},
  {id:'red',n:'Se Rompió la Red del Arco',s:'Todo gol de hoy queda discutible.',t:'Cada gol se confirma con 1d6: con un 1 no cuenta.'},
- {id:'cumple',n:'Cumpleaños del Presidente del Club',s:'Hay torta en el entretiempo, guste o no.',t:'+1 Moral y −1 Defensa a todos.',o:'+1 Moral a ambos; ningún Capitán puede anular Excusas (no existe el Capitán y las Excusas se resuelven antes del Evento).'},
+ {id:'cumple',n:'Cumpleaños del Presidente del Club',s:'Hay torta en el entretiempo, guste o no.',t:'El local suma +2 Moral antes del partido: es el cumpleaños de su presidente.',o:'+1 Moral y −1 Defensa a ambos (neutro).'},
  {id:'reportaje',n:'Reportaje del Canal Local',s:'Vinieron a grabar 30 segundos y usaron la peor jugada.',t:'+3 Reputación al que gana su partido, −1 al que pierde.'},
- {id:'balon',n:'Falta el Balón Reglamentario',s:'Se juega con una pelota un poco desinflada.',t:'−2 Defensa a todos.',o:'−2 Ataque a ambos (idéntica a «Corte de Luz»).'},
+ {id:'balon',n:'Falta el Balón Reglamentario',s:'Se juega con una pelota un poco desinflada.',t:'El local suma +2 Ataque: conoce la pelota desinflada de memoria.',o:'−2 Ataque a ambos (idéntica a «Corte de Luz» y neutra).'},
  {id:'largo',n:'Fecha Doble',s:'Se recupera la fecha suspendida.',t:'Se juegan 6 Ocasiones en vez de 4; los alineados pierden 1 de Físico extra.',o:'Se juegan 2 partidos seguidos (contra quién, si el fixture es fijo?).'},
- {id:'cancha',n:'Se Cambia la Cancha de Última Hora',s:'El municipio prestó otra cancha, más lejos y más dura.',t:'El visitante de cada partido juega con −1 Ataque.'},
- {id:'kermes',n:'Doble Función en el Barrio',s:'Hay kermés al lado de la cancha y todos quieren mirar para los dos lados.',t:'−1 Ataque a todos; +2 Reputación en el Tercer Tiempo.'},
+ {id:'cancha',n:'Se Cambia la Cancha de Última Hora',s:'El municipio prestó otra cancha, más lejos y más dura.',t:'El visitante juega con −2 Ataque.',o:'El visitante juega con −1 Ataque.'},
+ {id:'kermes',n:'Doble Función en el Barrio',s:'Hay kermés al lado de la cancha y todos quieren mirar para los dos lados.',t:'El local juega con −2 Ataque (todos miran la kermés de su barrio). Todos suman +2 Reputación en el Tercer Tiempo.',o:'−1 Ataque a ambos (neutro) y +2 Reputación.'},
 ];
 
 const SPONSORS = [
@@ -853,7 +853,7 @@ function log(S,txt,cls){ S.log.push({f:S.fecha,t:txt,c:cls||''}); if(S.log.lengt
 // ---------- creación ----------
 function newGame(opts){
   const S={v:1,rng:(opts.seed>>>0)||((Math.random()*2**31)|0),seed:0,fecha:0,phase:'pre',queue:[],log:[],results:[],
-    rivalry:[0,0,0],rivTrig:[false,false,false],copas:[null,null,null],event:null,market:[],decks:{},clubs:[],privacy:opts.privacy!==false,
+    rivalry:[1,1,1],rivTrig:[false,false,false],copas:[null,null,null],event:null,market:[],decks:{},clubs:[],privacy:opts.privacy!==false,
     pending:null,lastView:null,stats:{goals:0,matches:0}};
   S.seed=S.rng;
   S.decks.libres=shuffle(S,LIBRES_RAW.map(r=>r[0]).filter(id=>id!=='l30'));
@@ -934,6 +934,7 @@ function signSponsor(S,c,id,initial){
 // ---------- fichajes ----------
 function libreCost(S,c,id){
   const k=CARDS[id]; let m=k.cm, f=k.cf;
+  if(repLevel(c.rep)>=1) m=Math.max(0,m-1);
   return {m,f};
 }
 function canSign(S,c,id){
@@ -946,7 +947,9 @@ function signLibre(S,c,id){
   const {m,f}=libreCost(S,c,id);
   c.money-=m; c.favors-=f; if(f>0) c.flags.favSpentNow=true;
   c.squad.push(mkSq(id,S.fecha));
-  S.market=S.market.filter(x=>x!==id); S.decks.libres=S.decks.libres.filter(x=>x!==id); S.clubs.forEach(o=>{ if(o.offer) o.offer=o.offer.filter(x=>x!==id); });
+  S.market=S.market.filter(x=>x!==id); S.decks.libres=S.decks.libres.filter(x=>x!==id);
+  S.clubs.forEach(o=>{ if(o!==c && o.offer && o.offer.includes(id)){ o.offer=o.offer.filter(x=>x!==id); const pool=S.decks.libres.filter(x=>!o.offer.includes(x)); if(pool.length) o.offer.push(pick(S,pool)); } });
+  if(c.offer) c.offer=c.offer.filter(x=>x!==id);
   if(CARDS[id].fx==='onesimo') c.next.skipExcuse=true;
   log(S,`${CLUBS[c.i].n} ficha a ${CARDS[id].name} (${m} dinero${f?` + ${f} Favor`:''}).`,'good');
 }
@@ -994,7 +997,7 @@ AUTO.playFecha=(S)=>{
   S.preRiv={rivalry:S.rivalry.slice(),copas:S.copas.slice()};
   S.event=S.decks.events.pop(); if(!S.decks.events.length) S.decks.events=shuffle(S,EVENTOS.map(x=>x.id).filter(x=>x!==S.event));
   log(S,`Evento: ${EVT[S.event].n}. ${EVT[S.event].t}`,'evt');
-  if(S.event==='cumple') managedClubs(S).forEach(c=>c.moral=clamp(c.moral+1,0,10));
+  if(S.event==='cumple') FIXTURE[S.fecha-1].forEach(([h])=>{ const c=S.clubs[h]; if(c.ctrl!=='vecino'){ c.moral=clamp(c.moral+2,0,10); log(S,`${CLUBS[h].n}: +2 Moral, cumpleaños de su presidente.`); } });
   const matches=FIXTURE[S.fecha-1];
   // primero Vecino vs Vecino, después el resto
   const order=matches.slice().sort((a,b)=>(isMgd(S,a)?1:0)-(isMgd(S,b)?1:0));
@@ -1010,6 +1013,9 @@ const isMgd=(S,[h,a])=>S.clubs[h].ctrl!=='vecino'||S.clubs[a].ctrl!=='vecino';
 // ---------- cálculo de un lado ----------
 function baseFor(k,slot){ if(slot==='G') return isGK(k)?k.d:1; if(isGK(k)) return slot==='D'?1:0; return slot==='A'?k.a:k.d; }
 function vecLevel(S,ci){ const f=S.fecha; const lv=CLUBS[ci].lv; if(!CFG.VEC_RAMP) return lv[0]; return f>=6?lv[2]:f>=4?lv[1]:lv[0]; }
+// Niveles de Reputación: 6+ fichajes $1 más baratos; 12+ +1 Defensa; 20+ además +1 Ataque
+const REP_TIERS=[6,12,20];
+function repLevel(r){ return r>=20?3:r>=12?2:r>=6?1:0; }
 function moralMod(m){ return m<=1?-2:m<=3?-1:m<=6?0:m<=8?1:2; }
 function homeMod(h){ return h>=6?2:h>=3?1:0; }
 
@@ -1092,6 +1098,7 @@ function sideOf(S,ci,home,oppCi,ctx){
     addD('El arco (base)',CFG.DEF_BASE);
     const mm=moralMod(c.moral); addA(`Moral ${c.moral}`,mm); addD(`Moral ${c.moral}`,mm);
     if(home) addA(`Hinchada Fiel ${c.hinchada} (local)`,homeMod(c.hinchada));
+    const rl=repLevel(c.rep); if(rl>=2) addD(`Reputación ${c.rep}: los rivales te respetan`,1); if(rl>=3) addA(`Reputación ${c.rep}: club de leyenda`,1);
     cards.forEach(k=>{
       if(k.fx==='selfD2A1') addA(k.short+' (marca)',-1);
       if(k.fx==='selfD2A2') addA(k.short+' (marca)',-2);
@@ -1110,12 +1117,10 @@ function sideOf(S,ci,home,oppCi,ctx){
   if(evAllowed && ev){
     const shield = side.wilson;
     const neg=(l,fnA,fnD)=>{ if(shield){ side.bA.push([l+' (anulado por Wilson)',0]); side.wilsonFired=true; return;} if(fnA){side.atk+=fnA;side.bA.push([l,fnA])} if(fnD){side.def+=fnD;side.bD.push([l,fnD])} };
-    if(ev==='luz') neg('Evento: Corte de Luz',-2,0);
-    if(ev==='lluvia') neg('Evento: Lluvia',-2,0);
-    if(ev==='balon') neg('Evento: Balón',0,-2);
-    if(ev==='cumple') neg('Evento: torta',0,-1);
-    if(ev==='kermes') neg('Evento: kermés',-1,0);
-    if(ev==='cancha'&&!home) neg('Evento: cancha lejana (visita)',-1,0);
+    if(ev==='luz'&&home) neg('Evento: Corte de Luz (local)',0,-2);
+    if(ev==='balon'&&home){ side.atk+=2; side.bA.push(['Evento: conoce la pelota (local)',2]); }
+    if(ev==='kermes'&&home) neg('Evento: kermés (local distraído)',-2,0);
+    if(ev==='cancha'&&!home) neg('Evento: cancha lejana (visita)',-2,0);
     if(shield && ev==='arbitro') side.wilsonFired=true;
     if(side.wilsonFired && !ctx.preview){ c.flags.wilsonUsed=true; log(S,`${CLUBS[ci].n}: Wilson ordena todo y el Evento no los afecta (usa su efecto de la liga).`); }
   }
@@ -1131,7 +1136,8 @@ function playMatch(S,h,a,ctx){
   const A=sideOf(S,h,true,a,ctx), B=sideOf(S,a,false,h,ctx);
   const ev=ctx.friendly?null:S.event;
   if(ev==='lluvia'){ const fa=A.fisTot/(A.fisN||1), fb=B.fisTot/(B.fisN||1), t=(x,y)=>`Lluvia: más Físico promedio (${x.toFixed(1)} vs ${y.toFixed(1)})`;
-    if(fa>fb+0.001){A.def+=2;A.bD.push([t(fa,fb),2])} else if(fb>fa+0.001){B.def+=2;B.bD.push([t(fb,fa),2])} else { A.bD.push(['Lluvia: Físico parejo, nadie suma',0]); B.bD.push(['Lluvia: Físico parejo, nadie suma',0]); } }
+    const lose=(X,l)=>{ if(X.wilson){ X.bA.push([l+' (anulado por Wilson)',0]); X.wilsonFired=true; } else { X.atk-=2; X.bA.push([l,-2]); } };
+    if(fa>fb+0.001){A.def+=2;A.bD.push([t(fa,fb),2]);lose(B,'Lluvia: menos Físico, −2 Ataque')} else if(fb>fa+0.001){B.def+=2;B.bD.push([t(fb,fa),2]);lose(A,'Lluvia: menos Físico, −2 Ataque')} else { A.bD.push(['Lluvia: Físico parejo, nadie suma',0]); B.bD.push(['Lluvia: Físico parejo, nadie suma',0]); } }
   let n=4; if(ev==='largo') n=6; if(clCard==='reconc') n+=1;
   // árbitro: jugador al azar fuera de una ocasión
   const arb=[null,null];
@@ -1246,7 +1252,10 @@ function applyResult(S,r,A,B){
 // ---------- Fase 2 ----------
 function startPhase2(S){
   S.phase='f2';
+  if(S.fecha>=7){ pushTask(S,{type:'auto',fn:'endFecha'}); runBots(S); return; }
   // Rivalidad: +1 en la previa del Clásico
+  if(S.fecha<CLASICO_FECHA) CLASICO_PAIRS.forEach((p,k)=>{ const a=S.clubs[p[0]].res.slice(-1)[0], b=S.clubs[p[1]].res.slice(-1)[0];
+    if((a==='W')!==(b==='W')){ const w=a==='W'?p[0]:p[1], l=w===p[0]?p[1]:p[0]; S.rivalry[k]=Math.min(5,S.rivalry[k]+1); log(S,`Cargadas en el barrio: ${CLUBS[w].n} ganó y ${CLUBS[l].n} no. Rivalidad del ${p[2]}: ${S.rivalry[k]}.`,'evt'); } });
   if(S.fecha===CLASICO_FECHA-1){ S.rivalry=S.rivalry.map(x=>Math.min(5,x+1)); log(S,'La previa calienta los Clásicos: +1 a cada marcador de Rivalidad.','evt'); }
   CLASICO_PAIRS.forEach((p,k)=>{ if(S.fecha<CLASICO_FECHA && S.rivalry[k]>=3 && !S.rivTrig[k]){ S.rivTrig[k]=true; [p[0],p[1]].forEach(ci=>{ if(S.clubs[ci].ctrl!=='vecino') S.clubs[ci].dramas.push(drawDrama(S)); }); log(S,`La Rivalidad del ${p[2]} llegó a 3: Drama extra para ambos.`,'evt'); } });
   // Drama fijo: cada club recibe uno en cada Tercer Tiempo
@@ -1616,18 +1625,18 @@ const RULES_HTML = `
 <div id="rg-1" class="section">
 <h3>Cómo se juega</h3>
 <p>Ocho clubes, siete Fechas, una sola rueda. Gana quien suma más puntos: 3 por victoria, 1 por empate y +2 por cumplir la Promesa al Barrio. Cada club alterna local y visita.</p>
-<p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador. 5) Mercado (Fechas 1 a 3): 5 ofertas privadas para tu club. Al cerrar los partidos aparece el resumen con resultados, tabla y goleadores.</p>
+<p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento, que casi siempre favorece al local o a la visita, y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador (no hay después de la Fecha 7). 5) Mercado (Fechas 1 a 3): 5 ofertas privadas para tu club. Al cerrar los partidos aparece el resumen con resultados, tabla y goleadores.</p>
 <p><b>Jugadores.</b> Cada uno tiene su Ataque y su Defensa. Un volante de contención puede ser 2/4 y uno ofensivo 5/2; un delantero que baja a defender aporta 1. El arquero vale su número solo en el arco; cualquier otro en el arco vale 1.</p>
 <p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 3 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
 <p><b>Moral</b> (0 a 10, empieza en 5): ganar +1, perder −1. Suma o resta a Ataque y Defensa: 0-1 da −2, 2-3 da −1, 4-6 nada, 7-8 da +1, 9-10 da +2.</p>
 <p><b>Hinchada Fiel</b> (0 a 10): sube al ganar de local y al poner $3 en el asado. De local da +1 Ataque desde 3 y +2 desde 6.</p>
-<p><b>Reputación</b> (0 a 30): no cambia el partido. Desempata la tabla, se cambia por Favores y paga algunos Dramas y Eventos.</p>
+<p><b>Reputación</b> (0 a 30) tiene niveles: con 6 o más, los fichajes cuestan $1 menos; con 12 o más, +1 Defensa en cada partido; con 20 o más, además +1 Ataque. También desempata la tabla, se cambia por Favores y paga algunos Dramas y Eventos.</p>
 <p><b>Dinero:</b> 2 de cuota por Fecha, 1 de taquilla de local, el auspiciador y algunos Dramas. <b>Favores:</b> 2 al empezar, +1 al cerrar las Fechas 2, 4 y 6, +1 por ganar el Clásico, y se pueden pedir al barrio por 3 de Reputación.</p>
 <p><b>Físico</b> (0 a 3): jugar resta 1, descansar recupera 2. Con 0 juega con −2. En el Tercer Tiempo el kinesiólogo recupera +1 por $2 o +2 por 1 Favor.</p>
 <p><b>Auspiciadores.</b> Uno por vez, con contrato de 2 a 4 Fechas (Barbería y Parroquia, hasta el Clásico). Cuando vence elegís otro gratis entre 3. Cambiarlo antes cuesta $1 y 1 de Reputación.</p>
 <p><b>Promesa al Barrio.</b> Si la cumplís recibís su premio en el momento y +2 puntos. Si se vuelve imposible, −1 Moral.</p>
 <p><b>Drama.</b> Cada club recibe una carta de Drama en cada Tercer Tiempo, sin dado. El mazo mezcla 16 problemas y 10 buenas noticias (en verde): vaquitas, camisetas nuevas, empanadas que recuperan Físico, contactos que dan Favores. Sus efectos de partido se aplican la Fecha siguiente.</p>
-<p><b>Clásicos y Rivalidad.</b> La Rivalidad solo sirve para el Clásico de la Fecha 4: sube +1 en la Fecha 3 y con algunos Dramas, y el ganador del Clásico suma +1 Reputación por cada punto (tope 5) y se queda la Copa. Si llega a 3 antes del Clásico, ambos clubes reciben un Drama extra. Después de la Fecha 4 deja de contar, y los Dramas que la suben ya no la tocan.</p>
+<p><b>Clásicos y Rivalidad.</b> La Rivalidad solo sirve para el Clásico de la Fecha 4. Empieza en 1 y sube +1 cada vez que, en las Fechas 1 a 3, un rival gana y el otro no (las cargadas en el barrio), +1 en la Fecha 3 y con algunos Dramas; y el ganador del Clásico suma +1 Reputación por cada punto (tope 5) y se queda la Copa. Si llega a 3 antes del Clásico, ambos clubes reciben un Drama extra. Después de la Fecha 4 deja de contar, y los Dramas que la suben ya no la tocan.</p>
 </div>
 
 <div id="rg-2" class="section">
@@ -1660,7 +1669,7 @@ const RULES_HTML = `
 <li>Las Excusas de segundo tiempo dejaban al club con uno menos sin remedio: ahora un suplente cubre el primer tiempo.</li>
 <li>«Se Filtró un Audio» subía una Rivalidad que después del Clásico no hacía nada: ahora es −1 Moral o 1 Favor.</li>
 <li>«Fecha Doble» pedía jugar dos partidos seguidos sin decir contra quién en un fixture fijo: ahora el partido tiene 6 Ocasiones.</li>
-<li>«Falta el Balón» era idéntica a «Corte de Luz»: ahora resta Defensa.</li>
+<li>Los Eventos de partido afectaban igual a los dos equipos, así que no cambiaban nada: ahora cada uno favorece al local, a la visita o al de más Físico.</li>
 <li>«El Presidente Quiere Vender la Camiseta» daba +3 dinero o pagabas para evitarlo: aceptar era siempre mejor. Ahora vender cuesta Moral.</li>
 <li>Onésimo se saltaba la Excusa «en su primera Fecha jugada», pero la Excusa se resuelve antes de saber si juega.</li>
 <li>Ubaldo pedía no gastar Favores «esa Fecha», pero los Favores se gastan después del partido.</li>
@@ -1674,8 +1683,8 @@ const RULES_HTML = `
 
 <div id="rg-3" class="section">
 <h3>Calibración y qué vigilar</h3>
-<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,5 goles por partido, 25% de empates, y el campeón es un jugador 6 de cada 10 ligas. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
-<p>Lo que más conviene mirar jugando: si 3,5 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
+<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,7 goles por partido, 24% de empates, y el campeón es un jugador 6 de cada 10 ligas. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
+<p>Lo que más conviene mirar jugando: si 3,7 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
 </div>`;
 
 // ================= INTERFAZ =================
@@ -1745,7 +1754,7 @@ function rivalryHTML(){
   const hid=spoilerHidden()&&G.preRiv;
   const riv=hid?G.preRiv.rivalry:G.rivalry;
   const pre=G.fecha<CLASICO_FECHA||(G.fecha===CLASICO_FECHA&&(G.phase==='f1'||hid));
-  if(pre) return CLASICO_PAIRS.map((p,k)=>`<div class="riv">${crest(p[0],true)}${crest(p[1],true)}<span style="flex:1">${p[2].replace('Clásico ','')}</span><span class="dots" title="Rivalidad ${riv[k]}">${[0,1,2,3,4].map(i=>`<i class="${i<riv[k]?'on':''}"></i>`).join('')}</span></div>`).join('')+`<p class="small muted" style="margin-bottom:0">Rivalidad: el ganador del Clásico suma +1 Reputación por punto. Después de la Fecha 4 deja de contar.</p>`;
+  if(pre) return CLASICO_PAIRS.map((p,k)=>`<div class="riv">${crest(p[0],true)}${crest(p[1],true)}<span style="flex:1">${p[2].replace('Clásico ','')}</span><span class="dots" title="Rivalidad ${riv[k]}">${[0,1,2,3,4].map(i=>`<i class="${i<riv[k]?'on':''}"></i>`).join('')}</span></div>`).join('')+`<p class="small muted" style="margin-bottom:0">Sube cuando un rival gana y el otro no (las cargadas) y +1 en la Fecha 3. El ganador del Clásico suma +1 Reputación por punto, +1 Favor y la Copa.</p>`;
   return CLASICO_PAIRS.map((p,k)=>`<div class="copa">🏆 <span style="flex:1">${esc(p[3])}</span>${G.copas[k]!=null?crest(G.copas[k],true)+'<b>'+esc(CLUBS[G.copas[k]].sh)+'</b>':'<span class="muted">Sin dueño</span>'}</div>`).join('');
 }
 // ---------- render principal ----------
@@ -1902,13 +1911,13 @@ function resBar(c){
    <div class="bars">
     <div class="bar" title="Moral: arriba de 6 suma y abajo de 4 resta a Ataque y Defensa en cada partido."><span class="lbl">Moral ${c.moral}</span><div class="track2"><span class="fill" style="${moralFill}"></span><span class="mid"></span></div>${fx(mm,mm?sg(mm)+' A y D':'sin efecto')}</div>
     <div class="bar" title="Hinchada Fiel: de local suma +1 Ataque desde 3 y +2 desde 6."><span class="lbl">Hinchada ${c.hinchada}</span><div class="track2"><span class="fill" style="left:0;width:${c.hinchada*10}%;background:var(--turq)"></span><span class="tick" style="left:30%"></span><span class="tick" style="left:60%"></span></div>${fx(hm,hm?sg(hm)+' de local':'sin bono')}</div>
-    <div class="bar" title="Reputación: no cambia el partido. Desempata la tabla y se cambia por Favores."><span class="lbl">Reputación ${c.rep}</span><div class="track2"><span class="fill" style="left:0;width:${c.rep/30*100}%;background:var(--gold)"></span></div><span class="fx zero">desempate</span></div>
+    <div class="bar" title="Reputación: 6+ fichajes $1 más baratos · 12+ +1 Defensa en cada partido · 20+ además +1 Ataque. También desempata y se cambia por Favores."><span class="lbl">Reputación ${c.rep}</span><div class="track2"><span class="fill" style="left:0;width:${c.rep/30*100}%;background:var(--gold)"></span>${REP_TIERS.map(t=>`<span class="tick" style="left:${t/30*100}%"></span>`).join('')}</div>${(()=>{ const l=repLevel(c.rep); return fx(l,['sin nivel','fichajes −$1','+1 D · −$1','+1 A y D · −$1'][l]); })()}</div>
    </div></div>`;
 }
 const STEP_KEYS={lineup:0,excuse:1,fecha:2,tt:3,market:4};
 function stepsHTML(key){
   if(!G||G.phase==='pre') return `<div class="steps">${['Auspiciador','Mercado'].map((l,i)=>`<span class="${(key==='market'?1:0)===i?'now':(key==='market'&&i===0?'done':'')}">${l}</span>`).join('')}</div>`;
-  const list=['Alineación','Excusa','Partido','Tercer Tiempo']; if(G.fecha<=3) list.push('Mercado'); else if(G.fecha<=6&&!G.clubs.some(c=>c.squad.some(s=>s.id==='l30'))) list.push('Refuerzo');
+  const list=['Alineación','Excusa','Partido']; if(G.fecha<7) list.push('Tercer Tiempo'); if(G.fecha<=3) list.push('Mercado'); else if(G.fecha<=6&&!G.clubs.some(c=>c.squad.some(s=>s.id==='l30'))) list.push('Refuerzo');
   const cur=STEP_KEYS[key];
   return `<div class="steps">${list.map((l,i)=>`<span class="${i===cur?'now':i<cur?'done':''}">${l}</span>`).join('')}</div>`;
 }
@@ -2123,13 +2132,13 @@ function screenFecha(app){
   const allDone=mine.every(r=>(UI.reveal[G.fecha+'-'+r.h]||0)>=r.n);
   const ev=EVT[G.event];
   app.innerHTML=`<div class="screen-head"><div><div class="kicker">${phaseLabel()}</div><h2>${G.fecha===CLASICO_FECHA?'Fecha de Clásicos':'Fecha '+G.fecha}</h2></div></div>${stepsHTML('fecha')}
-  <div class="ev-hero"><span class="ico">${EV_ICO[G.event]||'📣'}</span><div><small>Evento de la Fecha</small><h3>${esc(ev.n)}</h3><p>${esc(ev.t)}</p><div class="evnote">${['luz','lluvia','balon','cumple','kermes','cancha'].includes(G.event)?'Ya está sumado en el Ataque y la Defensa de cada partido.':['parlante','fisca'].includes(G.event)?'No cambia el partido: se aplica en el Tercer Tiempo.':'Se aplica durante el partido.'}</div></div></div>
+  <div class="ev-hero"><span class="ico">${EV_ICO[G.event]||'📣'}</span><div><small>Evento de la Fecha</small><h3>${esc(ev.n)}</h3><p>${esc(ev.t)}</p><div class="evnote">${['luz','lluvia','balon','kermes','cancha'].includes(G.event)?'Ya está sumado en el Ataque y la Defensa de cada partido.':G.event==='cumple'?'La Moral del local ya subió antes del partido.':['parlante','fisca'].includes(G.event)?'No cambia el partido: se aplica en el Tercer Tiempo.':'Se aplica durante el partido.'}</div></div></div>
   ${mine.map(matchCard).join('')}
   ${vv.length?`<div class="blk"><h3>Entre Vecinos · ya jugado</h3><div class="rlist">${vv.map(resultCard).join('')}</div></div>`:''}`;
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ const k=b.dataset.step; const before=UI.reveal[k]||0; UI.reveal[k]=Math.min(+b.dataset.n,before+1); render();
     const r=res.find(x=>G.fecha+'-'+x.h===k); const o=r&&r.oc[before]; if(o){ const goals=o.lines.filter(l=>l.goal); if(goals.length) celebrateGoal(k,goals.map(l=>({ci:l.k===0?r.h:r.a,who:l.scorer}))); } });
   document.querySelectorAll('[data-all]').forEach(b=>b.onclick=()=>{ UI.reveal[b.dataset.all]=+b.dataset.n; render(); });
-  setAction(`${allDone?'<span></span>':'<button class="btn alt" id="revAll">Ver todos los resultados</button>'}<button class="btn" id="go" ${allDone?'':'disabled'}>Ir al Tercer Tiempo</button>`);
+  setAction(`${allDone?'<span></span>':'<button class="btn alt" id="revAll">Ver todos los resultados</button>'}<button class="btn" id="go" ${allDone?'':'disabled'}>Ver el resumen</button>`);
   const ra=$('#revAll'); if(ra) ra.onclick=()=>{ mine.forEach(r=>UI.reveal[G.fecha+'-'+r.h]=r.n); render(); };
   $('#go').onclick=()=>{ snapshot(); G.queue[0]={type:'show',what:'summary'}; UI.reveal={}; UI.sumTab='r'; save(); render(); window.scrollTo({top:0}); };
 }
@@ -2154,7 +2163,7 @@ function screenSummary(app){
   ${tab==='r'?`<div class="rlist">${res.map(resultCard).join('')}</div>${sc.length?`<div class="blk"><h3>Goles de la Fecha</h3>${sc.map(x=>`<div class="copa">⚽ <b>${esc(personName(x.id))}</b><span class="muted" style="margin-left:auto">${esc(CLUBS[x.ci].sh)}</span>${crest(x.ci,true)}</div>`).join('')}</div>`:''}`
    :tab==='t'?`<div class="panel">${tableHTML(false,null,prevOrder)}</div>`:`<div class="panel">${scorersHTML(15)}</div>`}`;
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{UI.sumTab=b.dataset.st;render()});
-  setAction(`<span></span><button class="btn" id="go">Ir al Tercer Tiempo</button>`);
+  setAction(`<span></span><button class="btn" id="go">${G.fecha>=7?'Ver el final de la liga':'Ir al Tercer Tiempo'}</button>`);
   $('#go').onclick=()=>{ snapshot(); G.queue.shift(); startPhase2(G); UI.gate=null; save(); render(); window.scrollTo({top:0}); };
 }
 
@@ -2185,7 +2194,8 @@ function screenTT(app,c){
   app.innerHTML=head(c,'El Tercer Tiempo','tt')+objBanner(c)+`
   <div class="res-hero">${crest(lr.h)}<b>${lr.g[0]} : ${lr.g[1]}</b>${crest(lr.a)}<span style="margin-left:auto;font-weight:700">${last==='W'?'Ganaron':last==='D'?'Empataron':'Perdieron'}</span></div>
   <div style="margin-top:12px">${resBar(c)}</div>
-  <div class="blk"><h3>¿Cuánto ponés para el asado?</h3><div class="tiles">${[0,1,2,3].map(v=>{ const p=ttPreview(G,c,v); return `<button class="tile ${d.invest===v?'on':''}" data-inv="${v}" ${v>c.money?'disabled':''}><b>$${v}</b><span>+${p.rep} Rep${p.hinch?' · +1 Hinchada':''}</span></button>`; }).join('')}</div></div>
+  <div class="blk"><h3>¿Cuánto ponés para el asado?</h3><div class="tiles">${[0,1,2,3].map(v=>{ const p=ttPreview(G,c,v); return `<button class="tile ${d.invest===v?'on':''}" data-inv="${v}" ${v>c.money?'disabled':''}><b>$${v}</b><span>+${p.rep} Rep${p.hinch?' · +1 Hinchada':''}</span></button>`; }).join('')}</div>
+   ${(()=>{ const ex=ttPreview(G,c,0).parts.filter(x=>x[0]!=='Inversión'); return ex.length?`<p class="small muted" style="margin:8px 2px 0">Cada opción ya incluye: ${ex.map(x=>`${esc(x[0])} ${sg(x[1])}`).join(' · ')}. Lo que pongas en el asado se suma encima.</p>`:''; })()}</div>
   ${G.event==='fisca'?`<div class="blk"><h3>📋 Fiscalización Municipal</h3><div class="opts">${opt('data-fisca="pay"',d.fisca==='pay',c.money>=fc,`Pagar $${fc}`)}${opt('data-fisca="rep"',d.fisca==='rep',true,'Perder 2 de Reputación')}</div></div>`:''}
   ${c.dramas.map((id,k)=>{ const ops=dramaOptions(G,c,id); let after='';
      if(ops[0]&&ops[0].dice) after = done[k]!=null ? `<div class="rollres">${esc(done[k])}</div>` : `<div style="margin-top:8px"><button class="btn" data-roll="${k}">🎲 Tirar el dado</button></div>`;
