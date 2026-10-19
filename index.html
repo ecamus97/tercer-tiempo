@@ -820,7 +820,7 @@ const EXC=BYID(EXCUSAS),EVT=BYID(EVENTOS),SPO=BYID(SPONSORS),DRA=BYID(DRAMAS),OB
 // ================= MOTOR =================
 // Constantes de calibración (ajustadas por simulación; ver panel Laboratorio)
 const CFG = {
-  VEC_ATK: 3, VEC_DEF: 1,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
+  VEC_ATK: 2, VEC_DEF: 1,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
   DEF_BASE: 0,              // "El arco": toda Defensa humana suma este fijo
   REST_REC: 2, FIS_PEN1: 0, VEC_RAMP: true,              // Físico que recupera quien descansa
   INCOME: 2,                // cuota social por Fecha
@@ -1233,11 +1233,8 @@ function startPhase2(S){
   // Rivalidad: +1 en la previa del Clásico
   if(S.fecha===CLASICO_FECHA-1){ S.rivalry=S.rivalry.map(x=>Math.min(5,x+1)); log(S,'La previa calienta los Clásicos: +1 a cada marcador de Rivalidad.','evt'); }
   CLASICO_PAIRS.forEach((p,k)=>{ if(S.fecha<CLASICO_FECHA && S.rivalry[k]>=3 && !S.rivTrig[k]){ S.rivTrig[k]=true; [p[0],p[1]].forEach(ci=>{ if(S.clubs[ci].ctrl!=='vecino') S.clubs[ci].dramas.push(drawDrama(S)); }); log(S,`La Rivalidad del ${p[2]} llegó a 3: Drama extra para ambos.`,'evt'); } });
-  managedClubs(S).forEach(c=>{
-    const lost=c.res[c.res.length-1]==='L';
-    const r=d6(S), dry=c.flags.noDrama||0;
-    if(r<=(lost?3:2) || dry>=2 || c.dramas.length){ if(!c.dramas.length) c.dramas.push(drawDrama(S)); c.flags.noDrama=0; } else c.flags.noDrama=dry+1;
-  });
+  // Drama fijo: cada club recibe uno en cada Tercer Tiempo
+  managedClubs(S).forEach(c=>{ if(!c.dramas.length) c.dramas.push(drawDrama(S)); });
   const mgd=managedClubs(S);
   mgd.forEach(c=>{ c.spoExpiring = !!c.sponsor && S.fecha>=c.spoUntil && S.fecha<7; if(c.spoExpiring) c.spoOffer=drawSponsors(S,3); });
   mgd.forEach(c=>pushTask(S,{type:'tt',ci:c.i}));
@@ -1595,7 +1592,7 @@ const RULES_HTML = `
 <p>Ocho clubes, siete Fechas, una sola rueda. Gana quien suma más puntos: 3 por victoria, 1 por empate y +2 por cumplir la Promesa al Barrio. Cada club alterna local y visita.</p>
 <p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador. 5) Mercado (Fechas 1 a 3): 5 ofertas privadas para tu club. Al cerrar los partidos aparece el resumen con resultados, tabla y goleadores.</p>
 <p><b>Jugadores.</b> Cada uno tiene su Ataque y su Defensa. Un volante de contención puede ser 2/4 y uno ofensivo 5/2; un delantero que baja a defender aporta 1. El arquero vale su número solo en el arco; cualquier otro en el arco vale 1.</p>
-<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 3 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
+<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 2 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
 <p><b>Moral</b> (0 a 10, empieza en 5): ganar +1, perder −1. Suma o resta a Ataque y Defensa: 0-1 da −2, 2-3 da −1, 4-6 nada, 7-8 da +1, 9-10 da +2.</p>
 <p><b>Hinchada Fiel</b> (0 a 10): sube al ganar de local y al poner $3 en el asado. De local da +1 Ataque desde 3 y +2 desde 6.</p>
 <p><b>Reputación</b> (0 a 30): no cambia el partido. Desempata la tabla, se cambia por Favores y paga algunos Dramas y Eventos.</p>
@@ -1603,7 +1600,7 @@ const RULES_HTML = `
 <p><b>Físico</b> (0 a 3): jugar resta 1, descansar recupera 2. Con 0 juega con −2. En el Tercer Tiempo el kinesiólogo recupera +1 por $2 o +2 por 1 Favor.</p>
 <p><b>Auspiciadores.</b> Uno por vez, con contrato de 2 a 4 Fechas (Barbería y Parroquia, hasta el Clásico). Cuando vence elegís otro gratis entre 3. Cambiarlo antes cuesta $1 y 1 de Reputación.</p>
 <p><b>Promesa al Barrio.</b> Si la cumplís recibís su premio en el momento y +2 puntos. Si se vuelve imposible, −1 Moral.</p>
-<p><b>Drama.</b> Tras cada partido, con 1-2 en el dado (1-3 si perdiste) aparece un Drama. Si un club lleva 2 Fechas sin Drama, la siguiente le toca seguro. Sus efectos de partido se aplican la Fecha siguiente.</p>
+<p><b>Drama.</b> Cada club recibe un Drama en cada Tercer Tiempo, sin dado. Sus efectos de partido se aplican la Fecha siguiente.</p>
 <p><b>Clásicos y Rivalidad.</b> La Rivalidad solo sirve para el Clásico de la Fecha 4: sube +1 en la Fecha 3 y con algunos Dramas, y el ganador del Clásico suma +1 Reputación por cada punto (tope 5) y se queda la Copa. Si llega a 3 antes del Clásico, ambos clubes reciben un Drama extra. Después de la Fecha 4 deja de contar, y los Dramas que la suben ya no la tocan.</p>
 </div>
 
@@ -1612,7 +1609,7 @@ const RULES_HTML = `
 <p class="muted small">Cada carta modificada muestra la marca «✎ regla ajustada»; al pasar el mouse se ve el texto original.</p>
 <h3 class="section">Estructurales (rompían el juego)</h3>
 <ol>
-<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, y el Vecino usa Nivel + 3 en Ataque y + 1 en Defensa. Resultado simulado: con 3 humanos, el humano gana 40%, empata 27% y pierde 33% contra Vecinos.</li>
+<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, y el Vecino usa Nivel + 2 en Ataque y + 1 en Defensa. Resultado simulado: con 3 humanos, el humano gana 42%, empata 30% y pierde 28% contra Vecinos.</li>
 <li><b>El Físico era una espiral sin salida.</b> Con 8 jugadores y 7 titulares, jugar −1 y descansar +1 deja a casi todo el plantel en Físico 0 desde la Fecha 4: −13 en la alineación, para todos por igual. Ahora el Físico va de 0 a 3, descansar recupera 2 y solo se penaliza con Físico 0.</li>
 <li><b>La decisión táctica no existía.</b> La Plantilla Base trae exactamente 3 defensores (arquero y dos laterales) y 5 atacantes, y solo los Comodines cambiaban de línea: "cuántos dejo arriba" no era una decisión. Ahora cada jugador tiene un valor de Ataque y otro de Defensa (un volante de contención puede ser 2/4, un ofensivo 5/2, un delantero defiende 1).</li>
 <li><b>La Excusa obligatoria tenía una estrategia dominante.</b> El mismo reglamento recomendaba nominar a alguien que no ibas a alinear; con 8 jugadores para 7 puestos siempre hay uno así, y la Excusa nunca hacía nada. Ahora cae sobre un titular al azar, después de armar el equipo.</li>
@@ -1651,8 +1648,8 @@ const RULES_HTML = `
 
 <div id="rg-3" class="section">
 <h3>Calibración y qué vigilar</h3>
-<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,5 goles por partido, 27% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
-<p>Lo que más conviene mirar jugando: si 3,5 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
+<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3 goles por partido, 27% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
+<p>Lo que más conviene mirar jugando: si 3 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
 </div>`;
 
 // ================= INTERFAZ =================
