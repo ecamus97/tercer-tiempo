@@ -542,6 +542,8 @@ table.tb td.club{min-width:150px;display:table-cell}
 .goalfx.calm .gtxt{animation:none}
 .mc.glow{box-shadow:0 0 0 2px #2BD46A,0 0 40px rgba(43,212,106,.5);transition:box-shadow .2s}
 @media (prefers-reduced-motion: reduce){ .goalfx .conf{display:none} }
+
+.frow{display:flex!important;justify-content:space-evenly;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0;min-height:76px}
 </style>
 </head>
 <body>
@@ -628,7 +630,7 @@ const BASE_RAW = [
 // [id,pos,num,nombre,apodo,apellido,valor,fx,efecto,sabor,costoDinero,costoFavor,original]
 const LIBRES_RAW = [
 ['l1','ARQ',1,'Ulises','El Primo del Arquero','Beltrán',3,'','Sin efecto especial.','Llegó porque el titular faltó, y se quedó porque nadie más quiso el arco.',0,1],
-['l2','DEF',4,'Don Walter','El Eterno','Gutiérrez',5,'walter','Pierde 1 de Físico extra cada Fecha jugada.','Juega con rodillera desde antes de que nacieran la mitad de sus compañeros.',2,0],
+['l2','DD',4,'Don Walter','El Eterno','Gutiérrez',5,'walter','Pierde 1 de Físico extra cada Fecha jugada.','Juega con rodillera desde antes de que nacieran la mitad de sus compañeros.',2,0],
 ['l3','VCE',8,'Franklin','El Junior que Corre Todo','Soto',3,'rec2','+2 de Físico recuperado en Fechas de descanso.','Corre once kilómetros por partido, diez sin la pelota.',1,0],
 ['l4','COM',7,'Custodio','El Capitán de la Rifa','Vera',3,'custodio','Cada Fecha: +1 dinero por la rifa o, en vez de eso, anula una Excusa del club.','Organiza la rifa, cobra la cancha y todavía tiene tiempo de jugar los noventa minutos.',2,0,'Una vez por Fecha, genera 2 de dinero extra o anula una Excusa (+2 por Fecha pagando 2 era la mejor inversión del juego).'],
 ['l5','VCE',6,'Kevin','El Sobrino del Auspiciador','Choque',3,'kevin','Mientras esté en el plantel, cambiar de Auspiciador no cuesta Reputación.','Juega regular, pero su tío pone las camisetas, así que nadie lo banca dos fechas seguidas.',1,1,'Mientras esté alineado, no pierde Reputación por incumplir a un Auspiciador (no había regla de incumplimiento).'],
@@ -638,22 +640,22 @@ const LIBRES_RAW = [
 ['l9','DEL',9,'Wilmer','Motor Diesel','Paredez',5,'diesel','−1 Ataque en las Ocasiones 1 y 2, +1 en las Ocasiones 3 y 4.','Tarda en arrancar, pero no para.',2,0],
 ['l10','DEL',23,'Brandon','Botines de Marca, Cuerpo de Sofá','Herrera',5,'brandon','−2 a su valor por cada Fecha seguida que jugó sin descansar.','Tiene los tapones importados. El estado físico, no tanto.',3,0],
 ['l11','COM',99,'','El Zorro','Villagra',8,'zorro','Juega un solo partido y se retira.','Dijo que se retiraba. No se retiró.',3,1,'Solo 1 partido, elegido al contratarlo (simplificado).'],
-['l12','DEF',4,'Ananías','El Fierrero que Juega los Domingos','Yupanqui',5,'ananias','Vale 0 si el Evento es «Fiscalización Municipal».','Entre semana suelda portones, el domingo suelda la defensa.',1,1],
+['l12','DI',4,'Ananías','El Fierrero que Juega los Domingos','Yupanqui',5,'ananias','Vale 0 si el Evento es «Fiscalización Municipal».','Entre semana suelda portones, el domingo suelda la defensa.',1,1],
 ['l13','DEL',7,'Marco','El que Llega en Cinco','Villalba',5,'marco','Antes de cada partido tira 1d6: con 1 o 2 solo juega las Ocasiones 3 y 4.','Está a cinco minutos hace cuarenta.',1,0],
-['l14','DEF',3,'Hugo','El Pegador con Corazón','Ramírez',5,'sancion','Riesgo de sanción: tras jugar, con un 1 en el dado se pierde la Fecha siguiente.','Te rompe el tobillo y después te invita el choripán.',2,0],
+['l14','DD',3,'Hugo','El Pegador con Corazón','Ramírez',5,'sancion','Riesgo de sanción: tras jugar, con un 1 en el dado se pierde la Fecha siguiente.','Te rompe el tobillo y después te invita el choripán.',2,0],
 ['l15','VOF',10,'Elvis','El Enganche de Otro Barrio','Tarqui',5,'clasico2','+2 Ataque en el Clásico.','Conoce tan bien al rival que hasta sabe cómo respira el arquero.',3,0],
-['l16','DEF',3,'Deyvis','El Lateral que Nunca se Cansa','Machaca',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Sube y baja toda la cancha, literal.',1,0,'Costaba 2 dinero + 1 favor por una carta de valor 3: nadie la fichaba.'],
+['l16','DI',3,'Deyvis','El Lateral que Nunca se Cansa','Machaca',3,'rec1','+1 de Físico recuperado en Fechas de descanso.','Sube y baja toda la cancha, literal.',1,0,'Costaba 2 dinero + 1 favor por una carta de valor 3: nadie la fichaba.'],
 ['l17','ARQ',1,'Ramón','El Arquero Prestado','Ojeda',5,'ramon','Se va del plantel después de 2 Fechas.','Vino prestado por dos fechas, después vuelve a su club.',0,2],
 ['l18','COM',8,'Don Cirilo','El Ex Profesional Retirado','Molina',6,'cirilo','Vale 6 en su primer partido y 3 en los siguientes.','Jugó divisiones inferiores hace 15 años. Todavía se acuerda de un gol.',3,0],
 ['l19','DEL',11,'Joaquín','La Promesa Adelantada','Ticona',3,'','Sin efecto especial.','Le hicieron sacar la cédula para que pudiera jugar.',1,0],
 ['l20','VCE',6,'Reinaldo','El Que Juega en Dos Ligas','Apaza',4,'reinaldo','Si le toca la Excusa, se roban 2 y se aplica la peor.','Nadie sabe cómo llega a todos los partidos, pero llega.',1,0,'Valor 3 por 2 dinero y solo efecto negativo: nadie lo fichaba.'],
 ['l21','DEL',9,'Bryan','El Recomendado del Auspiciador','Cusicanqui',3,'bryan','Mientras esté en el plantel, firmar un Auspiciador no cuesta dinero.','Viene con el combo: si lo fichás, hay descuento.',2,0,'El próximo Auspiciador cuesta 1 dinero menos (los Auspiciadores no tenían costo).'],
-['l22','DEF',3,'Hipólito','El Comandante','Rivas',5,'clasicoD1','+1 Defensa en el Clásico.','Se pone serio en serio cuando se acerca el Clásico.',3,0],
+['l22','DD',3,'Hipólito','El Comandante','Rivas',5,'clasicoD1','+1 Defensa en el Clásico.','Se pone serio en serio cuando se acerca el Clásico.',3,0],
 ['l23','COM',14,'Wenceslao','El que Nunca Discute con el Árbitro','Puma',3,'wences','Si está alineado, su club ignora el Evento «Árbitro Misterioso».','Mientras todos discuten, él ya volvió a marcar la raya.',2,0],
 ['l24','DEL',9,'Deividson','El Crack que No Entrena','Salvatierra',6,'deividson','−2 a su valor si jugó la Fecha anterior.','Dice que el talento no se entrena, se hereda.',3,0],
 ['l25','VOF',8,'Onésimo','El que Vino de Otra Liga','Bazualdo',5,'onesimo','La Fecha siguiente a ficharlo, el club se salta la Excusa obligatoria.','Llegó con fama de otro barrio, y por ahora la está confirmando.',3,0,'En su primera Fecha jugada se salta la Excusa (la Excusa se resuelve antes de saber si juega).'],
 ['l26','COM',17,'Casiano','El que Juega Gratis por Amor al Club','Illescas',3,'','Sin efecto especial.','Dice que no es por la plata. Nadie le pregunta dos veces.',0,1],
-['l27','DEF',4,'Fortunato','El Rompecodos','Baldivieso',6,'fortunato','+1 Defensa con «Llueve como Nunca». Riesgo de sanción.','En el aire, nadie le gana la posición... ni el codo.',3,0],
+['l27','DI',4,'Fortunato','El Rompecodos','Baldivieso',6,'fortunato','+1 Defensa con «Llueve como Nunca». Riesgo de sanción.','En el aire, nadie le gana la posición... ni el codo.',3,0],
 ['l28','COM',16,'Hermógenes','El que Todo lo Cobra por Favor','Nogales',3,'hermo','Pedir un Favor al barrio le cuesta al club 1 Reputación menos.','Te hace el favor, pero lo anota en un cuaderno.',2,1],
 ['l29','VCE',6,'Eleuterio','El que Grita Más que Juega','Villagómez',4,'eleuterio','+1 Moral al club cada Fecha que juega, pero suma −1 a su propio Ataque.','Se le escucha desde la otra cuadra, aunque toque la pelota poco.',2,0],
 ['l30','COM',20,'Deolindo','El Refuerzo de Última Hora','Chumacero',5,'deolindo','No sale en el Mercado. Se ofrece en las Fechas 4 a 6, primero al peor ubicado.','Llega cuando el club ya está complicado, y a veces lo salva.',3,0,'Solo puede ficharse en las últimas 3 Fechas (pero el mercado cerraba en la Fecha 3: nunca se podía fichar).'],
@@ -818,7 +820,7 @@ const EXC=BYID(EXCUSAS),EVT=BYID(EVENTOS),SPO=BYID(SPONSORS),DRA=BYID(DRAMAS),OB
 // ================= MOTOR =================
 // Constantes de calibración (ajustadas por simulación; ver panel Laboratorio)
 const CFG = {
-  VEC_ATK: 2, VEC_DEF: 1,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
+  VEC_ATK: 3, VEC_DEF: 1,   // Club Vecino: Ataque = Nivel + VEC_ATK, Defensa = Nivel + VEC_DEF
   DEF_BASE: 0,              // "El arco": toda Defensa humana suma este fijo
   REST_REC: 2, FIS_PEN1: 0, VEC_RAMP: true,              // Físico que recupera quien descansa
   INCOME: 2,                // cuota social por Fecha
@@ -1209,9 +1211,9 @@ function applyResult(S,r,A,B){
     if(gh!==ga){
       const win=gh>ga?H:V;
       let bonus=Math.min(5,riv); if(r.clCard==='vecino') bonus*=2;
-      if(win.ctrl!=='vecino'){ win.rep=clamp(win.rep+bonus,0,30); }
+      if(win.ctrl!=='vecino'){ win.rep=clamp(win.rep+bonus,0,30); win.favors++; }
       S.copas[r.clasico]=win.i;
-      post.push(`${CLUBS[win.i].n} gana el ${p[2]}: se queda con la ${p[3]}${bonus&&win.ctrl!=='vecino'?` y +${bonus} Reputación por Rivalidad`:''}.`);
+      post.push(`${CLUBS[win.i].n} gana el ${p[2]}: se queda con la ${p[3]}${win.ctrl!=='vecino'?`, +1 Favor${bonus?` y +${bonus} Reputación por Rivalidad`:''}`:''}.`);
       if(r.clCard==='herencia'&&win.ctrl!=='vecino'){win.flags.herencia=true;post.push(`${CLUBS[win.i].n} es Dueño del Potrero: +2 Ataque en su próxima Fecha de local.`)}
       if(r.clCard==='copa'&&win.ctrl!=='vecino'){win.hinchada=clamp(win.hinchada+2,0,10);post.push(`${CLUBS[win.i].n}: +2 Hinchada Fiel (Copa de Lata).`)}
       // retiro dorado
@@ -1233,7 +1235,8 @@ function startPhase2(S){
   CLASICO_PAIRS.forEach((p,k)=>{ if(S.fecha<CLASICO_FECHA && S.rivalry[k]>=3 && !S.rivTrig[k]){ S.rivTrig[k]=true; [p[0],p[1]].forEach(ci=>{ if(S.clubs[ci].ctrl!=='vecino') S.clubs[ci].dramas.push(drawDrama(S)); }); log(S,`La Rivalidad del ${p[2]} llegó a 3: Drama extra para ambos.`,'evt'); } });
   managedClubs(S).forEach(c=>{
     const lost=c.res[c.res.length-1]==='L';
-    const r=d6(S); if(r<=(lost?3:2)) c.dramas.push(drawDrama(S));
+    const r=d6(S), dry=c.flags.noDrama||0;
+    if(r<=(lost?3:2) || dry>=2 || c.dramas.length){ if(!c.dramas.length) c.dramas.push(drawDrama(S)); c.flags.noDrama=0; } else c.flags.noDrama=dry+1;
   });
   const mgd=managedClubs(S);
   mgd.forEach(c=>{ c.spoExpiring = !!c.sponsor && S.fecha>=c.spoUntil && S.fecha<7; if(c.spoExpiring) c.spoOffer=drawSponsors(S,3); });
@@ -1336,6 +1339,7 @@ AUTO.endFecha=(S)=>{
     if(c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='pulpo')){inc-=1;parts.push('Pulpo −1')}
     if(c.squad.some(s=>!s.retired&&CARDS[s.id].fx==='custodio') && !c.cur.custodioUsed){inc+=1;parts.push('Custodio 1')}
     c.money+=inc;
+    if(S.fecha%2===0){ c.favors++; log(S,`${nm}: el barrio le devuelve la mano, +1 Favor.`); }
     if(sp==='fm') c.rep=clamp(c.rep+1,0,30);
     if(sp==='cyber'&&won&&home) c.rep=clamp(c.rep+2,0,30);
     if(sp==='beto'&&c.res.slice(-2).join('')==='LL'){ c.rep=clamp(c.rep-1,0,30); log(S,`${nm}: −1 Reputación, Don Beto está molesto.`); }
@@ -1591,15 +1595,15 @@ const RULES_HTML = `
 <p>Ocho clubes, siete Fechas, una sola rueda. Gana quien suma más puntos: 3 por victoria, 1 por empate y +2 por cumplir la Promesa al Barrio. Cada club alterna local y visita.</p>
 <p><b>Cada Fecha tiene 5 pasos.</b> 1) Alineación: 7 jugadores repartidos en Ataque, Defensa y Arco. 2) Excusa: le cae a un titular al azar; pagás, aceptás o rearmás el equipo. 3) Partido: se revela el Evento y se juegan 4 ocasiones. 4) Tercer Tiempo: asado, Dramas, kinesiólogo, auspiciador. 5) Mercado (Fechas 1 a 3): 5 ofertas privadas para tu club. Al cerrar los partidos aparece el resumen con resultados, tabla y goleadores.</p>
 <p><b>Jugadores.</b> Cada uno tiene su Ataque y su Defensa. Un volante de contención puede ser 2/4 y uno ofensivo 5/2; un delantero que baja a defender aporta 1. El arquero vale su número solo en el arco; cualquier otro en el arco vale 1.</p>
-<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 2 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
+<p><b>Partido.</b> En cada ocasión se compara tu Ataque + 1 dado contra la Defensa rival + 1 dado, y al revés. Si el Ataque supera, es gol. Un Club Vecino usa su Nivel + 3 en Ataque y su Nivel + 1 en Defensa, y tiene su propio plantel para los goles.</p>
 <p><b>Moral</b> (0 a 10, empieza en 5): ganar +1, perder −1. Suma o resta a Ataque y Defensa: 0-1 da −2, 2-3 da −1, 4-6 nada, 7-8 da +1, 9-10 da +2.</p>
 <p><b>Hinchada Fiel</b> (0 a 10): sube al ganar de local y al poner $3 en el asado. De local da +1 Ataque desde 3 y +2 desde 6.</p>
 <p><b>Reputación</b> (0 a 30): no cambia el partido. Desempata la tabla, se cambia por Favores y paga algunos Dramas y Eventos.</p>
-<p><b>Dinero:</b> 2 de cuota por Fecha, 1 de taquilla de local, el auspiciador y algunos Dramas. <b>Favores:</b> 2 al empezar y se piden al barrio por 3 de Reputación.</p>
+<p><b>Dinero:</b> 2 de cuota por Fecha, 1 de taquilla de local, el auspiciador y algunos Dramas. <b>Favores:</b> 2 al empezar, +1 al cerrar las Fechas 2, 4 y 6, +1 por ganar el Clásico, y se pueden pedir al barrio por 3 de Reputación.</p>
 <p><b>Físico</b> (0 a 3): jugar resta 1, descansar recupera 2. Con 0 juega con −2. En el Tercer Tiempo el kinesiólogo recupera +1 por $2 o +2 por 1 Favor.</p>
 <p><b>Auspiciadores.</b> Uno por vez, con contrato de 2 a 4 Fechas (Barbería y Parroquia, hasta el Clásico). Cuando vence elegís otro gratis entre 3. Cambiarlo antes cuesta $1 y 1 de Reputación.</p>
 <p><b>Promesa al Barrio.</b> Si la cumplís recibís su premio en el momento y +2 puntos. Si se vuelve imposible, −1 Moral.</p>
-<p><b>Drama.</b> Tras cada partido, con 1-2 en el dado (1-3 si perdiste) aparece un Drama. Sus efectos de partido se aplican la Fecha siguiente.</p>
+<p><b>Drama.</b> Tras cada partido, con 1-2 en el dado (1-3 si perdiste) aparece un Drama. Si un club lleva 2 Fechas sin Drama, la siguiente le toca seguro. Sus efectos de partido se aplican la Fecha siguiente.</p>
 <p><b>Clásicos y Rivalidad.</b> La Rivalidad solo sirve para el Clásico de la Fecha 4: sube +1 en la Fecha 3 y con algunos Dramas, y el ganador del Clásico suma +1 Reputación por cada punto (tope 5) y se queda la Copa. Si llega a 3 antes del Clásico, ambos clubes reciben un Drama extra. Después de la Fecha 4 deja de contar, y los Dramas que la suben ya no la tocan.</p>
 </div>
 
@@ -1608,7 +1612,7 @@ const RULES_HTML = `
 <p class="muted small">Cada carta modificada muestra la marca «✎ regla ajustada»; al pasar el mouse se ve el texto original.</p>
 <h3 class="section">Estructurales (rompían el juego)</h3>
 <ol>
-<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, y el Vecino usa Nivel + 2 en Ataque y + 1 en Defensa. Resultado simulado: con 3 humanos, el humano gana 40%, empata 27% y pierde 33% contra Vecinos.</li>
+<li><b>Los humanos aplastaban a los Vecinos y después se hundían.</b> Las cartas siguen en la escala vieja (arqueros 4-6, volantes 2-4) aunque el documento dice que se subió. Con 5 atacantes contra 3 defensores, un club sin refuerzos suma Ataque ~18 contra una Defensa de Vecino de 13: convertía el 97% de sus ocasiones. Ahora cada jugador tiene su propio Ataque y Defensa, y el Vecino usa Nivel + 3 en Ataque y + 1 en Defensa. Resultado simulado: con 3 humanos, el humano gana 40%, empata 27% y pierde 33% contra Vecinos.</li>
 <li><b>El Físico era una espiral sin salida.</b> Con 8 jugadores y 7 titulares, jugar −1 y descansar +1 deja a casi todo el plantel en Físico 0 desde la Fecha 4: −13 en la alineación, para todos por igual. Ahora el Físico va de 0 a 3, descansar recupera 2 y solo se penaliza con Físico 0.</li>
 <li><b>La decisión táctica no existía.</b> La Plantilla Base trae exactamente 3 defensores (arquero y dos laterales) y 5 atacantes, y solo los Comodines cambiaban de línea: "cuántos dejo arriba" no era una decisión. Ahora cada jugador tiene un valor de Ataque y otro de Defensa (un volante de contención puede ser 2/4, un ofensivo 5/2, un delantero defiende 1).</li>
 <li><b>La Excusa obligatoria tenía una estrategia dominante.</b> El mismo reglamento recomendaba nominar a alguien que no ibas a alinear; con 8 jugadores para 7 puestos siempre hay uno así, y la Excusa nunca hacía nada. Ahora cae sobre un titular al azar, después de armar el equipo.</li>
@@ -1647,8 +1651,8 @@ const RULES_HTML = `
 
 <div id="rg-3" class="section">
 <h3>Calibración y qué vigilar</h3>
-<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,2 goles por partido, 26% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
-<p>Lo que más conviene mirar jugando: si 3,2 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
+<p>Los números salen de simular cientos de ligas con bots (podés repetirlo en el Laboratorio). Con 3 clubes de jugadores: unos 3,5 goles por partido, 27% de empates, y el campeón es un jugador la mitad de las veces. Con 6 gestionados, los Vecinos fijos casi nunca salen campeones.</p>
+<p>Lo que más conviene mirar jugando: si 3,5 goles por partido se siente bien para fútbol 7 de barrio, si la Excusa sobre un titular se siente injusta o divertida, y si alguien queda sin chances antes de la Fecha 4.</p>
 </div>`;
 
 // ================= INTERFAZ =================
@@ -1977,17 +1981,16 @@ function pitchEditor(app,c,o){
   const get=id=>c.squad.find(s=>s.id===id), inL=id=>L.gk===id||L.D.includes(id)||L.A.includes(id);
   const bench=c.squad.filter(s=>!s.retired&&!inL(s.id)), sel=UI.sel, selS=sel?get(sel):null;
   const oppStat = O.ctrl==='vecino' ? `A ${vecLevel(G,x.opp)+CFG.VEC_ATK} · D ${vecLevel(G,x.opp)+CFG.VEC_DEF}` : `Moral ${O.moral}`;
-  const sideOfTok=(id,flip)=>{ const p=CARDS[id].pos; if(p==='DD') return 'R'; if(p==='DI') return 'L'; if(p==='EXT') return flip(); return 'C'; };
-  const rowHTML=(ids,slot)=>{ if(!ids.length) return ''; let cnt={L:0,R:0}; const flip=()=>{ const s=cnt.R<=cnt.L?'R':'L'; return s; };
-    const g={L:[],C:[],R:[]}; ids.forEach(id=>{ const s=sideOfTok(id,flip); if(s!=='C') cnt[s]++; g[s].push(id); });
-    const t=a=>a.map(i=>tokHTML(c,get(i),slot,sel===i,pv)).join('');
-    if(!g.L.length&&!g.R.length) return `<div class="frow solo"><div class="fc">${t(g.C)}</div></div>`;
-    return `<div class="frow"><div class="fl">${t(g.L)}</div><div class="fc">${t(g.C)}</div><div class="fr">${t(g.R)}</div></div>`; };
+  const rowHTML=(ids,slot)=>{ if(!ids.length) return '';
+    // orden izquierda → centro → derecha; la fila se reparte pareja (2 quedan simétricos, 3 forman izquierda-centro-derecha)
+    let l=0,r=0; const key=id=>{ const p=CARDS[id].pos; if(p==='DI') return 0; if(p==='DD') return 2; if(p==='EXT'){ if(r<=l){r++;return 2.5} l++; return -0.5; } return 1; };
+    const ord=ids.map(id=>({id,k:key(id)})).sort((a,b)=>a.k-b.k);
+    return `<div class="frow">${ord.map(o=>tokHTML(c,get(o.id),slot,sel===o.id,pv)).join('')}</div>`; };
   const zone=(label,total,ids,slot)=>{ let rows;
     if(slot==='A'){ const fw=ids.filter(i=>POS[CARDS[i].pos].g==='del'), mid=ids.filter(i=>!fw.includes(i)); rows=rowHTML(fw,slot)+rowHTML(mid,slot); }
     else if(slot==='D'){ const back=ids.filter(i=>['def','gk'].includes(POS[CARDS[i].pos].g)), dm=ids.filter(i=>!back.includes(i)); rows=rowHTML(dm,slot)+rowHTML(back,slot); }
     else rows=rowHTML(ids,slot);
-    return `<div class="zone ${sel?'target':''}" data-zone="${slot}"><div class="zh"><span>${label}</span>${total!=null?`<b>${total}</b>`:''}</div>${rows||'<div class="frow solo"><span class="empty">Tocá un jugador y después acá</span></div>'}</div>`; };
+    return `<div class="zone ${sel?'target':''}" data-zone="${slot}"><div class="zh"><span>${label}</span>${total!=null?`<b>${total}</b>`:''}</div>${rows||'<div class="frow"><span class="empty">Tocá un jugador y después acá</span></div>'}</div>`; };
   const hasW=[L.gk,...L.D,...L.A].some(id=>id&&CARDS[id].fx==='wilson')&&!c.flags.wilsonUsed;
   app.innerHTML=head(c,o.title,o.step)+objBanner(c)+(o.top||'')+`
   <div class="opp">${x.cl>=0?'<span class="tag" style="background:var(--amarillo);color:#2A2205;border:0">Clásico</span>':''}<span class="vs">${x.home?'Local':'Visita'} vs</span>${crest(x.opp,true)}<b>${esc(clubName(x.opp))}</b><span class="st muted">${oppStat}</span></div>
