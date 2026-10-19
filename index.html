@@ -1250,7 +1250,7 @@ function startPhase2(S){
   if(S.fecha===CLASICO_FECHA-1){ S.rivalry=S.rivalry.map(x=>Math.min(5,x+1)); log(S,'La previa calienta los Clásicos: +1 a cada marcador de Rivalidad.','evt'); }
   CLASICO_PAIRS.forEach((p,k)=>{ if(S.fecha<CLASICO_FECHA && S.rivalry[k]>=3 && !S.rivTrig[k]){ S.rivTrig[k]=true; [p[0],p[1]].forEach(ci=>{ if(S.clubs[ci].ctrl!=='vecino') S.clubs[ci].dramas.push(drawDrama(S)); }); log(S,`La Rivalidad del ${p[2]} llegó a 3: Drama extra para ambos.`,'evt'); } });
   // Drama fijo: cada club recibe uno en cada Tercer Tiempo
-  managedClubs(S).forEach(c=>{ if(!c.dramas.length) c.dramas.push(drawDrama(S)); });
+  managedClubs(S).forEach(c=>{ c.dramas.push(drawDrama(S)); });
   const mgd=managedClubs(S);
   mgd.forEach(c=>{ c.spoExpiring = !!c.sponsor && S.fecha>=c.spoUntil && S.fecha<7; if(c.spoExpiring) c.spoOffer=drawSponsors(S,3); });
   mgd.forEach(c=>pushTask(S,{type:'tt',ci:c.i}));
